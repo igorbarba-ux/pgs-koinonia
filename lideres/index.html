@@ -1,0 +1,1260 @@
+<title>Episkopos · PGs Koinonia</title>
+<link rel="manifest" href="manifest-episkopos.json">
+<meta name="theme-color" content="#AD1E2E">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Episkopos">
+<link rel="apple-touch-icon" href="icon-episkopos-180.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-episkopos-192.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:wght@500;600;700&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  /* ── Tokens ─────────────────────────────────────────────────────────
+     Paleta oficial da Batista Koinonia (deck "Conhecendo o Cuidar"):
+     vinho #AD1E2E, creme #F4EEDC, cinza #595959 e a roda das quatro
+     áreas — âmbar #FAB000, coral #EF765E, verde-água #54BCAB, malva
+     #B36F9B. As cores da roda são tons médios: entram puras (--*-pure)
+     em barras e preenchimentos, e escurecidas quando viram texto. */
+  :root{
+    --bg:#F4EEDC; --surface:#FFFFFF; --surface-2:#EFE7D2; --border:#DFD3B8;
+    --ink:#241F1B; --ink-muted:#595959; --ink-faint:#6E6558;
+    --accent:#AD1E2E; --accent-soft:#F7E3E4; --accent-ink:#8A1724;
+    --good:#0A6E61; --good-pure:#54BCAB; --good-soft:#DDF1ED;
+    --bad:#B33F28;  --bad-pure:#EF765E;  --bad-soft:#FBE7E1;
+    --warn:#8F6100; --warn-pure:#FAB000; --warn-soft:#FDF0D2;
+    --clay:#834C6E; --clay-pure:#B36F9B; --clay-soft:#F2E6EE;
+    --shadow:0 1px 2px rgba(74,44,18,.06), 0 10px 28px rgba(74,44,18,.06);
+    --shadow-lift:0 4px 10px rgba(74,44,18,.09), 0 16px 32px rgba(74,44,18,.11);
+    --overlay:rgba(36,26,14,.45);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#17120E; --surface:#211A15; --surface-2:#2C231C; --border:#3E3327;
+      --ink:#F2E9DC; --ink-muted:#B5A895; --ink-faint:#8A7F70;
+      --accent:#E8737E; --accent-soft:#3A1A1E; --accent-ink:#F4AEB4;
+      --good:#63CDBB; --good-pure:#54BCAB; --good-soft:#12302C;
+      --bad:#F2907A;  --bad-pure:#EF765E;  --bad-soft:#3A2019;
+      --warn:#F0B33A; --warn-pure:#FAB000; --warn-soft:#342611;
+      --clay:#C98FB4; --clay-pure:#B36F9B; --clay-soft:#2F1F2A;
+      --shadow:0 1px 2px rgba(0,0,0,.5), 0 10px 28px rgba(0,0,0,.4);
+      --shadow-lift:0 4px 10px rgba(0,0,0,.5), 0 16px 32px rgba(0,0,0,.45);
+      --overlay:rgba(0,0,0,.6);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#17120E; --surface:#211A15; --surface-2:#2C231C; --border:#3E3327;
+    --ink:#F2E9DC; --ink-muted:#B5A895; --ink-faint:#8A7F70;
+    --accent:#E8737E; --accent-soft:#3A1A1E; --accent-ink:#F4AEB4;
+    --good:#63CDBB; --good-pure:#54BCAB; --good-soft:#12302C;
+    --bad:#F2907A;  --bad-pure:#EF765E;  --bad-soft:#3A2019;
+    --warn:#F0B33A; --warn-pure:#FAB000; --warn-soft:#342611;
+    --clay:#C98FB4; --clay-pure:#B36F9B; --clay-soft:#2F1F2A;
+    --shadow:0 1px 2px rgba(0,0,0,.5), 0 10px 28px rgba(0,0,0,.4);
+    --shadow-lift:0 4px 10px rgba(0,0,0,.5), 0 16px 32px rgba(0,0,0,.45);
+    --overlay:rgba(0,0,0,.6);
+  }
+
+  *{box-sizing:border-box;}
+  body{background:var(--bg); color:var(--ink); font-family:"Public Sans", ui-sans-serif, system-ui, sans-serif; font-size:14px; line-height:1.5;}
+  h1,h2,h3,h4{font-family:"Spectral", Georgia, serif; text-wrap:balance; margin:0;}
+  .mono{font-family:"IBM Plex Mono", ui-monospace, monospace; font-variant-numeric:tabular-nums;}
+  a{color:var(--accent);}
+  @media (prefers-reduced-motion: no-preference){
+    .section.active{animation:fadeIn .25s ease both;}
+    @keyframes fadeIn{from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:none;}}
+  }
+
+  .shell{display:flex; min-height:100vh;}
+
+  /* ---------------- Sidebar ---------------- */
+  .sidebar{
+    width:256px; flex:none; background:var(--surface); border-right:1px solid var(--border);
+    padding:22px 14px; display:flex; flex-direction:column; gap:14px;
+    position:sticky; top:env(safe-area-inset-top, 0px); height:100vh; overflow-y:auto;
+  }
+  .brand{padding:0 6px; display:flex; align-items:center; gap:12px; position:relative;}
+  .brand .mark{display:inline-flex; align-items:center; justify-content:center; flex:none; width:58px; height:58px;}
+  .brand .mark img{width:100%; height:100%; object-fit:contain;}
+  .brand .brand-txt h1{font-size:19px; font-weight:600; color:var(--ink); line-height:1.1;}
+  .brand .brand-txt p{margin:2px 0 0; font-size:11.5px; color:var(--ink-muted);}
+
+  .side-search{position:relative; margin:2px 0 0;}
+  .side-search svg{position:absolute; left:9px; top:50%; transform:translateY(-50%); color:var(--ink-faint);}
+  .side-search input{
+    width:100%; background:var(--bg); border:1px solid var(--border); border-radius:8px;
+    padding:7px 10px 7px 30px; font-size:12.5px; color:var(--ink); font-family:"Public Sans";
+  }
+  .side-search input:focus{outline:2px solid var(--accent); outline-offset:1px;}
+  .side-results{position:absolute; z-index:30; top:calc(100% + 4px); left:0; right:0; background:var(--surface); border:1px solid var(--border); border-radius:10px; box-shadow:var(--shadow); max-height:280px; overflow-y:auto; display:none;}
+  .side-results.show{display:block;}
+  .side-results button{all:unset; cursor:pointer; display:block; width:100%; padding:8px 10px; font-size:12px; color:var(--ink); box-sizing:border-box;}
+  .side-results button:hover{background:var(--surface-2);}
+  .side-results button:focus-visible{outline:2px solid var(--accent); outline-offset:-2px; background:var(--surface-2);}
+  .side-results button .r-sub{display:block; font-size:10.5px; color:var(--ink-faint); margin-top:1px;}
+  .side-results .no-res{padding:10px; font-size:12px; color:var(--ink-faint);}
+
+  nav{display:flex; flex-direction:column; gap:2px;}
+  .nav-label{font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-faint); padding:10px 10px 4px;}
+  .nav-btn{
+    all:unset; cursor:pointer; padding:7px 10px; border-radius:7px; font-size:13.5px;
+    color:var(--ink-muted); display:flex; align-items:center; gap:8px; box-sizing:border-box;
+  }
+  .nav-btn svg{flex:none; color:var(--ink-faint);}
+  .nav-btn:hover{background:var(--surface-2); color:var(--ink);}
+  .nav-btn:focus-visible{outline:2px solid var(--accent); outline-offset:-2px;}
+  .nav-btn.active{background:var(--accent-soft); color:var(--accent-ink); font-weight:600;}
+  .nav-btn.active svg{color:var(--accent-ink);}
+  .nav-btn .lbl{flex:1;}
+  .nav-btn .pill{font-family:"IBM Plex Mono"; font-size:10.5px; color:var(--ink-faint);}
+  .nav-btn.active .pill{color:var(--accent-ink);}
+
+  .sidebar-foot{margin-top:auto; padding:12px 10px 0; font-size:11.5px; color:var(--ink-faint); border-top:1px solid var(--border); line-height:1.6;}
+  .sync-state{display:flex; align-items:center; gap:6px; font-size:11px; color:var(--good); padding:0 10px 8px;}
+  .sync-state .dot{width:6px; height:6px; border-radius:50%; background:var(--good-pure);}
+
+  main{flex:1; min-width:0; padding:32px 40px 60px;}
+  .section{display:none;}
+  .section.active{display:block;}
+  .section-head{margin-bottom:22px;}
+  .eyebrow{font-size:11.5px; letter-spacing:.07em; text-transform:uppercase; color:var(--accent); font-weight:600; margin-bottom:6px;}
+  .section-head h2{font-size:27px; font-weight:600;}
+  .section-sub{color:var(--ink-muted); font-size:13.5px; margin-top:6px; max-width:70ch;}
+
+  h3.block-title{font-size:15px; font-weight:600; margin:30px 0 4px; display:flex; align-items:center; gap:8px;}
+  p.block-sub{font-size:12.5px; color:var(--ink-muted); margin:0 0 14px; max-width:70ch;}
+
+  /* ---------------- Hero ---------------- */
+  .hero-grid{display:grid; grid-template-columns:260px 1fr; gap:16px; margin:22px 0 8px;}
+  .donut-card{background:var(--surface); border:1px solid var(--border); border-radius:14px; box-shadow:var(--shadow); padding:20px; display:flex; flex-direction:column; align-items:center; gap:12px; position:relative; overflow:hidden;}
+  .donut-card::before{content:''; position:absolute; top:-60px; right:-60px; width:180px; height:180px; border-radius:50%; background:radial-gradient(circle, var(--accent-soft) 0%, transparent 72%); opacity:.8; pointer-events:none;}
+  .donut-card > *{position:relative;}
+  .donut-card .donut-title{font-size:12px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.05em; align-self:flex-start;}
+  .donut-figure{position:relative; width:150px; height:150px;}
+  .donut-figure .donut-center{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;}
+  .donut-figure .donut-center .big{font-family:"IBM Plex Mono"; font-size:26px; font-weight:600;}
+  .donut-figure .donut-center .lbl{font-size:10.5px; color:var(--ink-muted); margin-top:1px;}
+  .donut-legend{display:flex; gap:16px; font-size:12px;}
+  .donut-legend .li{display:flex; align-items:center; gap:6px; color:var(--ink-muted);}
+  .donut-legend .sw{width:9px; height:9px; border-radius:3px; flex:none;}
+  .donut-legend .li b{color:var(--ink); font-family:"IBM Plex Mono"; font-weight:600;}
+
+  .kpi-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(170px,1fr)); gap:12px;}
+  .kpi{background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:15px 17px; box-shadow:var(--shadow); transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;}
+  .kpi:hover{transform:translateY(-2px); border-color:var(--accent); box-shadow:var(--shadow-lift);}
+  .kpi .label{font-size:11.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-faint); margin-bottom:8px;}
+  .kpi .value{font-family:"IBM Plex Mono"; font-size:23px; font-weight:600; font-variant-numeric:tabular-nums;}
+  .kpi .value.bad{color:var(--bad);}
+  .kpi .value.warn{color:var(--warn);}
+  .kpi .sub{font-size:12px; color:var(--ink-muted); margin-top:4px;}
+
+  /* ---------------- Atenção ---------------- */
+  .attn-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(230px,1fr)); gap:12px; margin:14px 0 28px;}
+  .attn-card{background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--border); border-radius:10px; box-shadow:var(--shadow); padding:13px 15px; transition:transform .18s ease, box-shadow .18s ease;}
+  .attn-card:hover{transform:translateY(-2px); box-shadow:var(--shadow-lift);}
+  .attn-card.crit{border-left-color:var(--bad);}
+  .attn-card.warn{border-left-color:var(--warn);}
+  .attn-card.info{border-left-color:var(--accent);}
+  .attn-head{display:flex; align-items:center; gap:8px; margin-bottom:6px;}
+  .attn-head svg{flex:none;}
+  .attn-card.crit svg{color:var(--bad);}
+  .attn-card.warn svg{color:var(--warn);}
+  .attn-card.info svg{color:var(--accent);}
+  .attn-head .t{font-size:13px; font-weight:600; color:var(--ink); flex:1;}
+  .attn-head .n{font-family:"IBM Plex Mono"; font-size:15px; font-weight:600;}
+  .attn-card.crit .n{color:var(--bad);}
+  .attn-card.warn .n{color:var(--warn);}
+  .attn-card.info .n{color:var(--accent-ink);}
+  .attn-body{font-size:12px; color:var(--ink-muted); line-height:1.6;}
+  .attn-body .item{display:block;}
+
+  /* ---------------- Barras ---------------- */
+  .bar-rank{display:flex; flex-direction:column; gap:9px; margin:14px 0 6px;}
+  .bar-rank-row{display:grid; grid-template-columns:130px 1fr 128px; align-items:center; gap:10px;}
+  .bar-rank-row .cat-name{font-size:12.5px; color:var(--ink-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .bar-rank-row .bar-track{background:var(--surface-2); border-radius:5px; height:20px; position:relative; overflow:hidden; display:flex;}
+  .bar-rank-row .bar-fill{height:100%;}
+  .bar-rank-row .bar-fill.good{background:var(--good-pure);}
+  .bar-rank-row .bar-fill.bad{background:var(--bad-pure); margin-left:1px;}
+  .bar-rank-row .bar-amt{font-family:"IBM Plex Mono"; font-size:12px; text-align:right; white-space:nowrap;}
+  .bar-rank-row .bar-amt .sub{color:var(--ink-faint); margin-left:5px; font-size:11px;}
+  .bar-legend{display:flex; gap:16px; font-size:11.5px; color:var(--ink-muted); margin:2px 0 18px; flex-wrap:wrap;}
+  .bar-legend .li{display:flex; align-items:center; gap:6px;}
+  .bar-legend .sw{width:9px; height:9px; border-radius:3px;}
+
+  /* ---------------- Agenda semanal ---------------- */
+  .week-board{display:flex; gap:12px; overflow-x:auto; padding-bottom:8px; margin-top:14px;}
+  .week-col{background:var(--surface); border:1px solid var(--border); border-radius:12px; box-shadow:var(--shadow); flex:none; width:216px; display:flex; flex-direction:column;}
+  .week-col-head{padding:12px 14px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;}
+  .week-col-head .d{font-size:13px; font-weight:600;}
+  .week-col-head .pill{font-family:"IBM Plex Mono"; font-size:11px; color:var(--ink-faint); background:var(--surface-2); border-radius:20px; padding:1px 7px;}
+  .week-col-body{padding:8px; display:flex; flex-direction:column; gap:7px; max-height:620px; overflow-y:auto;}
+  .week-chip{all:unset; cursor:pointer; box-sizing:border-box; display:block; width:100%; background:var(--bg); border:1px solid var(--border); border-radius:9px; padding:8px 10px; border-left:3px solid var(--border);}
+  .week-chip:hover{border-color:var(--accent); background:var(--accent-soft);}
+  .week-chip:focus-visible{outline:2px solid var(--accent); outline-offset:1px;}
+  .week-chip .time{display:block; font-family:"IBM Plex Mono"; font-size:11px; color:var(--accent-ink); font-weight:600;}
+  .week-chip .pgname{display:block; font-size:12.5px; font-weight:500; color:var(--ink); margin-top:2px;}
+  .week-chip .meta{font-size:11px; color:var(--ink-muted); margin-top:3px; display:flex; align-items:center; gap:5px; flex-wrap:wrap;}
+  .week-chip .meta .camp{background:var(--surface-2); border-radius:5px; padding:0 5px;}
+  .week-empty{padding:20px 10px; text-align:center; color:var(--ink-faint); font-size:12px;}
+
+  /* ---------------- Tabelas ---------------- */
+  .table-card{background:var(--surface); border:1px solid var(--border); border-radius:12px; box-shadow:var(--shadow); overflow:hidden;}
+  .table-toolbar{display:flex; justify-content:space-between; align-items:center; gap:10px; padding:12px 16px; border-bottom:1px solid var(--border); flex-wrap:wrap;}
+  .table-toolbar h3{font-size:14.5px; font-weight:600; color:var(--ink);}
+  .toolbar-controls{display:flex; gap:8px; flex-wrap:wrap;}
+  .search-wrap{position:relative;}
+  .search-wrap svg{position:absolute; left:8px; top:50%; transform:translateY(-50%); color:var(--ink-faint); pointer-events:none;}
+  .search{background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:6px 10px 6px 28px; font-size:12.5px; color:var(--ink); font-family:"Public Sans"; width:210px;}
+  .fselect{background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:6px 10px; font-size:12.5px; color:var(--ink); font-family:"Public Sans";}
+  .search:focus, .fselect:focus{outline:2px solid var(--accent); outline-offset:1px;}
+  .table-scroll{overflow-x:auto; max-height:600px; overflow-y:auto;}
+  table{width:100%; border-collapse:collapse; min-width:680px;}
+  thead th{position:sticky; top:0; background:var(--surface); text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-faint); padding:10px 16px; border-bottom:1px solid var(--border); font-weight:600; white-space:nowrap; z-index:1;}
+  thead th.num{text-align:right;}
+  thead th.sortable{cursor:pointer; user-select:none;}
+  thead th.sortable:hover{color:var(--ink);}
+  thead th.sortable .arrow{display:inline-block; width:10px; opacity:.5;}
+  thead th.sortable.active .arrow{opacity:1; color:var(--accent-ink);}
+  thead th.sortable:focus-visible{outline:2px solid var(--accent); outline-offset:-2px;}
+  tbody td{padding:8px 16px; border-bottom:1px solid var(--border); font-size:13px; vertical-align:middle;}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr:hover td{background:var(--surface-2);}
+  tr.clickable{cursor:pointer;}
+  tr.clickable:focus-visible{outline:2px solid var(--accent); outline-offset:-2px;}
+  td.name{color:var(--ink); font-weight:500;}
+  td.name .sub{display:block; font-size:11.5px; color:var(--ink-faint); font-weight:400; margin-top:1px;}
+  td.num{text-align:right; font-family:"IBM Plex Mono"; white-space:nowrap;}
+  td.tags{color:var(--ink-muted); font-size:12.5px;}
+  td.person{white-space:nowrap;}
+  .person-name{display:inline-flex; align-items:center; gap:6px;}
+  .empty-row td{padding:26px 16px; text-align:center; color:var(--ink-faint); font-size:13px;}
+  .role-badge{display:inline-block; font-size:9.5px; text-transform:uppercase; letter-spacing:.03em; font-weight:700; border-radius:20px; padding:2px 8px;}
+  .role-badge.lider{color:var(--accent-ink); background:var(--accent-soft);}
+  .role-badge.colider{color:var(--ink-muted); background:var(--surface-2); border:1px solid var(--border);}
+  .status-badge{font-size:10px; text-transform:uppercase; letter-spacing:.05em; font-weight:700; padding:3px 8px; border-radius:20px; white-space:nowrap; display:inline-flex; align-items:center; gap:4px;}
+  .status-badge.ativo{background:var(--good-soft); color:var(--good);}
+  .status-badge.nao{background:var(--bad-soft); color:var(--bad); border:1px dashed var(--bad);}
+  .status-badge.warn{background:var(--warn-soft); color:var(--warn);}
+
+  .mtag{display:inline-block; font-size:10.5px; padding:2px 8px; border-radius:20px; background:var(--surface-2); color:var(--ink-muted); white-space:nowrap;}
+  .mtag.none{background:var(--warn-soft); color:var(--warn);}
+
+  .wa-btn{display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; border-radius:50%; background:var(--good-soft); color:var(--good); flex:none; transition:transform .12s ease;}
+  .wa-btn:hover{transform:scale(1.12);}
+  .wa-btn svg{width:12px; height:12px;}
+  .no-contact{color:var(--ink-faint); font-size:11px;}
+
+  /* ---------------- Campus ---------------- */
+  .campus-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(215px,1fr)); gap:12px; margin:14px 0 22px;}
+  .campus-card{all:unset; cursor:pointer; box-sizing:border-box; background:var(--surface); border:1px solid var(--border); border-radius:12px; box-shadow:var(--shadow); padding:14px 16px; display:flex; flex-direction:column; gap:8px;}
+  .campus-card.active{border-color:var(--accent); box-shadow:0 0 0 2px var(--accent-soft), var(--shadow);}
+  .campus-card:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+  .campus-card .cc-name{display:block; font-size:14px; font-weight:600; color:var(--ink);}
+  .campus-card .cc-coord{display:block; font-size:11.5px; color:var(--ink-muted);}
+  .campus-card .cc-coord.missing{color:var(--ink-faint); font-style:italic;}
+  .campus-card .cc-stats{font-size:11.5px; color:var(--ink-muted); display:flex; justify-content:space-between; gap:6px;}
+  .campus-card .cc-bar{height:7px; border-radius:4px; background:var(--surface-2); overflow:hidden; display:flex;}
+  .campus-card .cc-bar .seg{display:block;}
+  .campus-card .cc-bar .seg.good{background:var(--good-pure);}
+  .campus-card .cc-bar .seg.bad{background:var(--bad-pure); margin-left:1px;}
+  .campus-card .cc-members{display:block; font-family:"IBM Plex Mono"; font-size:11.5px; color:var(--ink-faint);}
+
+  /* ---------------- Organograma ---------------- */
+  .org{display:flex; flex-direction:column; gap:0; margin:16px 0 8px; max-width:940px;}
+  .org-node{background:var(--surface); border:1px solid var(--border); border-radius:12px; box-shadow:var(--shadow); padding:14px 18px;}
+  .org-node.lead{border-left:3px solid var(--accent);}
+  .org-node .on-name{font-family:"Spectral", Georgia, serif; font-size:16px; font-weight:600;}
+  .org-node .on-role{font-size:12px; color:var(--ink-muted); margin-top:2px;}
+  .org-link{width:2px; height:18px; background:var(--border); margin-left:34px;}
+  .pilares{display:grid; grid-template-columns:repeat(auto-fit, minmax(255px,1fr)); gap:12px; margin-top:4px;}
+  .pilar{all:unset; cursor:pointer; box-sizing:border-box; display:flex; flex-direction:column; gap:7px; background:var(--surface); border:1px solid var(--border); border-radius:12px; box-shadow:var(--shadow); padding:15px 16px; transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;}
+  .pilar:hover{transform:translateY(-2px); box-shadow:var(--shadow-lift);}
+  .pilar:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+  .pilar.active{border-color:var(--accent); box-shadow:0 0 0 2px var(--accent-soft), var(--shadow);}
+  .pilar .pi-top{display:flex; align-items:center; gap:9px;}
+  .pilar .pi-num{font-family:"IBM Plex Mono"; font-size:11px; font-weight:600; color:var(--accent-ink); background:var(--accent-soft); border-radius:6px; padding:2px 7px; flex:none;}
+  .pilar .pi-name{font-family:"Spectral", Georgia, serif; font-size:15px; font-weight:600; flex:1;}
+  .pilar .pi-count{font-family:"IBM Plex Mono"; font-size:11.5px; color:var(--ink-faint);}
+  .pilar .pi-desc{display:block; font-size:12px; color:var(--ink-muted); line-height:1.55;}
+  .pilar-detail{margin-top:14px;}
+  .lateral{margin-top:22px; background:var(--clay-soft); border:1px solid var(--border); border-left:3px solid var(--clay); border-radius:12px; padding:15px 18px;}
+  .lateral h4{font-size:14px; font-weight:600; color:var(--ink); margin-bottom:5px;}
+  .lateral p{font-size:12.5px; color:var(--ink-muted); margin:0; line-height:1.65; max-width:72ch;}
+  .flow{display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-top:11px; font-size:12px;}
+  .flow .fnode{background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:4px 12px; color:var(--ink);}
+  .flow .farrow{color:var(--clay); font-family:"IBM Plex Mono";}
+
+  /* ---------------- Trilha de formação ---------------- */
+  .trilha{display:flex; align-items:stretch; gap:8px; flex-wrap:wrap; margin:14px 0 4px;}
+  .trilha .step{flex:1 1 150px; min-width:0; background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:12px 14px; box-shadow:var(--shadow); position:relative;}
+  .trilha .step .sn{font-family:"IBM Plex Mono"; font-size:10.5px; color:var(--ink-faint);}
+  .trilha .step .st{font-size:13px; font-weight:600; margin-top:3px;}
+  .trilha .step .sd{font-size:11.5px; color:var(--ink-muted); margin-top:4px; line-height:1.5;}
+  .trilha .step:last-child{border-color:var(--accent); background:var(--accent-soft);}
+  .trilha .step:last-child .st{color:var(--accent-ink);}
+
+  /* ---------------- Ministérios ---------------- */
+  .min-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(255px,1fr)); gap:12px; margin:14px 0 6px;}
+  .min-card{all:unset; cursor:pointer; box-sizing:border-box; background:var(--surface); border:1px solid var(--border); border-radius:12px; box-shadow:var(--shadow); padding:15px 16px; display:flex; flex-direction:column; gap:8px; transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;}
+  .min-card:hover{transform:translateY(-2px); box-shadow:var(--shadow-lift);}
+  .min-card:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+  .min-card.active{border-color:var(--accent); box-shadow:0 0 0 2px var(--accent-soft), var(--shadow);}
+  .min-card .mc-eixo{display:block; font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-faint);}
+  .min-card .mc-name{display:block; font-family:"Spectral", Georgia, serif; font-size:16px; font-weight:600;}
+  .min-card .mc-pub{display:block; font-size:11.5px; color:var(--ink-muted);}
+  .min-card .mc-sup{font-size:12.5px; display:flex; align-items:center; gap:6px; padding-top:8px; border-top:1px solid var(--border);}
+  .min-card .mc-sup .who{color:var(--ink); font-weight:500;}
+  .min-card .mc-sup .vago{color:var(--warn); font-weight:600;}
+  .min-card .mc-count{display:block; font-family:"IBM Plex Mono"; font-size:11.5px; color:var(--ink-faint);}
+
+  /* ---------------- Calendário ---------------- */
+  .tl{position:relative; margin:16px 0 8px; padding-left:22px; max-width:820px;}
+  .tl::before{content:''; position:absolute; left:5px; top:6px; bottom:6px; width:2px; background:var(--border);}
+  .tl-item{position:relative; padding:0 0 20px 0;}
+  .tl-item::before{content:''; position:absolute; left:-22px; top:5px; width:12px; height:12px; border-radius:50%; background:var(--surface); border:2px solid var(--border);}
+  .tl-item.done::before{background:var(--border); border-color:var(--border);}
+  .tl-item.next::before{background:var(--accent); border-color:var(--accent); box-shadow:0 0 0 4px var(--accent-soft);}
+  .tl-item .tl-date{font-family:"IBM Plex Mono"; font-size:11.5px; color:var(--ink-faint);}
+  .tl-item.next .tl-date{color:var(--accent-ink); font-weight:600;}
+  .tl-item .tl-name{font-size:14px; font-weight:600; color:var(--ink); margin-top:2px;}
+  .tl-item.done .tl-name{color:var(--ink-muted); font-weight:500;}
+  .tl-item .tl-meta{font-size:12px; color:var(--ink-muted); margin-top:3px; display:flex; gap:8px; flex-wrap:wrap; align-items:center;}
+  .tl-badge{font-size:9.5px; letter-spacing:.05em; text-transform:uppercase; font-weight:700; padding:2px 8px; border-radius:20px;}
+  .tl-badge.next{background:var(--accent-soft); color:var(--accent-ink);}
+  .tl-badge.done{background:var(--surface-2); color:var(--ink-faint);}
+  .mes-label{font-family:"Spectral", Georgia, serif; font-size:13px; font-weight:600; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.06em; margin:4px 0 10px;}
+
+  /* ---------------- Manual ---------------- */
+  .manual-layout{display:grid; grid-template-columns:232px 1fr; gap:24px; align-items:start; margin-top:16px;}
+  .manual-toc{position:sticky; top:calc(env(safe-area-inset-top, 0px) + 18px); background:var(--surface); border:1px solid var(--border); border-radius:12px; box-shadow:var(--shadow); padding:12px; max-height:calc(100vh - 60px); overflow-y:auto;}
+  .manual-toc .toc-label{font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-faint); padding:4px 8px 6px;}
+  .manual-toc button{all:unset; box-sizing:border-box; cursor:pointer; display:flex; gap:8px; width:100%; padding:6px 8px; border-radius:6px; font-size:12.5px; color:var(--ink-muted); line-height:1.4;}
+  .manual-toc button:hover{background:var(--surface-2); color:var(--ink);}
+  .manual-toc button:focus-visible{outline:2px solid var(--accent); outline-offset:-2px;}
+  .manual-toc button.active{background:var(--accent-soft); color:var(--accent-ink); font-weight:600;}
+  .manual-toc button .tn{font-family:"IBM Plex Mono"; font-size:11px; color:var(--ink-faint); flex:none; width:16px;}
+  .manual-toc button.active .tn{color:var(--accent-ink);}
+  .manual-body{min-width:0; background:var(--surface); border:1px solid var(--border); border-radius:12px; box-shadow:var(--shadow); padding:26px 30px;}
+  .manual-body h3{font-family:"Spectral", Georgia, serif; font-size:21px; font-weight:600; margin-bottom:4px;}
+  .manual-body .m-eyebrow{font-size:11px; letter-spacing:.07em; text-transform:uppercase; color:var(--accent); font-weight:600;}
+  .manual-body p{font-size:13.5px; color:var(--ink-muted); line-height:1.75; margin:12px 0; max-width:68ch;}
+  .manual-body p strong{color:var(--ink);}
+  .manual-body ul{margin:12px 0; padding-left:20px; max-width:68ch;}
+  .manual-body li{font-size:13.5px; color:var(--ink-muted); line-height:1.7; margin-bottom:6px;}
+  .manual-body li strong{color:var(--ink);}
+  .manual-body h4{font-size:14px; font-weight:600; margin:22px 0 2px; color:var(--ink);}
+  .quote{border-left:3px solid var(--clay); background:var(--clay-soft); border-radius:0 10px 10px 0; padding:12px 16px; margin:16px 0; font-family:"Spectral", Georgia, serif; font-size:14.5px; color:var(--ink); line-height:1.65; max-width:68ch;}
+  .quote .src{display:block; font-family:"Public Sans"; font-size:11.5px; color:var(--ink-muted); margin-top:6px; font-style:normal;}
+  .mtable{width:100%; min-width:0; border-collapse:collapse; margin:14px 0; font-size:13px;}
+  .mtable th{text-align:left; font-size:10.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-faint); padding:8px 12px; border-bottom:1px solid var(--border); font-weight:600;}
+  .mtable td{padding:9px 12px; border-bottom:1px solid var(--border); color:var(--ink-muted); vertical-align:top; line-height:1.6;}
+  .mtable td:first-child{color:var(--ink); font-weight:500; white-space:nowrap;}
+  .mtable tr:last-child td{border-bottom:none;}
+  .table-wrap{overflow-x:auto;}
+  .steps{counter-reset:s; list-style:none; padding:0; margin:14px 0;}
+  .steps li{counter-increment:s; position:relative; padding-left:34px; margin-bottom:11px; font-size:13.5px; color:var(--ink-muted); line-height:1.7; max-width:66ch;}
+  .steps li::before{content:counter(s); position:absolute; left:0; top:1px; width:22px; height:22px; border-radius:50%; background:var(--accent-soft); color:var(--accent-ink); font-family:"IBM Plex Mono"; font-size:11px; font-weight:600; display:flex; align-items:center; justify-content:center;}
+  .faq{border-top:1px solid var(--border); padding-top:14px; margin-top:6px;}
+  .faq:first-of-type{border-top:none; padding-top:0;}
+  .faq .q{font-size:13.5px; font-weight:600; color:var(--ink); margin-bottom:5px;}
+  .faq .a{font-size:13.5px; color:var(--ink-muted); line-height:1.7; max-width:68ch;}
+  .ascii{background:var(--bg); border:1px solid var(--border); border-radius:10px; padding:14px 16px; font-family:"IBM Plex Mono", ui-monospace, monospace; font-size:11.5px; color:var(--ink-muted); line-height:1.75; overflow-x:auto; white-space:pre; margin:14px 0;}
+  .gloss{display:grid; grid-template-columns:repeat(auto-fit, minmax(230px,1fr)); gap:10px; margin:14px 0;}
+  .gloss .gi{background:var(--bg); border:1px solid var(--border); border-radius:9px; padding:10px 13px;}
+  .gloss .gt{font-size:12.5px; font-weight:600; color:var(--ink);}
+  .gloss .gd{font-size:12px; color:var(--ink-muted); margin-top:2px; line-height:1.55;}
+
+  /* ---------------- Saúde do cadastro ---------------- */
+  .health-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(240px,1fr)); gap:12px; margin:14px 0 8px;}
+  .health-card{background:var(--surface); border:1px solid var(--border); border-radius:12px; box-shadow:var(--shadow); padding:14px 16px;}
+  .health-card .hc-top{display:flex; justify-content:space-between; align-items:baseline; gap:8px; margin-bottom:8px;}
+  .health-card .hc-name{font-size:13px; font-weight:600; color:var(--ink);}
+  .health-card .hc-pct{font-family:"IBM Plex Mono"; font-size:15px; font-weight:600;}
+  .health-card .hc-track{height:8px; border-radius:5px; background:var(--surface-2); overflow:hidden;}
+  .health-card .hc-fill{height:100%; border-radius:5px;}
+  .health-card .hc-sub{font-size:11.5px; color:var(--ink-muted); margin-top:7px;}
+  .chips{display:flex; gap:7px; flex-wrap:wrap; margin:16px 0 12px;}
+  .chip{all:unset; cursor:pointer; box-sizing:border-box; font-size:12px; padding:5px 12px; border-radius:20px; border:1px solid var(--border); background:var(--surface); color:var(--ink-muted);}
+  .chip:hover{border-color:var(--accent); color:var(--ink);}
+  .chip:focus-visible{outline:2px solid var(--accent); outline-offset:1px;}
+  .chip.active{background:var(--accent-soft); border-color:var(--accent); color:var(--accent-ink); font-weight:600;}
+  .chip .cn{font-family:"IBM Plex Mono"; font-size:11px; opacity:.75; margin-left:5px;}
+
+  /* ---------------- Drawer de detalhe ---------------- */
+  .drawer-overlay{position:fixed; inset:0; background:var(--overlay); z-index:40; opacity:0; pointer-events:none; transition:opacity .2s ease;}
+  .drawer-overlay.open{opacity:1; pointer-events:auto;}
+  .drawer{
+    position:fixed; top:0; right:0; height:100%; width:min(430px, 100%); z-index:41;
+    background:var(--surface); border-left:1px solid var(--border); box-shadow:-18px 0 44px rgba(20,30,15,.14);
+    transform:translateX(100%); transition:transform .24s cubic-bezier(.4,0,.2,1);
+    display:flex; flex-direction:column; padding-top:env(safe-area-inset-top, 0px); padding-bottom:env(safe-area-inset-bottom, 0px);
+  }
+  .drawer.open{transform:none;}
+  @media (prefers-reduced-motion: reduce){ .drawer{transition:none;} .drawer-overlay{transition:none;} }
+  .drawer-head{padding:20px 22px 14px; border-bottom:1px solid var(--border); display:flex; gap:12px; align-items:flex-start;}
+  .drawer-head .dh-txt{flex:1; min-width:0;}
+  .drawer-head h3{font-family:"Spectral", Georgia, serif; font-size:19px; font-weight:600; line-height:1.25;}
+  .drawer-head .dh-meta{font-size:12px; color:var(--ink-muted); margin-top:5px; display:flex; gap:7px; align-items:center; flex-wrap:wrap;}
+  .drawer-close{all:unset; cursor:pointer; flex:none; width:30px; height:30px; border-radius:8px; display:flex; align-items:center; justify-content:center; color:var(--ink-muted); background:var(--surface-2);}
+  .drawer-close:hover{color:var(--ink); background:var(--border);}
+  .drawer-close:focus-visible{outline:2px solid var(--accent); outline-offset:1px;}
+  .drawer-body{padding:18px 22px 40px; overflow-y:auto; flex:1;}
+  .dfield{padding:11px 0; border-bottom:1px solid var(--border); display:grid; grid-template-columns:106px 1fr; gap:12px; align-items:start;}
+  .dfield:last-child{border-bottom:none;}
+  .dfield .dk{font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-faint); padding-top:2px;}
+  .dfield .dv{font-size:13px; color:var(--ink); line-height:1.6; min-width:0; overflow-wrap:anywhere;}
+  .dfield .dv.empty{color:var(--ink-faint); font-style:italic;}
+  .dsub{font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-faint); margin:22px 0 4px; font-weight:600;}
+  .contact-row{display:flex; align-items:center; gap:10px; padding:10px 0; border-bottom:1px solid var(--border);}
+  .contact-row:last-child{border-bottom:none;}
+  .contact-row .cr-txt{flex:1; min-width:0;}
+  .contact-row .cr-name{font-size:13px; color:var(--ink); font-weight:500;}
+  .contact-row .cr-role{font-size:11.5px; color:var(--ink-muted); margin-top:1px;}
+  .wa-cta{display:inline-flex; align-items:center; gap:7px; background:var(--good-soft); color:var(--good); border:1px solid transparent; border-radius:8px; padding:6px 12px; font-size:12px; font-weight:600; text-decoration:none; white-space:nowrap;}
+  .wa-cta:hover{border-color:var(--good);}
+  .wa-cta svg{width:13px; height:13px;}
+
+  /* ---------------- Blocos ainda sem conteúdo ---------------- */
+  .slot{background:var(--surface); border:1px dashed var(--border); border-radius:12px; padding:16px 18px;}
+  .slot .slot-top{display:flex; align-items:center; gap:8px; margin-bottom:6px;}
+  .slot .slot-top svg{flex:none; color:var(--ink-faint);}
+  .slot .slot-t{font-size:13.5px; font-weight:600; color:var(--ink);}
+  .slot .slot-tag{margin-left:auto; font-size:9.5px; letter-spacing:.06em; text-transform:uppercase; font-weight:700; padding:2px 8px; border-radius:20px; background:var(--warn-soft); color:var(--warn); white-space:nowrap;}
+  .slot .slot-d{font-size:12.5px; color:var(--ink-muted); line-height:1.6;}
+
+  .note{background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:16px 18px; font-size:12.5px; color:var(--ink-muted); margin-top:26px; line-height:1.7; max-width:80ch;}
+  .note strong{color:var(--ink);}
+  .note code{font-family:"IBM Plex Mono"; font-size:11.5px; background:var(--surface-2); padding:1px 5px; border-radius:4px;}
+
+  @media (max-width: 980px){
+    .manual-layout{grid-template-columns:1fr;}
+    .manual-toc{position:static; max-height:none; display:flex; flex-wrap:wrap; gap:4px;}
+    .manual-toc .toc-label{width:100%;}
+    .manual-toc button{width:auto;}
+  }
+  @media (max-width: 860px){
+    .shell{flex-direction:column;}
+    .sidebar{position:sticky; top:env(safe-area-inset-top, 0px); width:100%; height:auto; flex-direction:row; align-items:center; overflow-x:auto; overflow-y:hidden; padding:12px 16px; gap:14px; z-index:20;}
+    .brand{flex:none; padding:0;}
+    .brand-txt p{display:none;}
+    .side-search{display:none;}
+    nav{flex-direction:row; flex:none;}
+    .nav-label{display:none;}
+    .sidebar-foot, .sync-state{display:none;}
+    main{padding:22px 16px 40px;}
+    .search{width:100%; min-width:140px;}
+    .search-wrap{flex:1 1 160px;}
+    .toolbar-controls{width:100%;}
+    .hero-grid{grid-template-columns:1fr;}
+    .bar-rank-row{grid-template-columns:96px 1fr 88px;}
+    .manual-body{padding:20px 18px;}
+    .dfield{grid-template-columns:1fr; gap:3px;}
+  }
+</style>
+<style>
+  .og{display:flex; flex-direction:column; align-items:center; gap:0; margin:18px 0 8px;}
+  .og-top{background:var(--accent-soft); color:var(--accent-ink); border:1px solid var(--border); border-radius:12px; padding:14px 22px; text-align:center; box-shadow:var(--shadow); min-width:260px;}
+  .og-top .t{font-family:"Spectral",Georgia,serif; font-size:17px; font-weight:600;}
+  .og-top .s{font-size:12px; color:var(--ink-muted); margin-top:2px;}
+  .og-stem{width:2px; height:26px; background:var(--border);}
+  .og-branch{display:grid; grid-template-columns:repeat(auto-fit, minmax(210px,1fr)); gap:14px; width:100%; position:relative; padding-top:18px;}
+  .og-branch::before{content:''; position:absolute; top:0; left:12%; right:12%; height:2px; background:var(--border);}
+  .og-col{display:flex; flex-direction:column; align-items:stretch; gap:8px; position:relative;}
+  .og-col::before{content:''; position:absolute; top:-18px; left:50%; width:2px; height:18px; background:var(--border);}
+  .og-head{border-radius:10px; padding:10px 12px; font-weight:600; font-size:13px; color:#fff; text-align:center;}
+  .og-head.amber{background:var(--pure-amber, #FAB000); color:#241F1B;}
+  .og-head.coral{background:var(--pure-coral, #EF765E); color:#241F1B;}
+  .og-head.aqua{background:var(--pure-aqua, #54BCAB); color:#241F1B;}
+  .og-head.mauve{background:var(--pure-mauve, #B36F9B); color:#241F1B;}
+  .og-head.wine{background:var(--wine); color:#fff;}
+  .og-item{background:var(--surface); border:1px solid var(--border); border-radius:9px; padding:8px 10px; font-size:12.5px; color:var(--ink);}
+  .og-item small{display:block; font-size:11px; color:var(--ink-faint); margin-top:1px;}
+  .og-sub{font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-faint); margin:4px 2px 0;}
+  .og-foot{margin-top:18px; display:flex; gap:10px; align-items:center; flex-wrap:wrap; font-size:12.5px; color:var(--ink-muted);}
+  .og-foot .chip{background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:5px 12px;}
+  .og-note{margin-top:22px;}
+</style>
+
+<div class="shell">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="mark">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAAEACAYAAABccqhmAADMWElEQVR42uydd5xdVbn+v2vtcur0mWQmvUMaEAgdJCAooqiAib2hKHZFf+r16k1iL9dyvfaC3auJHRCxQEINvSak92R6PX3vvdb6/bH3NAiQTMlMMOfjfCSZzJm991lve97nfV7B8de4eRljBGtXSOoWCFpXG7EC9fR/JVljlPWi7sfLY833V9mitMDv3F4RkDpZ55tjibLqU/B7krrUTiBS83VQShlVwCgPYTTGKITRYAzYisLOCZQa65COAmGBtEAKsByk6yKcmO8G/hNWuiwQ8UQ+09HxSLyuPpB+YaM7YUonZenNatLEpsoZp2SEEOqQ97USCSvl2oULzfLly7UQwhz/tMfHSxx/BGNs8KwSrFsnWbZeCYEZ+NHcZrR9Rr5tQrJz3Qyv9YlZqtAy1TbeiYLSzFK+Z4pRqk5aJC0RSEcYMArP9zDRu/h+EP63kAM+7gEfuTSokiT3+Cy07yCEjr5vwBiMCf/kOjZgEAhc1wVpoTBoYRkFeaAlnkofMI6zQzupvVYqsS02Zca25GnLDm5LJJrnCVEadN8gWLnSYhUaVpnjDuG4A/g3MXgErBSsQ3LhaiUYaPA2xrRWsufmU/NtmxY7Jnuy9jInB6XsLKHzFUknEOgAdIAfKAJlCJRBKYNBGCHQIEAIEf4ekEKIXnseZH59/ynADvCaK8hvm4qwdf+3Rf/RMNqEfqTXMwDaGCmMEZaUOJbEkgLXspGWhbYs8hpj4om8HUvsiZdXPqpc97FETf19pTmnPFw5Y2YnRg86h2blSotVqzThvRx3CMcdwPPH6NeuXS7rNraIC1evD/qfvIvR26uDzWtPLrVtPcsRpXO8YuY0C68h4fiYoITv+ZQCjVICI1ACGdmhCEO5IPrfcC5QgBWQe3IKfkcVwg7CvzuiWwzTGRAGjDHGCIGxJOBaFq7rYLkxigi0sBrdVOpBT4i7EpNnPmif/IIn0nPmNhL4/W+4fLm1djksX7FWC447g+MO4JhM7ddK1q5gYB1/wJjkpJ2/XpTr3PhCV/Us8zLNpwqVqUnGlFC+R7Gk8HwNUiiQCCHCkN4bfEflYgHLoHI22cdnAtYIvrWIaglMmEYYy7UtEbdtbMehJAS+HetM1NQ+ohOpdRUz5t1un3XxA0KI7CD8YOEawXHs4LgDGP+Gv1KydpMQK9aqAc4gGTzxhfNU7uDLdKnrxcbrnp10fSso5il6Cl+BECJASIFBhkZ/lM+5EeAEFPfWUNzdgHDUkWYBR+JvDKDRxhijLVsKEXds3FicouVAPLFNxpO3OFXVN1S86h13D3IGy5dbrFlghFitj5+24w5gfBj9ypWSZeukuLA/ve82pia15UcX68zGF/o9+5dZJjc3ZpUoFDxKngFEgJSC0OrFeDkKBkX2iemobBphjZ4TeJpDMMZg0MZoO2ZbJOMxSkiIJ3bF6urvsuom3WAuXXFbuRCtA567DWix+rgzOO4Axirar1qNWI0GWGmM/M+t3z9PdG+8qpTruCIuM1OtIEOhFFD0jBFCKISQAiEYN0b/VCxAEXTHyW2aMQgEPMovbYzRxhgrZkkRd12IxSm5idZ4Wfna2ISG39z7sjfcc6EQwcASQaxYoY6fyuMOYNRr+3XrVlnL+hB8i2LrPSeYXWsuFqXG1+pi1zkJuyhyuQIlHy2lpUOjRx4bNxiWAvntE/EOTkA4wZj6qjA7QButhCOFTCcT5I00dlnZA/aEKX92Tz3/pvQJix+JSiZx28qV1rJVq9RxrOC4Axhxw2ftCtlX20sXs2nluYWOpg/oYvPLU6Ir5ntFsgVlhJAKpBU24MwxeSJ0ANnHZqK9GEKacXEbUamgMMZOOBbxRIK8k/RjVVV/Tk6a+bPYi191U6/hmzXLLZavOQ4aHncAI2v4XcZUpx9fdZnq2vY2v9R5QUIURCbnoY1UQkghxDES6Z8jCxCOotSSJr9lGsI2486PGYPGaI3RdnkygXbj2Mn0ejllxv+Ji5f/qaysrPm4IzjuAEbM8E3741P1gT9f63Vve5OrWqaoUo5cQWGkVBIpx2VNP2w8ICC3eRJ+ezXCVuP0FgXGGKW1kumYK9xEAi9Z3hyrq/+xs/C07yUXn7EPYM3y5dbyBQvMccDwuAM4IsPPdzwwzdn122tVZs/bY6azLpfL4QVCISwhnw/R/lnybSyDKkTcAG0z3suZCDg0jsAqS6fx3XirVVnzQ3HmC39Suei07cczguMO4NlSSsHa5QMi/n1Tvd1r3qV79rw9TmddJpNHaRkgLEsI8+/xzIxAOAHF/VUUdk4eVW7AiGMF2ihLYqcTcUqxZC42ZebvrDknfbF86bmbjzuC4w7gKca/3BIiNPzGxu0Tag989/0qs/sdMdFTl83kCZQIkJYlMOLf8XgYocg9MZWgp3wclwKHdgTGGC2NsirTaUpuosOpqvl+7AVXfjc5d+6+0BGssf7d24fi39fw+/v4B4xJTtry1ff7rQ++x/FbpmRyxSjiy39Twx+IBSiCnjjZjTPHkBowrCNujNFKgl2RSuAly1vj0+d937zyTd8sF6LVgFi7Zo1c8W/qCMS/n+EjWIsMOfo25omPvzzo3LXaVm2n5LJZ/ODfOeI/QylgB+R3TaC0f+KYcwOGVRoYoyy0XVFWjiqv3m7XT/pE2fJr16KCiGb871cW/FsdcnPbSltcuDoAyG39zVk0/f1Trm6+LMh3U/BQQljy36bGP8KX1obs4zPRhQTC0sfsjJ5BGK2VjkthxZJJnImT16lp81ZXXXLFun/HskD+O9zkypUrpVmJFBeuDlpbW8vUgx/+gti/5s5Yccdlmc4uXQykllJax43/mbMA6RgS05rpUxs5hlENS0rLQ+ieTFaX9u1c5j1y922ZX/7vd1p2724QK1YoA2LlypX/FrbxvD/w5rYL7HBQx8Z/8r+vUs23fzJGzyldnXmwbCVGcv71eY8HBOS3TsJrqT5mugKHURooo5SsSieFSlfuis1euDL98jf+Ah1g1iy3Bk52HncAx9IHuzIC+QS60HjbDOvATV+18luv9LIdFDyUlJZ1XGviyCwFadCeJPvYTEzghvofzwsrEGitlSuw0hWVmLpJNzJ78Qcqz79kZ6RnyPOVRPS8dAD9ntsmeOLzr9Md937WCTpmdnYXlbAcMSbDOUIyUG+vV9Qn/PMxcrZ6uQEHKyhsn/q8yQL6cA4wKKXLEzHLKqs8YE8/8b/SV77lejDP22zgeeUADAjMcinEWtXZuHlmWeP1X5GZTVflM514Siop5NGN+r1GbxQmKID2QdogHdA+xgQIGUfYCTDqmDkyRihym6YSdB1b3IDDvT9tjHIwVrqsDDFh8u/N6cs+Vrl46Y7nY6fgefPJGbNSIlYjQBc2/e8lTvd937XyB2Z3ZIpKSkcIjDxqj1RIQGOCEkaXkE4Kq3IBdv05WOlpCLsME2QJMjvw9/0D3bMd4aSPDYDNCLA0QdYl98TMkT9Covf5mf7n0Zst9cqZH51gYozWujIRs0RVzUE5a/57yy973R97y8vnS0nwvHAAve09Y4wVPPzJL/htD3/E+N2i5MtAWtI+aoYlJGgP7RcRloNVOQu7/gW4DS/Aqlhw6GsPchS3/JDS1l8jnOSx4wTsgMKeWkp76xHOCLQFQ/lDjFfC+B5IiZAhPmuUAqMRtoNwY+G/1UfB/iJswMFY8fJyYtNmfyf7mvd8tEGI3POlXXjMO4DbVl5gX7h6fdC1989zYrvXfDNO20s62zNGWLY5qrW+MRiVRyYbsOvPxZ20DKtmCULGou+rAdkBYILoz+EhLzzxdUpbf4Vwy4+ZckBrQ27jNHQuRShYPMSXlKHhK4U7aTrxeYtwJ03DiicBUIU8ftM+Cts34h/cg1EaGU8OzhJGNxvQJlDUVKRlqaL2ofT8k1+duPAV282aNRbLV+hjWcb8mHUAZuVKCSGV19/xk6v0gVu+Y3uNE7qygbKkfXRrfWPAjhNf9G7c+mUIt3LA93Sf0RtVROf3IqwUMjk5PFoYMAKji2RueyMmdxCky7jvUBiBcAMK+yop7pwy9CxASnQ+iztlBhUXvpzkwlMRln3oX6kVxW2b6Ln77xQ2P4p03BBTOSogqkBrFaQcy7Yrqlut+Us/XPGSV/0iWnIijtWS4Jh0AP2IrEvp4f+3SnZvXFnMtuArS0khxqivr0lf8GOs8nlRdJd9WIDq3ITXeCtB093ofDMIiM15HfETrqGvCyAsilt+QHHj90IHMt6zABFimrmNM9CF+NAygMj402cuo/plr4uiOhgVRBWVFZ5QbTBaI+x+x5B94A46bvg1xi8hHPfolAThp6VstJWsqMJqmPr5ird85D8J/GO2SyCPVePvMaaueN+1v3UzD67MdjerQDt6zIxfWBgvS2nPnwcDgcYnd9/Hyax/O6XNP0X17AmNXQUUNn6HoPWefnALg1W5IOwQmPEf/ZGK4t46VC4J1hCMT1rofI6y815M7aveHhq/1qA1wrL7sgCjVIgH2AP+bAzppecz4a3XIeIJTOAfNRFTAZaPND2dHUrs2/mJjh987sbGxsYJYsVaFSkVH1Mv+1g0/uL+m09Qd179fzG1d0lnZyGQlmuPacpsNMJOELTciwmyCDsdRnBhg+VgtI+M1YSZgdEgXQQW3sH12HVn07uzTzgphBzn4htGgK3w29N4LTVDGg4SUqKKeeInLKb68teHhh+BgAiB17iPzH3r8PbvwngeVrqM2Oz5pE87D7uiOnKimviMudS+5lpaf/oN+hYZHoVHJ0Egbau9JxtUqT0vjf3x+7d03nnjW8V5L3ukF5M6ngGMNNh32wW2WLFWeY9/+3Rr369vdfLbl3R2lQJpO6Nn/IcdVQxYMXTPHoK2B/trfwTu9MtDo+41/r73NRhV6P95DMbPYrQ/viszaTCepLB74tCirghreenGqH7ZaxFSDnremQ230vjtT5O58xa8fTvxWw5Q2L6Jrr/+lqZv/he5x+4NsyspQCmS8xZTds7F6GJ+wBLUo1MMSMuyO/PFQLU2nWLuu/tvXbf84UUXrl4f3HYMZQLHhAMwt11gX3jh+iC78TtX03nrv7z27ZOyJZSUo9Tiiwg8JigdwaESYAzewVv7ygIAp3oJVvksUKUQsEJivAxGCNwplwz6+aDjiVCSd7wO3huBkAHFfbXofBIhh0ACEha6WCC55Czc+qmDon/2obto/931CMBKlSHcGMJxkbEEMl2OKhRo+9V3yG9+NPxcBGAM5ee9CKu8MsQOnunZjcozNVhS2llPqXxb00S16f5b2n//07dfuHp1YJZjmWMAYxvXDsAYI8waLHHh+qDnrve/w22++cfF7qayknK0ZJTqfWFFrD0Pq3wmJsjRv4/z2S5WhWVA0wZ0sTnCAAKQMZzJF6L9TGj4uohVNY/02V/FmXBeVBI4mFIH/r6/RqxAPT6N31Z4HWlKTbVDpwFrjXBcyk57QbQ2MDTOoKuNzht/jYjFQVp9tX74pUEphOtihKDr778PuQIidLp2ZQ3x2QswpdKhPycRZgv9zn1EQUGkwAqEpbMtzSbY/NAPO3/5zY+K30lFqEYijjuAIRo/q4QQK2zlP/Ffn3HzW76fz3QYZSw9eoKcBu11Icsmkzzj05Rd+DNiJ74Fo/JRZH4OnyMdTLEVv+mO/tMBOPUXYFXNJTb7VaTP/R/Klv0Mp/6Cvn9g/C7yj3wOnWsavy1AYdC+pLCrniEX20JgAg9n4mTcKTOiyB9+K3PXP1E9XQjHeWYHqMLSwW/aj9/RAkKGjkJr4rNOPPTPCYFRATKZivgGRZAjHzuEQBrLJp/JaLd535eyv/7frwmEZtWqcT1abI9P448W3a+W2n/gPV+zux76UDafVQhbjg6lN6rJhSQ+743ET7ga4VQAhsSJ78Yqn0fh4S9ivAzCTYfO4BnfysY/eCuxGVf2OQyrfC5ly36JsJID8AFNb7egsOk7eLtvRKangfbGJ/DnBBR2TEDnE0OP/kJgggBn4uQQ5dcGISXaK5F/8hGkGzu8dp4x9Nz+NyouvByndmL4jMsqwbKeHvlNuHqw9vXvQQAt//ddVHsrMpEchVNkBLZNS2tbUBv4H+r5wecQ7/jEdb0BbTzOEMjxZ/xGwEohhNSle675up178kNdrR2hIu9oTZ0IifEzxOe9kcSiD4XG39uHNwp30sWkz/8eVtUcdKkzMmzxzGVAx0ZUz47oAIZEoD7jH5iGijBNiM97K+6sV6BLbVFtK8aX8dsKvyOJ11iLsPXwhn+MCZF8wEQR228+gOpuB8t+7haoMQjHJfvA7TR9ezVta35Aad8OsK0+HGbgc9aFHFWXXEF8xjxiM+bR8O5PkTzlrFFrtQoQ0rbt9u6sUi0HPtTx46/8qtOYSiGEMWb8ZQJyfBk/YdovPq1Ld73p6663+4OdnTklLMcefZMQ6GJrf83ZZ+QStMIqn0P63O8Sm/4ydKnrmetJYWG8HvzG9QOqxPBL5fZS3Hp92CkQsi9llYkGUqd/ifiJV6P9TASMjZOPRhiMLynuqidqgI0AzGIxsEZSuQzaP4JevjHIeBLj+2Tvu53mH3yJzr/+FunE+gxbSAudz5JctJSKZS/F6JB/YVdUU/3S14BtjyrfQkhhdeWLgdt64HX6l9/6kzEmLcRqbcZZOSDHlfGDEKttXbrrjV93/QMf7OzMHSXhDgPSQXVuDlPzPuOL5valDKO7U07ytE+TOOl9GF0E5T0dFzAaKWOhA9B++H1jAEHxyR9QePgLZDd8BG//Tf3fixxBYsH7SJ32KYwg6kCMsVhRFP2L+2pQueSIaQGqfHZA6QXCdsJnfIRgIkIiU2UABC2N/c5JSIzvYVXVUn3Fm8MMLJoyNIFP2+9/jC7kBziiUTIuy7Jbu3t8uWfLBV2/+MZvO4ypEKtX6/EEDMrxYfxGsAohhNDqoXd/z/WbPtjZlVdSSuuoeR/poPONIYLf+9d+Fm//jfQN7ZhwKi0+962kz/4qxCowfiYk/Ax0JnYC1bWNoOPhATU/uJMuQsRrEcaQf2A1hS0/ilJ+2ecI3GmvIH3eN5HJOozXM3aZQG/q35nEa6qJUv8ReF/Lwm9rjuw0vDd3QgN2Mj0EOq8BHZZqwnEHg7k6oObKN4flho7GiKWke92NFDc/GmYQo00fNgZp205XvhDIfTsv49ff/pMxJs2qVeOmOyDH3vgRIBCrpfbvfdvXZPemd3Z290b+o3YVIG1MqQvVs6u/nnfSeHv+TO7+/wgjvrDo5e7bE86l7PzvY9WcjPaeiguERHnvwL/6wSjAnnAGMtUAJkDYaYpPfJv8I5/F6AF8A6Owq04hfd53sCachgmKjEk7WRhMEKb+xlgjI/+lDdJx8A/uRXV3RKQgjVVeRXzBElQ+G2YDzwAghlmCeMaD1OtgdC5LxYWXkzzxlH6nIiWFbRvp/tefkcmyZ3Y2fb9nBJ2AZdnt2Vzg7Nu6rP37n/maWL1as3aFHA9OYBxkAMulkK4pPfihr9ulfR/q7C4oKewxyH0FKB+d2T4gagvsiefi7VhL9u73o3P7BzgBhUxNpezcbxGb/Sq01x2VDGFtL6w4QfMGtNfVlz0IO4098RyMnw8ffqyK0o7fk9vwoRB/EP0HXCYnkz77a1g1C0IS0dEEBqOFIMV91ahsCmGNlOqPActG9XSSfWRDP2hnDFWXXEls6ixUT2dogDLKjCJdABP46Hw2zMKkdejnISU6nyN+wiIqL35lhOWEBq16umj//fXRkX+GNmZUOuhCvp+aPEJOwLJsu607F9jtrdd0/PBzXxcr1ipWCTHWZKExdQBm5QW2EGtV9p53/Ydb3PLBzvaeQI7kKK+QR3aLQhJ0PjkI4LPKZyMSE1Ftj5K58534bfdFTiAC8aw4yZM/QfLU/wjX16somlsuOneQoPXep5QBy8COhViDUchYNUHzfWTvfDcqsx2ERPVsp7jlR2RvvxbdswesozggFBm/35Wg1Fg38pJfxiDcOJk7/47KdIV1uDFYZRVMeOt1JBaeii7k0fksplRAF/IEmS7s2nrSZyxDxOLoXA/G958WuU3gY6XLqLnyrf0jxSZcb97+p58TtDeHrcZD8QUi0DB10hmUL7sMVcg9O7NwCM5PWtLuzOWV09n6wY5fffvr4tNSs2b5mNrgmKFM5rYLbPHW24Pshg+/zc48/rV8d0YjbUuMmEeUGFUE40cDNofxtiKMRrEZL49ouwJhxfD2/RWBwPh5/P23INwy7KpF/TiWMdhVC7HrlhC0PYgptIYDQaoAQuBOvqQPQZfxOvzmOzD5FrDcKDNIYgot+M13olo2UHzyhwSNd2K87vCqj2b0jzqX+a2TMZ6LkGbESxBh26hsD0FnG6mTz+xPlRMp0kvOwZ06C5lIIhNp3ImTSZ9xATWXv570knNILj4dq6wS1dOBKRYGOwCvRO2KdxCfeUIEEoZZQfedfyNzx1+fOfWXElMq4dQ1MOGN7yO54FSc2omUdm7GlEojChYKKWUunw/Kdemc//eOtzmJ5V/4l1m+3Fq9aZP5t3EAoYTXz4Lu+1Zfnihu+r9CpksYHCnECJ00aaOL7cTmrMCd8VL8A+sQ0nlOQxJCQpDDaVgWTe8ZhJMmaFqPzu5HOGmEsPD23IgJunEmntPftzcamZyEM/kiVHYXqmsz0kmji624Uy4ONf+UHxq9KuA33hnSfiNMQVgx8HOozG6EcBBOMnJcRxv4CyjuqcNvqxk9wU9jEK6Ld2A3KpclOf+UiLGnEELg1NWTnH8K6VPPJXXK2cRnnoCMxUFrrGSa+MwTKDv7hZT2bCdoOYCMxdG5DOXnvZiKCy4bVPeXdm+jbc0PwhbhM9X8JmzT1r3xfTgTJmGUIjZ5OslFS8k/+Qgmn3s6yWh4TkDkc3nt5nsu+Mi73nkgvfLzD5qVK+3V69cfdQ74UU8/zJrllrhwdZB77H+XJnL3/bDY02o0thmxrTxCoosduDNfSnLxh4lNfxWJUz8egnjP1V8XNsbLorq3RhcbynZZlfP76n7tdWFPXIoz4ezIf5q+Nh9GIeMTSJ/1dWInvAmjSuhsI37juvD7VkjzlbFqcJKDU1GjQdihoxD0dRyOdt0fdCcoNdaOvtqv1shEisxdf6flZ1/Hb2sOI60QGK3C9Fsr0AoTBCHlN3LgRim6//knSjufRLgJdKGAO2UmlZcu75dcFwJVyNH2h5+A0lEr99B1vy7kqLzkir7MQUS/R3W1o7Pdo0EdFli2zHZ1amvv5h+23bTmErF6dWDWrDnqAfmohpg1vfP8LffOE9u/c6Mq9Ez09Qhy+4XEBAXcqZeQXLKybyAnNv0qhJ0k/8BnENo8u4yUMajuJ2HqZf1pUtVitP8jLLeCxKL3EJvzeoSMR2xBqz9D7iMRSZILP4hdcQL5R7+Gd+Af2BPOImi8A6/xNlT3DkQvmPhUkGysxECEwWhCrr+xQB4FuW+tkcky8hsfprRvJ+kzlpE+9Vyc2vqnQznR8y3s2ET3rTdQ3Po4Mp7oc55Vly7vyxJ6HUDnDb/GP7g35ApodYjjYqEKWRKLllKx7GWDflb1dNL22+9jvFIoRDpQoXgEPiOBEUbaptjWopPikZ9nH77zJWLJeY+Y5cstsfboKQsdNQdgjBEIoVuNKdN3v/1XVmbnxIKPkmKkypCw9SYTNSSX/GckxhlGVYzCnfwSkA75+1chlB8Ba/oQKLVD0LU1QvTDx2NVzMaddimJBe+KJL90JPhhofP7KGz6LnbdUmLTr4zeJhQDcae8BNW1ieL2NWTXX4MudiAsN0z3x9PLCHB8SrvrUJmyo7sBWCtkIokpFuj++x/I3PMvYtPmEJs+G6e6DiwX4xXx25oo7tyMt28HKI1MpsNLLxVwp80mPm/xICPN3LeO7H3rn9H4+8hClTXUvPLN/eVhVA60/eGnBJ3t4e/p/XkhQAXPcHaGcGIF0sdSQVd7vbl33a8zjZllNJS1Hk3ZcfvoGD+CtSskxpiy+9/9zZi3a2ln0QRSjmSRa0A46GI7QcejOBPPDwOsoK8N5zZcjDgzTu7+/wTlI576QUaEIJPbjym1I2K1gMFKzyR91tejA+uHU38ovB2/pLjlF+hiG/6+f6By+0gueB8IG9W1kcLG/yVoewxpJUB5yFgl424T0MDU/0Dd2Cz60BqkhUyVg+9TePIRChsf7O/7R5mVsG2EGwdb9P2MCQLis+cjZDgZKCwL1d1J1z/+GI4WP+OzNmgVMOGKN2NXVg/CDbrX30T+iQewUuWDjN8EAVa6PJxajMVGRIdQgpXxgqC6rXF+6YZv/yhtzCtZsUJEhcyop4NHBwNYd4ElVqxVuQdXfyrm7X1LV0/Jl9IaeecTeWhv1x97LX/A90In4Ew8j9RZX0JYNuZpVF4TAYgdqMzO/oggBtSP0iHoeITsHe8i/+jXIMgjY5UIO01p0/XkHvhk2MK741qClgcRUd0fvocaf7P+Eepf2DURo62x2/dnIlafEGEHIFWOTKTC/06mkKlyhJsYRJ3upWrb1XUDojfkNz+C6moPSUWHStetsOVXcdHlJOcvGWT8xd3b6Pr7H7ASqf7fIy1Utof0Gcuof/cniU2fg85lRoQwZABLSrszVwjcjsbL23/97c+LtWsVKy84KniAHP3PdaUUF64Psg9/7UVOz0P/1d3WoUKFx1E4aBF7L2h9ANW9uX8ab2AxaRRO7Vmkzv4qwkmETLtBTkCCKoXTfAPrciEwXieFjV8je+d7UW2PhBFdWNF4sEbGa/D3/Yvixu8SavyVDTiAZuwsvPerl3bc+4UFjqZ0sBaVqUC4Jrz/kSTBDDUj0KpPJLTvz4d0noKnNo9UTxfPSPaREpPPE5/7FLKQEKhchvbf/SjKLiKnLy10tpvycy+h5hVvwK6soe5N7yc2ZwGmVBwxqra0LLujO6Pkwd0fa/vTT18lVq8/KqCgHF3jN0KI1Tq/81/TZdc91wf5dqmFI8Vo5phCYvwcpb03HtoYIidg15xG+pyvIdx0qAA00AkIgep6ctCfdbGZzJ3XUtr8C0QvWq/V4ENmVNi+cyvCR3vUpL1F/0otYUVf/dRitA+6FPISghwEWfCzoLvxWxSF7WlQOUyhiPE8jO9hgmAw8NXLzpPjbVxZE3S19V8n4E6ePmAB61NB4gCRSj+dLCQEHX/5FX7TgbDMiEoMne2m7OyLqLnq6j7MwkqVMfHqj2DX1WMCb+Seh2WJfHcXetvG73b948ZZYsUKNdp0YXs0jZ+1QhpjZPHe9//cCVom9yg5gqDfMx8IYSUJDq5Dz7s6bLkBKrsdIRPhQg4RtuysypNIn/e/ZO+5DlNoR9jJEDiUbjgTYPpVgISMQZALo3pvm+4Zfv9RM/i+7cIqBKe0j0GFpCVhI6QLVgLsZPhlxRAyhpHxkBdhSXRQTWx+AoGH9v3Q+H0fSkW0VwS/hPG8SFLLRE7ACo1noDMwY9DBMAZsm+KOzRF+E0btxAknkzrlTLIP3oVVXhlmCSJsHxqvSO2rr8Gpqx+U+vdsuJXcQ3dipcowOqQb61w36XNeSM1Vbxtwb+H9Zh+4HdXVET6HEbpvAdLXaDfbU+tvf2ztAWPOX7tClIwxo7aQdPRAwLUrpFiBytz7kU8lC0++oCenRhj0e5aqKqLh+gdvJTbzVRGhp4LCY18ksfC6aCuPBqOxyk+g7Nxvkb37A+hcc0T2cdC5RlShESs5NXQqbiVWxTz87B2hKtBRTenFUxZk+qC8cJpNOgg7BckGRHISIjkVkpOQ8YngVoFTDnYydGDSiRiOVt/7pk4GhO4z4LD/HmB8H1MqYgp5dK4H1d2J7mxFdbSgOlrRmW5MMQdB1J+37X6nYI6SIzQG6SYo7t5KfutjJE84OdQOtCxqlr8dEU+Se+CO8J4MCNel+pVvInXSmQPqe4l3YBddN/0m3DFg+iN/+oxl1F55db+BRxOFPXf/k44//TykFYvBqsbDdQZSCpnzg6Cmq/lU/ZOvfnrFWj5y26pVNhCM0ska+deaNWusFStWqMKmH14im/5yczHTzqin/k+tbFQeWTWfsvN/2JcSF578Nt6emyh7wY+QyUn9UVxYqNxecvd8CJ3Zh4xVoEtdpM76Ck7DsjB9Fi7FHb+i+NjXjtLmnoFGH4AqYowCK46ITYD0LET5PETZXEhNRcTrwE5HHAf6HFwf8BgtHwkzhqdiEmLwIY6+hJCDBnMEJoyipSIq04VubyZo2k/QuBfVsh/V1QmR5p5w3H72nDaMpnS78T3s2onUv+uTWL1tu4i8U9y5meLOzSAgccLJxKbMHGSk2ivR9P3P4x/cg4glAIHO9ZA+/QXULr9mcIYz0Phj8cEGL2TUIrRGICMQxmilU+Vl0l14xisrLn/dX9asWW6tGIXNQ2LknXIo5smHTKW38a0PqK5tM0uBrYUYppZfH6DXO5uvn/1QRVhA6tyvheq7GEypne6/X4mMV5M+53+RqakDtPolOn+A7IYPoXv2glHETryaxInv7PPyxe2/oPj4N6NV3qMU4XonArUfshej7IXyExHVSxBVixGpGeBWR1uEdOggtB85pcGp6uD6VBzJB3no/47wAGFZobORMpyizGUJ2ppQe3fg7d6COrgbnc2EP+K6kdzXKGUGUmIKeWInLGLCG96HjCXCkuVQo73GDGILtq39Mdn7bot4BQKdjYz/1e8Y/DNS0nPPv+j448+Q8Th97cmoWaf9IlZZBTqfG5GyQBuMgyY2cXKbfckVZ1TOX7IHYxjpUmDE6/FVCzdZ4r2b9Mde0fq/8eKOizJFM/y6X4SHDGGHE3deJtwb18fvPzTFEx0OA7mTL4n6yGmM34W/7x8EbQ9gT1gacv7R0UGtwKk/n6DjQXTPbkSsAnfqZehCE4Unvoq347cRiceMvB/uBSFVIVwY4pYjqk9HzngN1pxrkDNejag9HRFvCKOb9sP76zV8YZ6C8g/ECcSR+/oBmcDTviA0MOWD74X0WdfFrq7DmXki8UWn485fgl0/FSwbnc9gspkQJO0tE0a4FBCui9+0n+KuLcSmzgprfyEiKTAVdRFAyEgZCOi86ddk7v4HMpEOgd5cN6lTz6X21deE2c8A48/cty40/liiP/JLiVEBxitR/oLLqLniLRR3bEJ1t4cZ0DCcgBAIZdCJoJTW3R0zUjfd+ptV85+wVq/dxLh1AGblSine+x2de+Irr3K6Hv58JpvXcrijVMLCqBLCTpA6+8u40y5DWOGwjym2glbRoI/1lDNuwlo+34g76QWICAyU8Wq8g+swxU78pnU4E05Hxuv6nYBThtNwPqp7EzrXiJCQf/hzqOYHIpBwNAw/gCAX8paqTkLOeB1y7juR016FqFwMTjpC8SOD75Uqe5qhH01Y4ilOIdLc63UIMlWGPW02sYWnEZt/KlZdAwQBuqsNUyyGgN1Iar4Yg3BjBO0t5B+7F+OVsCqrwwUjkaaAkBJjoLR7Kx1/+Cm5B+8O1YGlROd6SJ16HrWvuXZwdyAy/vbf/zSq+UV/e7CQx0qlqVn+dirOvxQrkSI2dSa5h+/BhNF6mI9YyKIfqJTyF3zkmrfuTa344kNr1iy31q4duclBMZLGz6rVplDYP0U89IkHg87tdb52jBzOkI8QIVnHckif9VXs2qUDardO/Mb1+Af+jmrfiPYzCBlD2PF+sExIjNdFbP7bScx/dx99N3vfRwgO3hny8d00qbO/il25KKqXQzKQ6tlCdv3b0UERISP67ojV/ZHxqhJGFxGxOkTduYhJl4YGb8Ujg/fo1yg8xhY5D0i1hW2D7WICn2D/LkqPbaC0+RFMVzvYblgijFQXQUpQCl0sIMvKiU2djVM/BZlIorM9lPbvwtu3E1SAiCcRQhBkekgtOYu6176rfzdjr/Hfv572313fb/zR56fzGWKz51N71dtwJjSE24sJHUPPhlvp+N31yFR62GxBA8Y2hnhNbYu84PIzq087d8/KlSvl6hGiCo+cA1izxhIrXqMyd197faq05a1d3Z6ScjiqlmGrDidJ8rRPRVt01IDatj+NVN2b8RrX4R+8Hd2zA3QQRmvLBeUh4rWUXfjzEC0XEr/5DnL3fBjhlGP8HLgp0md9Gbv61NC5FFvIbfgwuntH2EYzaoTS/l7DL4YGnpqOaHgJsuESSE+P2nnFyFEdg0Z/OM7AjYXMuo5mSk88QOnhu1HNB8Bx+tPm4TqC3qxEKbRXGjQLIGwb4UQAngxr/uRJZ1L3unf1Mwcj488+dCfta38c/n30niYIMIFH+fkvoerS5aFz6x0i6gVYpaRt7Q/J3rsupDfr4QUOpY2uTMSkaZj+h5p3fuIq839XjNgq8hE5Yb3DC95Dqy/QHRtuLWR7ENIaJugnMX4WZ+rFpJZ+4RBG0T951/t3RpcIWu/H3/83/Jb7MYU2hOWilUfy9JXEpr68DxnP3HENqvNJhJMO2YCWQ/qsLyMr5pG76/2ojo0It3zkQCthgfYwqoBITUdMuQIx+SXhvIEuhrJfvQ7i+fwyOhrbcMBxMdkMxcfvpXjvOlTLAbCd8Hsj1TmI8AYR9jD6gUjLQud6SC46nbrXvSfaSDTA+B+8k7a1P0Labh/fQRdyWGXlVL/8jQOETDSDVsdFzkAXCzR9/3Mhsah3SnE4oKDSqrKqwlIz519Vu/yaP5jlayyxdoUacwcQMpUETVlTV/XYW+9RnVtn+drRjMQGnwjJd+e8iuTijz4d4X4aam36DEgXGvGb7sA/uI6g5X5kxSzKlv0iTPuFRWnPn8g/+BmkG24AMkEREa9ExmtQnVsiGq8aGcM3CuNnw/78tKsQk1+KiNWBykfS4c+jaH+kWYFlhYIe2R6Kj26guOFWVFtj2JKzrBEZuDnUuVL5DKnFp1P7uncjB2YeUpJ9+B7afvt9pO1E3QuNzmeJz11IzZVvxalrGBD1w4yjsPXxUFLslLND0NGyKO3bSfMPvti3QHBYmY1B28IIt6Zut//qt57ZMGle20h0BYaNwqxauMkSizbpT79Krk4UN700k/eVFCMlaG8QVoyg5QGM14lTf/7TfJfxu1CdjyGT9f1IulYItxy7aiHutJfiNJwLqoBM1CHjEwgn/KbgH7wNvO5oc48DQRFdaEc8VaxjGOm+8bMgXcSMV2Mt+g/khPND7rrKD277/bu9+sBLEzINbQd35om4i5YiXJegcS+mkA/LAjGSv1Zi/BKJ+SdT99p3RxqBA4z/0XtpX/MDpGWD7WACL0T5l72M2hXXYKUr+uXGIhC2585baP/dj8lvfJDEvMXYlTUYFWBX1iAsi/ymhwZrCgztOIlAo9PSVNPeWZH60y03LNy40Vo7TCkxMTwnvlIKsVoXHv/+bN1844Oq0FGmjTXykLSw0KVO3FmvJLXkk5Hf0n04gbf/Zkq71uJOugRn8guRiUkD0jPT7xgiELD3/4ubv0th4w9CunCk/tOr8Tf8dL+E0R6i7gXIOVcjKhdCtHX439bonzPP1SGj0I0TNO6hsO5GStFYsHBiw66le3EBkUwy6bovhBN/OsKVeo3/N99DWDbCdlH5DFZ5RZjyn3RGPzgY1fkql6Hjhl+Re/BOZCIVEpImTKLh2k8g48mQWakVTd/9LN6BvYiYG5U2w7A5FehkdZ1xT3vBmZUXvexBY4wUQgw5Wo1AwWmhOu7+YkJkK5S2zKicbKOQ8Sq8nX8i/8CnogWakl7RDnfq5cRmv478o18lc+sbyT/4X9GGXjUoK+jjzovwZ92pL0Om6qP3Ewxbkad3+4zfDW411uKVWKd+EVE+L8w0+mYLjhv/syH4Jp/FrptE2auvpWzFO5EVNZh8dvhTilHJobMZ2v/083DgKWI75h5/gPbffD8E/GwblekkPns+9dd+MjR+3bsYJXQWxT3baPruZ0PjT6bDNmQsjn9gN13//HNfu1DYDukzLwrpyCPxuUvbyELGyj1yz6eNMWLt2rVieNY75Ge53BLiOzr72Fdf6uQ2fiabyWoxmss8jEHYKVT746jcLpz688Jhlz5O/zycuiV4+24maHscv3EdXuMdmKAHEasIo3wftTYEFIWbxj/wT0yhJaz1hh31fUxQQEy6DHnypxHVp4XTd/q44Q8FwUf52FNmElu0FOOVCPbvjB718Jh2wnLw9mzHb20kuXgphScfpu3X30E4DsYYTKlI+YW9KX/5oKGh3pS/bc0P0NlsuHa89/vR4lKvcQ/JRaeHP0u4uTj32L1QKg0b5BUCWfJ8XR6z5xVamrYvfdXrHzVrllurh8gNEEO1RVgp1q5dJS6re+161288N1swI6ft96xXbKO9TpyGc0kt/XwI1hENswiLoO0+svd9AvxiGNFVHmLV2HWn4k55Mc7Ec/o29eYeWom/52aEkxpezS8sCDIQq0Ge8D5Ew0vCrEKPg/1+x3xZoKLOgIv3xANk//ZbdGc7oi99H3q2ofN5YrNPJGhtRBfzEATIdDnVV7yZ1KKlT0/5sz20/+UX5B6+ByseEoieClIKaRHkeqh+xRupOP/SkB8gJc3X/zeFLY+FpcFwuQHG6JgUQtQ17LTet3pJLWRD53DkgOCQTueqhcstseg7+ucfDa6Ol3a8N5Mdbs//iE4Ewk6hu7aiujfhNJyPsBJ935Opqdg1p+A13graR8QqEMpDd2/DP/AvgoO3YXQRb99f8Xb+ATmcVl+UURi/G1FzBnLJFxC1Z4DfM6gjcfw1PMQercH3safMIDZ/Caq9BdW4p78/P9Qo5rqo9uY+inB81onUvfH9xGfMGyAQGkb94u6ttP78fyht24QVLSQ9tMqwgMDHqaojuWBJxFSVlPbuwNu9bfhgYGjoItBalVmmVjceLKQWnrp+1cKF1uq1a4/4jeUQvI9g+Vrd1bWnymS3/kepmDdCyqOb25oAEasiaL6f7IYPY0od/cCaUdjVJ5E+95uIWDnGy4DlIJwyhFOGyh2k+Ng38Hb9KVT0GbLxh2vDCfLIWW/GOu1riMRk6F0FdjzdH9myQEpMPosoq6T8de8hefEVmMAPS4WhzhZoHYp/RC26qpe+Bqd2YkhpjsaajVL03HkLzT/8MkFbCzIdiYw+lxH3VsO9KwsTyZHA3QccPykzPTnj79n6vuyuJ+pZvnxIq8eP/MmtXSGFwCR2/ewjCdkzu+ihxbDBRDE0J+BWolofCSf4ii0DVHA0dsV80ud+C5moC9l+EZgoLBfhVoZMwSEbv4VRxVB046SVyPkf6GfxCfu4wY4aSGhB4GECn+TFV1K+4lqEGwuluYbqBCJJMB0EtP/xZ+hSKUrtVX+Lb+2Pws6AG4uEUZ7DWRmDO2n6YF/jlRjkEUbgafjG6JRXqCvc+rf3CyEMCxeKUXUAZuVKyfK1OpfbO1n1bH5ntjtjhs34g2iizRxC0kochhOoQHVsInvPB9GFg4NaflbZbFLn/i8iNTHS/utdw62GZ/x+BuL1WEu/gZzy0hDhP57yH72SQAhMLoO7+HTK33Id1oQGTCE/9AUeWiNjcYo7NtP1t7V904IYQ+qkM3Cnz8H4peeOU0JivBJ2bT2pRadFxyW8Jr+jdcQXjAgpZU8up013+7Xdj9w7jxUrjjgLOLITu3CTEAJjHvvqW+OqpcbT0gxb5MMYRHICWBYmyGG8LozXjQnyofJNL8j2TI7BBAinHN21nexd70Pn9w0qB6z0DMrO+z4iXhWJdw7jcoWF8XsQFQuxTv8WonLR8ZR/zLIBiclnsOunUfHmD+PMOgFTyA6rHLDSZfTcdQu5RzaEG4m1xq6qpfaqq/sBv2dy8pEcmfF9qi57dbRPICQMqXwW/8CeARTnEXIAIHwjTKyUq/I3PvhhAWbtpk1iVByAMVH0b9syWRQbP5jL5o2UlhiWMQV57AmnUnbhL0if/0NSZ32Z+Ekfwp35cqyaxeEIr9Fovwdd6sR4PWEk71NyjZwCGuGWozP7ydz1PlR29yApb79pfcjIi/r/Q7teG+N1IerOxVr69VCBJ8geT/nHuCQwpQIimab8De8ntviMkC8w5HLAIJwYHX/5BX5rI8Kywj2B0+dS/fI3oIt5jA6iFWayX3DEsjBeCeOXqLnizSFvYICGYGHjQwQdrSFoOcJaEkIK2ZPNGXVg15Vtd/9z8vK1a48oCzj807t2kxAr0IUHf/meuOis6dRSSWmGntMYDXaM2PxrEHYaq3wOVvkcnP5/gPG6UPmD6Nx+VGYPumcnKrsXU2wNwT3t9RmnkDbCSWJyzeTu+QCpM7+GVT6b0q7fUnjkywgr9cziIYfjrLxORMOLsU76VOh7VeF4i2+cZAIEHkibsuXXINwYxftvRwxlFNcYhG2jc1na1vyQ+nd8LDRarSg780KEZdFxw69R2R6wbEQkOGK0xp00leqXv4HEnIWDBoR0qUjP7Tc/846CEcgCAiNUeVCqLT3x4HsEfGLNwoXyCH7+cJ6LEUII09LS0pB68sOP6Z7tNQrXYIY48CMsdKmD2JwVJE/+RP+kX9/Sh2gt16FaPMZHF1pQ2b3o/H5Uz050dg8634wptmNUCVPqRJbPJDbzCoqbfxYNAMlhGH8XYvJLsRZ/MpLZDo7X++PtFXH5he2SveEXFO+7LeIKDAHrkRY6l6Hs/BdR84o3DaIL+62NZB+4ndK+nRjfxyqvInHCYlInn42MxfqNP7qett9fT3bDrdFq8lHTkdQSI9yqmg65bMVJdaed1mhWrhSHs17s8DKAdcssICjb+60rY7qltktZQ4/+QmBUCat8ZiTSMWCkVxxiHLZX2LKX0y8cZHJypOw7EArIogtNqNw+TK6RoP1hChu/i3Qqho6+DjL+Tw2Q3zpu/OMPHAxViYxfIv3yNwJQ3PAvRKrsyJ2AVshUmsxd/8Aqq6Lyosv7FJOdugaqXvLq/rM58Cz0MQaj5aR/+11o/In0aBo/gAy0UeV+sSbYfv97gU+wadNhHdLDdADrtTFG5m+96vV+UERacpiljMAYjQlykcKuiVZSCfzm9ehCG3b1QkSiHulUHsLgTP/4bwRlCDuNVTYHq2xO+C9UHnFgff9KrqHW/A0vjiK/TzhbcNz4x7UTMAbjlUhd/gYIAooP3o5IDqEc0BoZT9L1t7WYUoHKF78qpCBHKb+wesVbdSglLkSoUwnoQo6Om35D9t7bQuM/ChLpUkqRzWaN1XTgDcaYLwkhunsz92E5gJDzv1YVX/7xyx2TPStbVFqKYfQzjEFYDibXSHbDhyk777sIt6pvQk+mppF/5CuYfDOybGo4wls2E7t8DjI9A5maEo709qX0A8oE7QOCILOd0uafhvJgQ3n4wg7ZfRPOxTrpkxHx47jxH0tOAN8n/co3ob0SpcfvG7zl97DPKsh4gu5bb6C0byeVF7+C+KxwEenA39fHgDeG3OP30/XPP+E37u3vBBwlNMRTqMpCZmrbr775cuAXrF0rw6g1DAzAGMSDGHv+Xe+4zc1vOTdTYGQ4/9JCl7pxGs4jfdZ/08dKFhKd20/m9mswxYjhp6MhCqOx6k6j7Nxvg3AilZYmjC5iJaf0IfK5ez+Mf/D2oYl6CAsTZKF8PvbSb0T6fP5x4z8GMYHeVl7Pr/4Hf9cWRHyI8wNSYooFsCzic+aTXHAazsRQZxCjUZkevAN7yG+8n9LenQjLCklDWh/tW9ZJx5KqrPKO+uu+cBGgnisDeFYH0LuMoGfzz86z9v/h9lKmFWk5I7e1WNjoUifxuStInPTxQfP7QccjZO/+YFgZyLDPbvwMqTO/iNNwYaiyY3xyd76LoHsnVtk0rLIZ4KTw99zEkMiJQmJUEWITwj5/oj5C+48b/7HpBDTCdtH5DD0//SpBW3OoKzCkrDDMOHWpEAnOxKOpRKJdih7CdkJq8aHGygcIij6j1RmeUtoOAQ1USldU10jrlHNfVnHJK28ya5Y/q37gs57s5awN64TOh16fkFkhpKVGtI9pAmSsktL231Lc9tN+Q9MBdvUpJE/9BEblw+fphdmC03Bh33itt/cGgrZHEQhU1za8PTfjbf/d0IwfEW2UiWGdtAqRmhxOEh43/mO4HJAY30OWVZB+1duR8UQ4lz+UASITTpzKeBKZLO8zfgTIeByrrBIZqQz38QMGbBUyKggdhVdEF/PofC78ymXDr3wOEzmX4ZDKhGUZijkKe7ZfjZSwccHQMgCDEQJh9u69u7pqy5cfll7bNC+QRoiRprxF0l5BnuSZn8Wd9KIB6jwWpZ3/R/7hryDcFGUv+AFWxXwwGuN10bP+zVDsAOkOvp0hgX4SE+SwFn0SMeXl4HcdJ/k8X15aIZNllJ64j57ffn/YSzvCIxZtT+4FAQeKmEbdLGFZoQqx7SLcGCIWQ8YSoROJJ5GpNFYqjYinsFJpZCwe4gdN+4dzjQathFNdV0i+4o0nVc5dtP3ZwMBnPuG3LbO4kKD2wK8vi9mFaT15lBiVzb7RkgsrTuHBzyITE7GrTo74+orYrNeienYCIjR+HYC0KW77KTq7H+n2ynkNrxQxXidy5usj4+8+bvzPp5e00PkM7qIzSDTtp/CvPyOSqaHX6FJildUg3RgynkAmQkOWyTJkugwrGRqzSKaQ8VT4b+IJpBt7zhFmlemm/XfXD2dsWGiESvnFhH/HzZcC32LVqmj7zJFkAAaxCiM+csfVd8YK28/OlcQITP09VwQuIRLVlJ3//bDP30cQUqG+noyHiq49W8iuv4YR4d8LC+NnEdWnYJ32DUKtwdFRNjv+GlNAAEy4xTjzq29R2vpYCOIdsRMQGKOY8JbriM86IRR4PRLqce8W5qjW71tBFp05VSzQ+M2VqJ6OIbMHQzBQSlVWeXf9dV88H4QR4tC1uzz0GxgpBOa67b87y1ZdZ+TyyojRLoaNRthxTL6F3H0fx/g9/VRbYUcqPqFRFrdcHw4LDZeKK8IlnMSqsBZ+LNqsq48b//MTEAgNDkhd/gasymqM7x85HiAFplQk/9i9Ud8/KgNUEC4N0Sp0KlofesnJgOWqfXsSpQyBbgFWMkX6tHMwvjdksRMhkHkvMJbnndnxp5+cJQTGPANr9xmMeoUASSzzxGviZCyEVKO23nlwYYVwy1Adm8g//Okwte9FRU04n+033Y63758Ip3wEdPsFJigg514L6dnHQb/nvQ8IV4lbNXWkLn310FqCkfhn7rH7CHpHfKWMlITtaGmt7M8Kom1CKpvBb2uitG8HhS2PkXvkHrpuu5Ggo2VQkgKQPPlMRDwxzDaiUK4OLNXZ+YbQpFeIw8IAwl0Da5Uxxsnf/uaLi4UiSHn0rEKHQh/evn8hk98ksei6QSvBZGoyVqoBXeyI9vUNZ66/GzHpxcipLw9lvI7X/f8GeIDE5HPEFp+Ot30jxfvXDxb2PBwHYNnobIaeu/9JxfmXEnR3oAs5tFckeeKScF2YEOS3PkHXLWtBG3Qhh/GKYZbge+hClsqXvAarvGrQXgJdyNFxw69D4ZHhDBBJaWXzeexs1xXdxnxKCNF+KDDwECd+pYDVJvfgqsWi2Dy76GM4GmKfgx5ygIxVUdr6S2Sigdjs10ZOQGOVzSZ5xufI3vk+jPLChR5H+pCECCcJ4/VY8949fJ2A469jMhNIXXwF/q4t6O72I6u3tUYmkmQ33EruoTvRngdaofJZJr71OlInnwXGEKufgupsQ+WzIUdAWhHtHWpf9x7Kzrywr/zt3TPQ+sv/pbhtYzg8NAwKsQDhK62TxXy9+duaFwJr4OnMwKcb9tpQUMAq7r4i6QauAT0mpmE0wikn//g38BtvjRZ6hKWAXXUyqdNXQ5/xH+kVhoQfa87VkJwSSXk9Tx1ABDgZrTFK9X9FnPZBXwO/H/2b0RhhHQ8OgCBAlleSuviKoffehcCUSoho6akVT5K5b13YFjQGq6KKsnMu7lMc6l0UUvOqt4XG34sVCInKdNPy069T3P5kuFB02PMDBmHZWvglgoO7Lwpte+2zlwAGhFixVhljUvn1b3xtMV9CCksclfr/UKitEAjpknvos5Sd1xBxAEI5L6v6VKRThil2huDdYX9oEvwsovYsxOSXhXLez6e5/l6EOdrGK22770tI2bv+JPo3ur/2FAIhByx1MgYdBOigF9zS0eOTzw9nKSWmkCO2aCmlJ+7H2/gQIjGEursXCFQK4cYo7dxCcddWErNODCXFlr6AzD23Yop5jLSofe27SC0+fdCugaC7k5affQNv385wpbgamclBAbJY8qCj/SJjTEoIketDQw9ZApg1ErFCBdt+co6lMrPynjbSsuRYHmYhbYxfIHfvx0mf/31kfGIo07z5e+jc/v5BoiPILIwdx5pzTX9W8Tw40L3RWto2djyGtGy01nhd3RRa95NraqLQ1EyhtY1iRyd+LocqFOhdaS1dFzuZxK2sIFFbS3LiBJL1E0lOnEispgrbjWGMISiVwpTXmOeFMzDGkLzwcvydmyM14CONd2ZwRhAEZO+9rc8BOFW1JOafQvb+9Uy85sMk5i4cbPydbbT89Ot4jfvC4SE1gmPDAlkMApPyvTnta390DvAPs2aNFCv6twoPdgBr1wICld1zeUzkRUHKAIw9xicbYSfRuYPk7v846fN/hO7Zibf7L0feCRAW+N2IaSsQVSdFwJ91TB9etEZYFk46HerPd3XRsXETrQ8/SvvjT9CzczeFlhb8XBbt+WgdtjlDuxV9oSJSwcSEKHDoSJIJYlVVpKdOoWrBidQtOYXqhQtINTQgLIugWAxVdIUYPCF3zJQCErwi9uQZJM5YRn7dDeHo8FDTb60R8QSFTQ/jNR/AnTAJjKHsnItJnXouidnzBxm/39FCy/VfxW9tDIFINfKaAUJI5ZrA9jMdlwP/WMvap2YJg19/NSa27K533CsyT55c9OXokn+OKNWy0cUOYrOuxAQZvH23It0jAUpCkVDjpLHP+B4k6sMpQ469g2t0mL5b8ThWLIbX3U3bI49yYP3tNG24n+yevfj5PEJILNdB2DbSso6YsGKUQiuF9jx0oJCOTWLCBGpPOYnJF5xP/Vlnkp46BaM1QT4fzclbx5oXDTX9Cjm6f/QldHcn2MNYPRapCZW/4FKqX/6GwRnmALTfb22k+SdfI2hvCQlJapQEQwzalUYyYfIO+d5Vp0wUIntIB2BWrpRi9Wpt9t98QmbT9x41hbaYFpYR4wkeFxIThNN54V7AI/iQhIXxu5Bz34mc+85oLfixd1iN1liJOJYbo2fXTvbe/A/23vIPOrdsQ5eKyFgMKxbrj8ha90lcDxUw6xtwMQbt+wTFIgCphnomveA8Zlz+UiactgRpu/i5bJhFHEsZgdaIZJrCnTeT++tvhi4lNvBlWdS/dxVu7cS+LUO9z8VrPkDz9V9Fd3VE/X41urenApOsqhWJ816yrPyci9avWbPGWhGVAX3p/bpl6ySr0T37/nlOyinGegpCSRhfFmI0wk4MYWRSgCohElOQU14Zruk+1gg/kWClk0jQtWUr2367lr0330K+uQXpONjxOCRCARSjw+g9oqBi75O0bdzycOllqbOLbb9Zy64/38jEs85g7mtWMPmC8xGWhZ8N1XnFsYARSIkpFYmdcg7F+29HdbSGEt5DcZrSQuezuJOnh9lQFPGJdgSWDu6l5SdfRWe6j4rx95YBce3b+V1PngesX75xo3gaBrCsdb0BgVVsPFNqb0iLBo+WExhS5qCKyCmvgPjEaNjn2Ij+feCe61Lq6ubRr3+TnX/8C4X2dpxEEreioi8zeMY08hA1+pBbfKbfuQjbxq2owGjNwdvvoPGOu6g/72wWXvM2Gs4+C+X7qOIx0mJVAVa6gsSZF5K58ZcI1x0Sv0TnMsRmnsCEN70Pq6wyxFUi4y/u20nrT7+GzmcRsfjhG//AEmJoDk4EXolYrucMhIQBYqF2b3ARArVrl46b7VddXPR8jJHW86Y1rj1EchJi0qXHlMCHUQo7mQAERiv8TIZt/7cGrRTxykp01K9/dt8nMUrhZTIDKj6Dk0qFuvfDSXUHOAMnlQag6c4NtNz7ANMvezEL3nY16WlT0EqN/0xASHSpSGzxGRTuvRXd2XZkTDwhMH6JxPyTqXvNtchUWV/2JKSkuHsLrT/7JrpYCEVDnu2595ZckbqwUX6kkzPkoCWLno/o6jjdaFUxUC9QAqxdu1wCTCh89xSBN73kGyPF84QaJ6xQILT+YkRycrRLYJzfWhTR4xUVtD22kZ1/+BMYqJw3lzkrrkIVi/29/ucw/qBYRLoOs6+6gjNW/SdnrPpPZl/1SoRtExSLI1OrRwe2d8JNBwHN9z9I+6ZNfQ6ol4w0fs9JmAWIsgpip5wTLh49EqclBMb3ic9ZEBq/Vn3GX9i+kZaffB1dKoSZxcDn0KuEPWB+wPh+SC3O9qBLeaxUGVZFVf/G4iO/NeFpYyzfq2/7/c9ODf92lejLAJbXtQgAkz94YSoW2F05Ao5kaci4jv4BOJWIyZcdE8YfposWbjrJ9t//kQc+90WE69Bw3jmkJk1ixuUvZfuaPxxG5BcEhSIVs2dy1hc/S93iRfSquRhjaH3kUTb8x6fo2bUHOxEfmnFGpYUOAryeDE46yaQXnMesK19B/XnnYCcSCAOxigq072MAVSiM305BRBGOLz6d4oaQvENvHX84GI0bI7vhNtJnLMOK1IHyWx6l7ZffwijTL/Ihe1fXhVOEBEH4eQqBjCewayfg1DUQmzITt2Ea7vQ5lHaF68mFZTMUYp4QQiWksXMt+84Eblu3ap0EdGjk69ZrcHDIn62KBRjOyq/xFv2DHuTESxFlc8Z9398ohRWLYbThvk9/lq2/+DV2KoXflmHPzbew4G1vpXrBfBrOO5u9f/8XbnnZoR2BEJhA4ZalOefLn6dm0UKKXV19abgxhglLTuGcL3+eW69+B0Gp1M9TPwLDN0GA191DrLqS6cuvYM6rrqRm8SKsWCy8Bq3o2raDXX++gc4nN7Pkox+hZsGJlLq6woGZcegA8H1kTT3uiSeHy0WS6cN2ANJx8VubyT92L2VnXkTu8ftpX/MDQCBdBxP4fWPDIdXdRZZV4NRMxJ00DXfyDJyJU3BqJ4bU4QEvp2EqMlWG8YpDK2GFEL7n4QpzDgjWsV4D2FH9rxuNlyqte+Mplh+AsSXi+cAB1yAdxKQXj3tOe1jvJ/G6urn7Y59g37/WEa+uQgDSsth941+ZfdWVxKoqmfHyl7Lvn7c+4z0JKSn1ZDjhileExt/ZiXScQdlusbOT2pMWM+3FL2LL//2WWEXFc3cO+iK+j9fTQ6K2mllXvJ45r1lO1by5fQsx/FyelgceYucf/0zj7XdS6u4BDF1btnL2lz/PpPPPw+vuHp+ZgACMIn7K2RQfueeI2oEGg7AkuYfvQThx2tf8IIrsUSEeT+JUNeDUTyY2bTZOwzSc+snY6YpDgt1G61AwRAjsyhrs6jq8/btCDOHIwXBZ9ANkPrfUmI5KIaq6jDHC7p3+q2+5ZU5OZyf4vnmejMQLCIqI8nmIypPH9S4/oxR2KkXuwEHueN+HaHtiI4ma6pCHD9iJBJ1PbqHl/geZ+qIXMvGM06mcN4fuHbvCaPtUR2AMQgpqTlr4jD15ISXGGKoXLUTw3DsThWVhAoWX6SZeU8Oc5Vcx59XLqZw7h141m1JnJ/tvXcfOP/yJ1oceRfseTiqFW1EOQlDq6mH9u97PWZ9fzayXX05pPDoBITGehz15Js6Umfi7tyFihynPpcMywDuwm/a1P8SqqMKZMAmnYRqxydNxJk7GqZkYlgJPs3cV6gr2dmyEjJaPhM5ASIkzcQqlPduGtOJSgPCUMimtJmbX37UEuI21a6UNCwVAdv89i5PSi3ULoSTm2J+OERKjfeSE88EpH7etP6MUTipFZu9e1r/r/XTv2Bki/EEwKPJqP2DP3/7GpGXnE6uqYspFF9K5aQt2InHIyC2EGCA39Wxx4dmpXiJae+319OCWpZn3utcw7w2vHWD4kG9uZe/Nf2PH7/9I15ZtICROMgHJRN+UIYAVc9GB4u6P/ie65DFn+VUUu7qQ460c0BriCdwFp+Lv2ty/bOSwuwkFqi57NWVnLAtZfod4f2P6o3vfVqEBH5fKZ/Eb9+FOno6MJQBwp86E+24bRoUjVUxru3BgT+gANm4UNuu+LUBgB12LJccAQn74lgVOGlF3zrhd7GG0xk4myR5sZN273k/Pzl045WWDjZ/+dmDT3RvI7N1L5Zw5TL7wArb8/FeRcT0lJAiB1prOLdv6Ntg+NdIaHdZ+3Vu2HnqkOopEQS4HAqZfdinz3/5WahYuQERZRb6piZ1//DPbf/8nMrt2I10Xp6zsGXkJRmukHUpfbfjkKoRjM+uVr6DU1R3+/bgCA33cOQsppCswXunw0XchwqEipfoovn1MTCHCqC7l0yQ2vJYD+Af3Ujq4F//Abvz2ZoL2FiZe8zES8xaHDqB+ynDEQjFCCO2XcI1aiBCwaZOxQwBQYnlts7UKDi9qHAPgH0EWUb00BP/G4by/0RrLcfAyGe74wHV079iJW14eAkSHCtSOQ765laY776Fyzhwq582letECmu97ACeVCucDBry3k0iw58a/Mu+1KyifOSME3qKNbkYrYpWVdO3YwZ6bb8FODhbHFJaF9jy8QoEJS05m8XvfRcN55/Z1F0od3ez845/Z8uvfkNm9Bzue6CckPQeOYLQO5xJclw3/8V+45eVMuWgZpe6e8O/HCxgYhGCgPXU23uaHEfHDFBA1BqRFcfcWKszLwLKeFlJVTxde0z5i0+Yg42F077zpN+QevRfpxkDI8P8N+E37IgdgcCZMwiqrQPd0D2leQSCE5/tY2Z7FRmsphFBSrEY/8MB9Sd/LLvY8xfMmBdAKUXc2WLEQDBxX1t8/Srvh4/9J26OPE3sW4+9zApbkwG3rUMUiTipFw3nnogP1dOdmDNJxKLS3c/fH/pPM3n3Eq6pwy9O45WniVVX07N7D3R/9BMX2DqRt92EFQkq8nh6csjKWfuJjXPTTHzHp/PMRImwr7ljze/7x+rfwwOe/RKG5hVhlJZbr9AuIHKbzk1a4sn3Dxz9J+xMbQyem1Pj6jGwLd+6iSPP/8KFAaTsEbS3owEf7PqUDu8k+dBcdN/yKpu9+jsZvraLpB1+ktGtL30+5k6Yj3TgyVR46BcsCKSjt29V3PVYyjV0zEa38oQU0gQiUxsv0TMtkDlZD1Os/rXLL5Gx7MC0INILnQQvQKHDLENWnwlAf1ihHf7einAe/8BX23vIv4jVVT0v7DwkUJhK0PfYE3Tt2UrNwAfXnnEWssqIfaTaDf4eTTNL+6GP84w1vYcblL6Vm0QIw0PHERnb95SYKra3YyWRfiaBLJZTnM+Pyyzjpfe+hfOaMUBREaxrvuIONP/gxrfc/iHBdYpWVkRquGvIzsGIupa4eNnz8k7zwJz/ETqfRvj8+BomiMsCZeWK4YvxwiUHGgCVRuR5af/YNVE8XQUcr2iuGIKFth738qE3a7wBmhG3aXlVhIRCWjd/ahFFBX/bmTJhEcctjQ4rTAgi0wfG9WnHfA5OANhug1LN9QcIx8Z4CWkqO8RpAhoh/xQJEavq4G/k1SuFWVLD7hpvYfP3PiFVVhlH8cD5A26bU1UXT3RuoWbiA8pkzqJw3h7aHHw0N+SmtoV6ModTeyRPf/QGW7YRzUb6Pk0xGP2MQloXX3U16ymROue6DTL/sxZEuAGR27+Hx73yfvTf/HYzGOcxU/7C7H+kUHRuf5MEvfIVzvvJ5tO+PszKgDnvSdPwdm45AqTdcG17cthFkuB1IJlIIYWFUyAWofdXbSC48LXw/KcP6Pp7ox2OEAGlhvBJGqT4Mx0qXDeuutDE6Loz0Du49AXhMAgRe91xLBAghNMf6Swgwfij4YadHQDp8JLNKgxWP07N7Nw9+8SuHbAc9V3SRlkXTPRvwi0XcsjImnr40NJpniE5Ga4RjE6usxE6FRh+rrOwn4hhDqaubaS++hIt/+VNmvPwyIDTwTT/6Cf94w1vY/ZcbsRPx0GEcQap/WLcUBLiVlez801/Ytub3IQ4yXkoBYxC2gzNj7pCm9kQsEU4V9lalXgGAul5B0F6tAGNwaicSn3kCqqez7/mrbBexWfNCPKD3mQTD24IlpNQWRviF3LywBBAC23izQ7HQ50H5bwxG2siqxeOP/BNF24f/+xvkG5twKyswweEfLKNDEZCOTU+S23+AyjmzmXD60pAL8GxGeYiILSyLoFDEcmxO/+THOOFNb+jrKHQ8uYWHvvTfNN1zb9THrxhdo9QaO5Hg0a//LxPPOJ2yqZMJiqXxUQpojTNtDjhDQN97MzJpYUoFZLqMCW94H7EZ8/p5/b0tRiGofsUb0b6Hd3APlhsjferZVF366rC2i8B5v7Wpb1PxEAOkMIECvzQvJAJpLbnn2hMCz+PY34ohwAQIpwrSc8L0f5zcUm/qv+svN7Dvb3+PEP8jNypp25TaO+h4YiOVc2ZTMXc2yUkN5JuaQ7bfYRxSaVmUejKUz5zGmZ9ZTf1ZZ4Rju8CmH/2EJ77zPfxcjnhVJVrpUY/IJhp3Lra18ejXv8n53/jvcVJNSkzgY9U2ICuq0N2dYeZ0JI4g0vp36hqoe9P7cSdOjhh+0QCVCqJNwwa7qpb6az5G0NGGiMexkul+XCEaNS7t3T6sViDGCD8IsI2atQqEPADVvleY5QeaY17hUQgwJUhNQyTqw/7/eMhqIlS+2NbO49/63qC0cCj3qAJF68OPoJUiUVdH1fwTUcVSpOr7HD9uWZS6umg450wu/umPmbD0VLQKKLS1cfv7r+OhL34FrTROuizEJo5SFmWUwi0vZ9/f/8m+f96KW5YeH6WAUsh0OXZdw+EDgf35NrqQIzZtNhPf8THciZNDYZDoc/TbW2j89mco7d8VOQMfMNjVtaHxGz1AOlzQs+FfBJ3tR+6EnhIkfa3xCsXJ1x04UCUr2x+LB16+VmnzPKgARAiYVJw4rtp/vYj81v/7LV1bt4fsvaHW0cZgOQ7tj2/Ey2SwHIcJS06J3k88q+MQUlLq7GT2q65g2fe+RaymGmFZNN1zL/94w1vZ/691uBUVfSO8Y+XEN/7wevxsbnzQhI0B28GaNP3IjE4IjFckNvMEJl79YeyK6kGCoF7TPlp+/BVKuzbT/rvrCbrawyU3EYDYuy8AKcGyyD68ge5bbwxbhMNxygKhtEEFXr3esbFcOj1bJzuULK2fJwxAIRBlJ4yf+t8YrFiMnr372P7btTip5LCMy2iN5Tpk9+4jd+AgAFULTgyFQ57JqUS6fl4mw4Jr3sZZX/hMCEi6Llt++WvWv/O9FFpacSsjAG6Mnl1v16L94UfZffPfcNLjJAswGnvi1NAYzRE4AKWwK6pDue9ebUYpKe3dTvMPv0LQ0YpdWYvftI/mH32J3CMbQtZhpA1gtMZr2k/7n39O+5ofRBohYlifjwARaI0jicnAm2+LUvNU2zJxTxsjrWM8BzAK7BSkp0frvuQ4ODshcLfrj38md6AxBP6GeaiFbeP1dPfxAdJTppCoq6XY2nZILbte4z/pvddy0gfeR5DPIx2Hh778VTb98Cc46RRSyiFhEqMClNo223+zlhmXXjrMdHeEykoVYNdNHKDhJw7zPhy8A7sxpSLCjYX6AFsfp+1X38Z4HiIWxwTh/wcdbbT++js4dfXYExoQtoPq7sBvOoAu5JDxVMT1GJFnoS1jpN/eOEEWsi01QnvDQxYPD3sYfQBQB4hYNcQmgPHHRUkTUnib2XXDTVjx+CCBzWHhAH5A1+YtGAyxmmrS06aiPP9p0lu9Pf5F176dkz7wvlCQQ0o2fOK/2Pj9H+GWl0WklPFTLtnJBO2Pb+TA7XfgJJNjmwVEkVyWVyHLq0K25mESgoRlh7Tf1kYQgtyj99L2829iAn+AMlCY8gvbQSaSBJ1tFDY+TP7Re/H27gzxo2Q6tM0RcoRCSmMBSshF0hix0JFmVDgAxgiMkQhhcGxvdB2BCDsAxCcgnLJBG4XHLiEJZ/wPrFtPz67dWHF3+HLTAwy7c+t2VKGEk0xSMWc2Wg2mBQvbotTZxbzXv5aTr/sgQaGAAe7+fx9nx+//SLyqanzu/4vS3F1/uSFkSI51O1ArRCyBVV0b9uMPFwi0JLqQJ+hoJffY/bT++tvRZ+c8/Rz0LnmJHIFMpMK5fxixM/NUcNNvb5PSZHcVjdGjYPgCywpw3TyFYpym1kkYo3HcYvT5yhE20HDxB/EGkLHxcailRJWK7Lnpligyj8z9Gq2xbIfsvn2UukOln8rZswdF/zDy9zD14gtZ+smPo4pFpJRs+I9PsfumvxGvrg4dxris5BR2IknzvQ/SuXkL9khlTkO+IMCysCrrjkyIwxhELEb3v/5M++9+hLDdCEd4ds5GHwhoRi0rE57vkShLn2xb0tQapRmJDXlhtNc4tocBunoq2X9wHgebZ1H0UlSWtTBt8mbqJ+4hESugtINWVuT0zUh4HkSyIYoYY+sAjDbYiTgdT26m/bHH+1h0I1cnWxTb2im0tZOqryc9dQpWPNZHG1WFIhWzZ3HmZ1ZGgF+MBz77eXb95cbQ+IfJKBv1JMAO25X7b72NmsWLIB/p842lP6+qPfLPSdr4rY0Iy+7fEzDWDhYhjAER+BXSjled7IUkIDG0szggzXeLGDQHWyZz/yPLuPv+y9mxZwl+kMSxA3qyE3l004Xcdd/lPLntFHL5JLZdwrb9vqxhOLdlhAh1/8dD9Dca6Tg03XUPpa6RV76Rto2fy5I/2AhAYuKEsHcerfoWtsXpK/+TeG0tVizG5p/+jC0//xWxqqpxb/y9xmM5Do133ImfGwctQWOQFdXhJuojXB4qbKc/uo8H54oxQoDq6Qps4XWoobDleo3VsgKkDCgUEzTun8O+g3PpytQBNrbl4bqFASWBj2VBoVTBlp1nsXvfYurrdjFtyhaqKtuRQKAcjBFDyAhMqP/nVtMrUTWmD1lKVKlE4113I51RQLKFQHseuYNhKzBWXUWsqgo/m8fPZll07TU0nHM2OghovPNuHvnaN3HKysa3NPdTy5x4nK6t2+nauo2axYsI8vmxoQcLAdogU+UIxz7y1Hz8YSzC9wOUkCfa+J2BOIIOQGic9KX53T0V7G+cTWPzHHKFSqSlcWwfUH3ZwVOdhhQKy1Fo7bLn4CIONM+jrnovUydtYUJtE47ro4IYWsvIERymLLN0wa08KuuWnv1SDFbMJbt3P11btoXovzajYCSQO9CIweAkkyQm1NHx5GZqFi1kwdvegiqVKHV3c/9nPhfRyeUx4wAG4hhtDz/ChCWnEIylIWmNSKbAccH3j2nSrBBCKGOwjKmwfROfKoIenm0PSGi4Aik1tl0iUBZNrZPYe2AebR1T8Pwktq1w3WJvgnEYSQggDK5TxBhJU9scmttmUlnWxJTJ25g8cTfxCCdQyu6tXJ4dALST4QQgemw/IK2xXZeOTU9S7Oh8Zvnu4VZyUpBrbEIHAVY8TrJ+IrpUYvG7rsGtrMRozRPf/h4923ceO6n/IT7a1kcefVqH4+g7dYWMxZBuDOV5fVqJx7AXQJUKxka6UwKlENIRT420vYZvWX5fmt90cA77D5xAZ089xtjYto/rFp8W7Y8EOARw7BIA3ZkGOjZNZueedqY0bGVy/U7K0hm0sVGB/SyAoQYZD5eHYsbFyW1/7PHRXPuMsG2K7e2oooebTmElEtSeegqTX3gRRmtaH3yIHX/4M05Z+TFp/CHr0aV763ZKXV1YiQQoffSru14CjhOLJLm7GW97c4/47CAwgS/swCsZ8RT2SG+ab9s+CE1PTyX7G2fR2DybbKEKKcC2vUOm+UP3sBGmYPtYGAqlSjZvP4fd+xZRX7eLqZO3UV3ZHqqaKDcakDKD6yzLAeGMZvvkMBE6SVAq0b1t++jU/72Qh5B4XV0EhQKxdIpYZSVzll+Fk0gQFEs8+dOfowoFnPE0Y3+kwJttk29pIXegkcr5J6BU4WmCmkfHAxBO7dnOEUqEjVsPAEpjC4I+Xei+Np5TIlCS1rYJ7G2cR3PrDHw/gWUrXGd0CT195YYIsFyfQCXYvf8k9jWewITafUybvJm66iYcR6ECF21khGEakG44BDSWDiA6tF53N9mDjaNGZTUYsCz8fB7tlVBaU3fKyaSnTcEA7Y89TuMdd2OPFz79MHCAIJcnu38/NYsXorQZm+AbiX3iuMd26j+obNbYRiswEstSWNKnUEqwv3EO+w/OpbOnAaUdHNvHdUuE+yjFUbvAMBPRUYkhaWqZTXPrTKrKDzJl0jYmTdwX4QQxlAEhQ0XVQ8pcH00A0LIodnRQ6uhEWHZorKNiHIIgnyfIF9BBQN2Sk+ndGrHn5lsIcrkQCziGHUC4E8Enu2//2G4YjrT+wpZe7/k6th2B0QrbkkWkXaQnX8mBplkcaJxLLl/VVwJYVmkEevTDffYRThBlH509k2nvnsKOPZ1MnbSFyQ27SMW6wRaEA0ABY9kGFLZNsa2doFDAsu3RCRjGIJBoLwi3/AoBUoZiHx1dNN5zT7Rn8NhXecNAvrl5zAOvkAJsCy2OaQQgfKRCILTBbuuYwP69J9HcPptSKYVlqz5D603Hx09JGF6LbYfCkYViBU9uO5td+xZTX72RmSeVUSn6ZyzGKlIIKSm2d6BLXijXNVoRWISaeiqSzzJKYaVStD++kezefaEDeD6kq1KQb2kNVXTHshNAuG0p4Xt4bgItBPIYe74mMv6Y72MsC/uhxy6hmAfHCQag+eN8hXYvn0AGWJaPUgl27DmNXLyG85bpceG0Sp1do298UqI8j6CQDzOASDS0c/NmVKGIFYuPnvM5yg7V7+lB+f6YlgG21vxj9gJSXR2c2dFCTAUULQcjOCYcgRYCW2vcwGdXeSUb5izEFtLgOCXAGhE0/2gDGX04gVOKdq6Nvf0LwM/lRh0sEmEh179QRAgMkNmzj+cDTNUPA4hwknEMCThGgDCa9kSSWxcu4clsD2ft2cb8tmYsYyhFdF8xDh2BFgJhDEnfozOW4O+zTuShydMQbhw7ZIfJY14O1BgLHehxgcsYQBWLR+VSjDaogYZhdLgG7Pmx4rnPsamSF8042P2KukfZrWtABD5J36exvIrfLTqdGZ2tnL9nO7M72zBCULJshAHBuBj6wQiIBwGBEGyYPIM7Z8yhK5EmHngklI8tLev5cUYkqEChlT4sccznzcsMFoowShMUCse8vuv4yzXDDo+nNUYKYirAGMOe6jr2VtVyQksj5+zdzrSeLpS08CwrXKI6hlHf0Qo70GyvqmX9zHnsrq4lpjQp3wuXAAgLu89YjuGuhomuXwcKFSicuINR5nmz6Pi5ouMgY5cSO5F4nvSqx5cLCLTG1yo0lajcigcBBthUP5ntNRNZ1Lyfc/btpD7bQ8l2CKQ8qvhALzCZ9D1aEylunzGPx+sng5SkfB8jBFqIaPOTwLb7ppvsY9cDRH1Z5QfoQCFwR633frgvGYsfFf8jpMAaoAMopAz3BRr9/LG9SMBUWLLf6R3l02UJ8LTGVyqcm4met46uJen7aCF4aMpMNk+YxKkH9nD6gV1UFwqUHBslRtcRmOg6Er5PwbZZP30OG6bNJhtLkAh8RBD0XWvv07OEwFal4EnbducHRhlxrMZMExqC8gOCUgDlYJR51gGn0X45qeRRynzkoDVfAOlpU59nVY7BTiYQtjNmQKAAfKUo6YBDVZj9jsBDSYs7ZoWRd+n+3ZzWuIcyz6NoOyPeOuxt67kqQBrDE3X13D5zLo3l1cRUQNL3woj/lGdmAEda2FJa3ULKcOfYsT3iGDqAYgkhKwhXnY3dK1ZVCdYoKxNpjbTsaM+A6ds4WzX/xFBG6/lAAooES53ycqTjEHjeGLQCDVJIikFASSkE8hk/VS0EAkPK8yi4Mf45dyGPTJrKOXt2sLj5AIkgoGiPTOtQC4GlNbHA52C6nPUz5/HkhElYBlK+15fuP5NTjdkOdjzlWqVM/nlwTgSBpyhlI1bcWLUDowObqKkJU3NlRvNcIm07UhsOV3yrYomqeXNJT51Cdt9+pHvsc9eNNiTrasMV2WNwLyaanssFHr5SyMNwQFoILGNI+R49iRR/WXAKD06ezjl7drCgrQnLGIq2jeDIW4f96b5H1o2xbsYcHpgyk6Ljkoi2K2vxbOP9GGlJIQXtMpZOyPHQOx+JHM0oRTFTGPMugFEB8doa7GQSbUZpfFUIDBrp2KEWoAnVfbXvE6uqouGcs0OKsDz224FCQLJ+ImP5sUopyHglfHN4DqA3zQ7JN4qU79NcXsnvFy/l56ecyfaqGmKBj6vC2vxw+gW97+cGAY4KeGTiFH582nncMfNEEJJkBPKZ57g+IzC27YBjbZOFfOFJx7HBiGMeNjZAoTM75pmIDhSxmmri1aGO/GhhEUaZcOV3Iom0HdoeeYxiewcIwbSXvAgnmTr2y4BoujI9ZcqY0poFgs5SHj2EUWCD6DPceOCzt6qWX59yFr9ddBr7yipI+B6OVpEjePaMIul77C2v4JcnncEfFp9GdyJJyveeM+oPuhdjhDaGcicRk1rrRikl5nnQNxJAvjM7KvJbRxKudBAQKy8nNanh8BdJDOFAEslnW7EYlpS0PvwIB++4EwHUnryYhvPOJhgvO/aG7OQ0dipFeuqUMd8R0F4cXqncG53jQYCrNZsnTubnS87hD/NPoS2RIOl72MYMMuSB4GLOsbnhhMX84tRz2FUzgaTv9zmOIwyUxrIkRgX7ZVldZcQFOPb7xkJa5DuyKC8Y2zJAa+x4nPK5c1CjBa4K0EYTq6oIQUDC+YPta38fpv62w4lvfWNYHhyrWYAQ6MAnOaGO1KQGtO+PDawDBEbTXsgfdvr/XPiAIWzZWcDDk2dw/WnncfOcBfS4Lim/hCB0BPEgQBjDPVNm8uPTzufeabOxTcg/ONzS4VA+wLEdSp6/VRptHtPGIMyxTR0zxiAsQaE7i5ePVmWPpU8zULto0ejV4NEkYLy2BivmooOAoJCn9YGH2X/rOoSUTFi6lFlXvByvp6e/VXhMOfRw2Kli7px+TcMxOKZSSvKBT3shjy3kiJUivZE75XsYaXPXjHlcf9q53DpjHp60SPge26tr+ekpZ3HTiSdRcOOkPK8PCxjWPSGoTqU9u6quMte9pw2ttbAsa/wkAke6BdWAtCTFTIF8V454RYIgCMZmekxKAt+jeuF84lVVBKXSKFyHCNHx+nqkYxPk8uSbmrFiLhu/90Mazj4LKxFn0XuupenuDeQONh2b2YCB2lNOHrOlGsYYHClpKRbo8grhEtWRThgjEZeU71F0Yvxz3iI2TpzEhGyGJydORgsxiMU37N9njBRGo+AJma6paFRCe1IKMeb0uYEX6QdH7OyFFCgvINvSxVjOOAgh0KUSqalTqJg3FzVKaLwQgtTkSQgEfi5HoaUNJ11G+8aNPPmTn2HFXBK1tSz91Cf6DvOxxPUwSuGkktSdevKYRf+QBWjRnM9QCgKsUbyGXqAvXSrRnirnifqp2FoT60v3R+aWhBACY/zaWLpZpqbU7paWLAnGR7tISEEpV2DxS85g6ilz8AqlIzIebQyd+9sGfHxjdHi1xonHaTj37NE5vMYgXYf0pEkAlDo78To7QYCTLmPTT35G04b7AJi07HxO+uB7wlLgGGkL9i5WqZwzm6oT5oVOdIwmHIWAA9ke9FHIQHrTe0crEoHfBx6O9LM1QeBXpN2tsmZKTbfjOHttyx41cxFCIGT09Sw3IyxJKVNg0YuXsvDFp1E7s/6If5dlWXTvbyMo+mN72IVA+T4N551DbBRUebVSOOk0qYbwGRVaWvAyGYSU4QfsBdy/+nMUOztRhSIL3/5W5r3+NZQ6OpHHAh4gBMrzaHjBeTipSNhUjI3x+0qxL9OFFEdvyLe3dTgaJY20JK7jNs/Gz0sgG0snmywpGekSoBeJD0o+Xr6Ely8RlPxB3xvolYo9eeZfvIQlrzwXDNTMmIibOPy61WiD5Vhk23rId2XDMmCMuptCSoJikaoT5lFz8mKCQmHk2nFChABgTTWxunBhZWbvgZAGbVmhNFgyQdfWbdz/X6uR0iIoeSz9xMeY/tJLKXaOfydglMIpL2PyCy8M9Q7GwJkbwBaSbq9ISz6DI63nw5SlkbZNMh7fN/nuJ7qkkMIYYbY4rsNI6mkLKfAKHsYYqqfVMeO0ucw4bS7V0yagtcYveH0RWkpJKZtn/kWncNpV5/ehrBUTq6icVBO29Q6X5CAlXq5E94EOLEeO7ecV7bebdumLQydmRs65KN8nPXUK8cpKjDF079gxaALQKIVbWcmeW/7JA1/8cjgirA1nf+lzTHvRxRQ7OsZtZ0BYFkE+z8TTl1I9/8R+0dOjjwBiS4vGfIbuUglLDA8AlEIgxeAsWER/J4/S/QmEsW0bofUOli/XNgYsW+6QYQYwMmmWAC9fYtqpc5h/0RJqpk3oi/hGG9p2N/H4X++ncfNe4ukE+e4c885fzNLlLwjbeQNSlWRlilatD1+vQIDWmvZdTUw9dfbYH+RCgckXXUD5j6eTa2xCDhjdHdZLaSrnzcWKxQgKebq370Bag3cQmCAgVlnJlp/9CreigpM/+D5MPs+5X/0SdiLBzj/9hVhVVeScxl9km/WKy8NMResxWQ1uIqPd1d2BrxWuZQ3pMUkh0EaT90MREduS2DLsuHkqINAKS0hcy8aSYlSxBoMxUkqkYaMQwtgAyXRiS4/oQhttWcMUPBZC4Bc9TrrsDBZfdsag2gMTfr9uVgPL3v0y7v3lv9i87jFOvOgUznjNsr5DaKLx3sdvvp99j+6MyoDDXV4K0rLo2N0SAojW2PIBtOeRqq9nxuWX8dj/fDsc3Bnumi5jEI5N1YknIISg2N5JZu8+rJj7tB61UQq3opzHv/VdpGVx0vvejZ/Lc/YXP0uspponr/85blnZuFkcKqQkyOepXrSQSRecj5/PjxmTUSLwVMD2rnakkEd8jkRkD3nfI+G4nFLfwPzaeiam0iSdGMZA1i/SlOtha1sL2zpayfklEraDiEQ7RgEDkCht0qn4dghVQCifVrf54Ob9BSll72I9MTTjl3iFItNPncviy84YZLRC9qsNaKWQlsVprzqfVE0Ziy49AyFFv5OQgkdvvJcnbr4PJ3mE0tYmxAEyrV1kmjqpmj4hAgTFGB1ogSoWmXXFK9i+9g943d3hiqlhfLhGKdzyMipmzwIgu28fhZZWLMc55LMyxuCk0zz6P99ClYqc/KEPoEolln7iY6QaGnjkq18HIUOeQDDGKsIRlXrOq1+FW14ePa+xif6uJWnKZTmQ7SZmWegj8AC9CWvB91g6aTqXzl7A1PLKQ/7bRXUNXDzjBBqzPazfu5079+5Aax3+zpF1AgYhpPCDYHq6clvo5ID4tIqDlmPvcSwbhhEvDRrLtTjxwpMHKNSE6L9f9Og62I5f9JCWhTEGNxnnpJeehbQi79pn/Bt4/KZ7cVPxIV2NkAK/4NG67WD43mMb0lDFEuXTpzNnxVX4ueFFtLA95lE2dSqpyWELsPPJzaEO4DMBZdFn4ZaX8cR3fsB9n1od6id4HvOvfjMv+M43iddW43f3hNcmxspZhtG/9uSTmPnSl+Dnxm6OwUT1/5auVvK+d0Q1eq/x+1qzYsGpXLPkHKaWh1hNoDWB1igTfvX+tzGGhnQ5r1lwKh84Yxm1yRTFIBhxbEBYFgnHaTuvfloLgFzJSjlt2rRCLBl7zAnXWJmhOW6B8hVltZVUTa2DAWDHxn88xF+/+Fv+8Y0/8tcv/ob9j+0KUxxt+qK+MaYv8j/+1/uJlSX6Mwhx5O5bWhZNm/cTlIIxHw8WlsTP55n3utdQMWd22BEYKqod8eOrFy/ErShH+T6tDz/63CCZMRhlcCsr2fabNdz+ng/gdXVjlGLS+edyyS9+wqRl51Pq6gpLjLEyPG1Y8Pa34JSVDb9UGh5Yhq8Vm9qbj9wIhaCkAl63aCkvnHkC2hiU0aEGn5TYUmKJ8Kv3vyHksGhjmFtdxwfOWMbEdPmIOgFjjLFsm7JYYm9ZWVkHgFy2cpmMDukTlmMPvRUowsmtREUKy7YihRrYueFJHlh7O4XuHEZrcu0Z7v3NbeS7soMMU0jBozds4LGb7iOWjvdFBCEFOtBHxgo2Bsu16drfTtf+NizXHtsNOdF+u2RdHSe9+51ozxte/W9Z1C05BSktim3tdD65OcQWnrOGN2H5UFXFgdvv4h9vehttjzyKtCwSEyfygm/9D0s+eh0Yg5/NhqDi0UKnLQuvp4cpF1/ItBddgpfNjp0TAhxL0pTLsDfThWvZh52KSyHI+yWWTZ/LeVNn9f2cJSSeVjzUtJ8/bH6UXz3xAH/Y/Cj3HtxNRyHX1w0QgDKGmkSKd5x6DgnHQWk9UhQI7cQcUrHY41IIvXzNmv78OFlXuS0CguTwzvrgS23cvBcnZmO74eIENxmn0J3j4Ka90SUZtFI88pd7eOKWB0iUJzHaEJR8Stk8Xt4jXpbEcqwjMmIhBYHn07Rxb3+JMcYdgVJPD9MvfynTXnRxNKBz5AdcBwHx6mpqFi0EoGv7dnIHGwcJgz7nAQ8C3PIysvv2cevbrmXzL/4PaVsIAYveeQ0v/OkPqT35JErdnRilRt0QReQgY9U1LLnuA2PelQj5/xabOprJeqXDpv/26gbWpcp4+bzFfUdOCsGOzja+dNc/+P6Dd3Lz9k2s272Vm7dv5PqH7+ELd/2DXz5xP53FcMOTBJTRTEpX8LJ5iyiM0EyLMQhHWjjaPGKABXV1Qi5jnQaYvGj2Rm1pL1TYZyiqBwgh8HLF8AOMrjeWSmCU6TPeXjnilu0H+9LjYq7AlnWPYrTBy4XpcfXUCcy/+FRe8I6X8JKPrWDS/GlHxO4zxiBti8ZNeyllCmOPBUSZgFGKJf/vQ6TqJ6KK3hGVJ0KGeEL1gvmkp0zGGEPL/Q+iisUjJsoYpULdQGO4f9Vnueu6j1FoawdjqF68iBf+5Acs+X/XYSVifRTiUWNWRrX/yR98DxVz5wyvRBqJyxGCYuDzaGvjEU3/CSEoKcV5U2eTdFy01mEbsaudb96/jgOZLpKOS9p1Sbsx0m6MpONSCnzW797Gl+/+J7u7OyInELIOz50yi0nlFXhKDTsLMGhL+IGaUVtzPwDLlmnJ6lUGYOpJU7c58djeoQKBvQaX7cyQ78z1eazamfX0ajkJIRACLNemdWcjfiFMhZMVaaadOpcZS+dy9hsv5kXXXcmLPnwVp115HlNPmkUsFWfivMl9HIHDdUi2Y9PT3EXr9sawDNBmjO0/7AiUz5rFKR/9CMb3jgzgEAKtAiaecyZ2IoGXzdJy3wND5hYYrRFS4laUs/vGv/LPN1zNnptvQQiJjLksfMfbueTnP2H6ZZdGa8hDAHMkSTnCtvG6u5lx+UuZ95oVobMZw0EubQwxy2ZHdwf7st249uFT5JUxpFyXkydO7nMkgdasffJhin5A0nbRRvfV+r1fQgjKY3E6i3m+/+CdfZmA1uG1nDxhcugAhvPcjTHScXCFbLowNW8zwCowUiDM8uXLLSFEMVmR3ODGXPQQ8y9pS0rZAu37Wvr+rm5WA/HyJDpQBJ5PMVsIF3h4Adn2nj7ncdbrX8h5V1/KzDNPpKK+OnwASqP8AKMNdbMbiJfFUUfCCQ8ZRex7aEevsuPYJwGWhdfdzcxXvowT3vwGSl2HT8s1KiBWUUHDWWcCkNm1m66tW4e3BdhEuEBFBYXmZu687qPc87FPkD/YBFJQPnsW5371S1zw7W9QvXghpa5ulOeNSLdAWJIgm6XqxHks/c+PhZTfcfK6r2kfwRFEXSkEvgqoT5VTnyrvy3S3dbSws7ONpOOgnoVoG2hN0nFpyWf4+84nexEbAGZW1Y7AHILQruuSTCQflNWim5UrpRAi3Ab67gULohAtNziuM4xIGQJ2LTsa+ww7VV1GWV0lWmtqZ9az8JJTecHbX8JLPr6Cykk1gzIDow06Wu8F4Xy/5dgIKUiUp0lVlaMDfdgae0Yb7JhDy9b9dO5rC3GIccB4E1KisjlO+fAHmXLRReEuv+dwAiGrsEjNSYuomDMbbQxNd2+g1Nkd/uww78sohYzFcJJJdv7pBm557ZvY+vNfhyo8UjL5omW88Cc/5KzP/BepSQ2UurrC7w0xIwjFPnycsjRnf+GzxGtq0J43pql/2Pu3aMz1sKmjmbh9ZOCxMoaJ6bKI+Rf+3LaO1sMG8bTWJCyHjS2N4ehx9CyqE0li9vCAbGMMju1gAv82A6xZtUpARARaxioNq6mdMeHezv1tgTBDpANGJJy2nQfRWvcdjKVXnYeQksrJNU87LKZ3t13fxGD/r862ddO6s5HmbQdo391MoSePfYSIvpASL19kz/1bqZ4+gWA8jMQLgdYay7Y5+8uf47ar30nHps045c/e+tKBYsqFy7ASCfxcloN33T0ixj+wJABwK8rxenq4b9Vn2fO3v7HoXe+k/uyzsBMJ5r7uNUy95IXs+P2f2Pbb35HduxcrkcCKxaLtzIdxLVJilMJozdlf/Cy1J59Esbubsd5T2Qv+3d+8j6znkXKcIyLiGGOoiCcYWEN3lwqHzWLvpR5nPY+eUpE6Ox3iaNLqcypDPbpGILXn+xNqKu8A2Bhdkg0gVoeKwNYlpz5u3b91h2vbJ/hGH/GmIGMMlmPT09xJT3MXlQ3VGAPV0yb0H2Klo53vIgSWBuy2K2YKdOxroXVnIy3bG+lubA91/qXAcixUoMAQ7v4zh3tNGjvmcPCx3cw5fyHJ6rJwi/BYrxCP5t1jFRWc/82vcds73kXP7j39o69PNX4/1MZrOO+c8GBt3UH7409gJ+Ij3uI0SoX7BioraH3gYda/871MvfQS5l/9ZqoXLCBeU8PCa69hxstfys4//Jmdf/wzPbv3YsddrHi4l/CZWpK9lGNVKnHW5z/NtEsuptjVNS6mEx0p6SjmebD5QMT7P/Ln+tTstDwWP2JqrZACawBo7Wl1ZPjXoep/2xZxIZveXHfm5rdE9f9q6FMBMWuWr7HmCVFyY85tsVgcjFFDPdhe3utD+dEarfSgtF7aVjTRFtC2q4knb32E23/wV/72lbWs//5NPP7X+2nb1YjRBjcVj1p6iolzJjN96TyCI5gO7JUKK3Tn2H3f1rHnBDw1rc/nSU+dzAXf+SZl06eF/fenGEPvUFH92WdSNn0aGM2Bdevwepl7o3E/ETZgp1JI12XXX27in296Gw985vP07NodqhE11LP4ve/ikl/+lNP+4yOUTZ+O192Nnw9R/KeCeUJKtFKoUokzPv1fzHnVlZS6u8eF8WtjcC2be5v20lbI4QxB+ksg6CkV+spagIW1DVhSog7jM5IIAqOpiSepjCX6zmlXsUBJDacVKLQdc6ktK3vAapC53vq/LwMAqFuwUQDEqpJ3+T3Faw1GDFXPXkhB87b9zDt/EcKSg94l09pF++4WmnccoG1nE5nWLoJSEDoGx8KJubhJQeAFlPJFYsk4UxbPZOaZJzJl8Uz8okfr9oMUswWkfXj9fWMMdsxl7/3bmHnWiSQqU+MiC+g1bj+bo2zmTC764XdZ/54P0PnkVmKVFaGSUGSM0raY9pIXIx2HUkcn+/+1DjvmjvoAT19ZUF6OCQI2//xX7P7rLcx65eXMfc1yymfMIFk/kYVvv5pZV7ySA7fexva1f6D9scdD0ZJkMixTog4IGM76wmeYc+UrKY0Rz/9QLzuK/ncd3DPk6G9JQXMuE3bEItBuTnUd50+bw517txO3n72kkFJQ8gKW1E/t6yDYQrC3uyNkEjI0Oos22sQdhzTOvRrDymXL5OrVq/UgB7AONMCMM+dueHjfhpIwIha1Io+wDNBYjk3nvjYCz0cFirYdjbTuaqZ1x0G6mzspZQt95YJlW8TLnGillsEveahAUVZbwbzzFzNj6TyqptT2gXpOzGXqKbN48p8PEytLHt4WXAPStih059l55yZOuvJslF8amxnzZ8oEsllSkydz0Y9/wN0f/Q8O3n5XuF8QCPJ5quafyIQzTgMhaLn/ATq3bMVJHb3FH0YpkBK3ooIgn2fjD65n559vZNbLL2PWVVdSMWcW8Zpq5qx4FdMvu5SmDfey80830HT3BryesNuTqK3l7C9+hikXLhtXxq+NIWE7/GPvNjoKeZJHWPsPzCAO9HRzMNvNpLJKtNFYQnLh9Lnce2D3M75nrx5AplRiakU150+bHdpHVPdvamvCFtaQjD9yGrYsBXre9En/Ali1bJlePeD7g/69McZa979/ubNzX9uZgQmUGSIgKISgakot2Y4M+c4MOtBI28JyrIiUE15ab7vPL4YIcM3UOmaeeQLTT51LLJ3oi+BGm8iQJbmODDd/6beoQB8RbcmE2gec/+6XUjaxcuz3BxzCyKx4HB0EPPzF/2bLr3+Dm07jZXOc+rHrWPD2qzEq4M4PfoQ9f/tHGJXVGEzvCYGwJNrz8XM5ErU1TL3khcy+8pVUL1qIdN2I3RfQtW0bu/58A52bt7Dkox+mdlHYShwKC3J0kH+DLSRdpSLfePhO8r6HNcSWWwjglbhk9omsmH9qGMGl5LY92/i/J+4n5cSe5gQEUFIKXymmVlRyzZJzmVRWgYqcx5b2Fv7nvttwraGVrga0dGw5KVH25EfPfuGpQojioMxn4B9WrlxpCSGCO66/5ZZ4In5mdyZj5BANxBhDy46DWJaFE3fDWzUm7G1GeYUKFEHRx03GmLZkDrPPPJH6+dP6WHtG6z5tgN6/K3Tn2PfIDqQlQ1DwCBIUaQlKuRLb1j3O0tddMMb7gw+dCahSKOt1xupPUb1oAQ9+/ivEa6qY/pJLEULQsWkzB++4O4z+aozuwBhMEFKEY5WVqGKJrf+3lt033kz9OWcx64pX0HDO2ViJOJXz5nLaf/w/VCl08KXu8WP8vUHBtW1u3beDzmKelOMecfTvRei1MSQdlzv27uC0+mnMrqpFG8MTLQc5lOiuEIJAKU6sncipDVM5rWEaSdvBEK62N8Zw8/ZNaG0QQ1TsN8boeDwhk27sb0KI4po1a6wVK1aoQzqAVatW6dWrV1NZX3Vj156W/8QYaziFshN3MYaIVxAh/0ZEpYEmXVPGtPMWM/OsE6mKOAF9nYIIMOz97R37Wtm54Un2PrqTfGcWJ+70bwE+7HrW4CQcDjy8g2mnzWHCCZMjabLxkwUIKUFrvGyWea9eTvnsWXRv206irhYhBLtuuAk/m+X/t/fe0XFcV5r4996r1LmRE5EIghHMWaREUllWsj0mLWdbHksOGo/tCbsz89sBuXN298yZ2bF2gj22HORxmgFsWZZkZYmkJJKimBNIACQCkXN3o3NVvff7o6oLAEUFIjBIfOdAR0So7q569757v3vv9ymBwJVzABcAhaAUatB6P12v7kLXrtfgKS7Ckke+hvKP3IlULOaMgF9NMmVcCGiShObQIN7saYdLurTQn8DKm2N6GpokO5EDN038+Og+/MX6W8HsOQD1goEiAqvur0oyvrh0LQKqy3lPGTny58814NRgD7yTcErjHAAjpsnzVO/TAICtF2AfF3gkDoDU3LX6SOex1iNqXFmlc4OPqxZcIoAkHE8nhHAUe3LKCzB7zTyULpsDzTcxzCdk7LQ3DRM9De049+Zp9DV2IZ1IQdZkqB5t0rkvIQQmF2h4/hCyKwuuKuOfEGITgmQ4jNyli5G7dAmEaWKk+SzO1v0WTNWse3qp4ikzeYxmjJsQUMaQU7MIwXlzx4yekKsGc7lwLzzX1gidc7gk6ZIMzRQCLlnGmpIKHOxuQ0xPwyMrUCUZQ4ko/v3Q66jKzkPKMKBdcG1CCFKGjnl5hQioLhicW23yxEqP3+hswVNNJ+CW5MkbP8AlVaEaoY2frFm27wEA28g2/o4OYHwa8Oo/P/kMj+ur0lGdEzp5QnZCrBOfyRJKl1Whav1CFC8oG8cReJEwPxJH+8EmtB5oxEjnoNWgoSlQvS4IwacEfAkuIGkyhtr60PJGA+bduhTpqE0ddhWmBEYiaVUBZBmyx42qT3wMrU89g+TQMGSPx5kDuCJ0XoQ4dX09Zs1/FK5biwVf+RKKb9wIrus2n//Vd29NIeCVFbze1Yozw/2XbGiMEMT0NG6pnIePzluCjaWz8XTTCZzs7wajFF5ZRVckhPPhkXdk9uECWJxX5FQhACBlGnju7Cm80HIGCmWYkmqnEFzVNJqluV+4WPh/MRAQQghKCOHHn3lzZduBs/ti4VGJsskdk4QSGCkdxQvLsOTutcialXfRMD+zhs/3o/VAI84fbUFsKAKmSJAUaUI0MU37FtymEL/p63fDlx+EoRtX5UYdf8oSSYLkcmHkzBk0/7oO7c+/hER/P5iqQtK0zAeb2T6HzEluj/Aa8TiYqiJ/zWpUP7AVs7ZsAlVk6KMxp7vz6ruVAhJjCCUTePTI64jpaUiUXdLUX9o0kOPy4r9vuA1um8MPAN7qbscfmk+hezQEt6xColY570Kjy0QP/33D7QiqLgzEozgz1IfXz5/F+dAw3LKSOcUn7+RMUwQCAbE8u/CurQuXv1gnBNtGyLs7gHHVAPriPz7xZqw/NOk0IEPNVVJTjk0P3+MwAJFxG4ObHF0n29Dy5mn0NXVCT6YhqbLVHCLEjG3mzHsrmD8L6798O7hh4qpf9kkvuVygsoxwSwvOP/si2p9/AaHms+CGAUlVLRSe2uURbo+UTPY+jjN4CAGuGzBT1si3uyAfRTduROV9dyN/9UowRYUejdrsTvQqvo0CqiThJ6cO4EhflzW6eym5vz0u/NUVG7GscJbV6293zRA7Mni5tRGvtjYhaaThlhWL8S5Dk2c7AE2SURrIwmgqhaFkDNFUAhJlb8MLJgtxQGK0wO0999frb1tCCInjItzaF0Vk6urqWE1NjfnIZx8qMkbTWxKplEkmo8skACZLCPUMI39OCby5fkcdKBGOoWX/GRys240zO48hMhAGkxgkVXGm+N7tAVjXsVuJJ3OzBMAUGeHuIcguBflzS2Cm9KsTE7gg5Oa6DjOVgpadjaIb1qHinruQt2I5ZK8HejSGdCgMPToKnjbG3S+rMy8z1z/xi7z9exmDNwyYySSMeByCW3LkBWtXY/6XvoBlf/YtzNn6cXhLSmAmU44G4tUcSXEh4JEV7Oluw0vnmy/Z+DMGTAhBwtCR7/Eh2+W2MBnbulQmYX5OAWryixBOJ9E1GrL6BOw5F5FJjbmJ3mgE0bSV5qmSDEanR32YC8FdXg8t8gZ+sqaw9NmtdXWsob6eX+yz4J3SgJY3Tyw99eLxA9HhyJTSgHQshdnr5mP9527FUHsfWt9qROfxFkSHRsFkCZL6LmG+PSmYcV6CC7u1eGxqUNGUyZ06GRiXABsfvgtZ5XlXlEF4MicZOLdSA7e1CZODgxhpbMLg0eMYOnkKo61tSA4MQo/FYKZ1CGFPUxJMnIqywoSxCI0xSG431KwgPCXFyF6wADnLFiNn0SJ4S2eBSRKMZBJmKuU4pqt9ZWb9e+IR/MuRPUibpi32MYmef0KQ0NNQJRk3ls3BHVXz4Ve0cUg+HC6/w32deLrxBDoiI3BLygTu/0zH4HRHupxz4XN7jLXFlWs/OnfRka11daz+gvz/3VIA1NbW0v/5d/+Tv/h/n3gx3he+LZFOmoSQSdVwMsBbTmke+s92I51MQ75YmE/sYQr7xglh0YVlRoQJASRFgeZzwZvrR7A4B8GiHGSX56P9UDNOvnDQrhBcWjhnpHX4C7Nw49fvBpPYhEnGa2UJkwOwwEKmqqCMwTQMpEZCSAz0I97Ti3hvPxIDA0gOD8OIxWEkEzYbswBVFcguN5RgAFpeLjz5eXAXFcFVUAAtJ9tSFhICZioFM522B7roNaM2LOwcVgD4t2N70RoevuSy34UrU/+P62nke/24p7oG60sqJjpoe08nDQMvtZzBq+1NiKVTcMuKdf7MTIprMk1lWYr20v9Yf9sd1vlJLvpC7ziFsX3RIrKDC2hu7bGkFL0NKUx2NMDixk/p6Go4D1mVoXpcTunIsndqhZsmh2ka4IYJIQBJkaD53I6xZ5Xkwl+YBX9B0LrGuOXNDaDrZBsifSFIqnQJQiLWnECocwgnntyHlZ/aBJ68OuYELq1iYDdPmSb0WMwZsZY9bqiBOciaP3+Ctr3g5hg+YDtCZNKqcc5XGDq4biAdDtu7nl4zCsMXPmdNVvCfjUdxLjQEr6y8rwGdiacleZu/o4QgoLoQSSbws2Nv4kB3O+6qWog52XlOWpDpN7h3bg1WFpXimbOncLjnPCiIUx6cTjfAuYBHUVHi8f+eECJqd+6UdgDGOwXB7xYgix7R4zn4d6+eSIXjlSb4lMTDCB1r3OGcWye7wZ25ANWrwZPlQ6AoG9mleQgW5yBQmOW0BF8YVWTC1YyMWHdDO3Z+/xnIqjw5UDCewuL712HezUuRiiWuyY1+UeAws9HHb/h3Orkv+J3x49rX6uKCwyureK2rFb9uPDqp2johBLppIj1uKm8cpzWoXcMfSsaxprgc31qzecyxXiQtON7fjd83Hsd5OxJhlIFPgzQnAYRJQPI8vpEvL1i9dFZOTocQgpBLjQAAiLq6OlZEimJv/Oj5pyM6vhmJjpqEEmkqXpgbVv6uel3wFGUjUJiNrFm5CBRkIVCUDZff87YcXGTq3MI66RwQEMTxzEIIFC8sx5wNC3FuTwNkl3JJqYAQApKm4NSzB+HN86O4pgLpWNI5Wa/ZdRU24FzOZQoBt6Tg9HA/fnv2JNRJ9NRnyn5FviDmZuchaegQAjAEh2kLe3Db0eqc42PzlzoHU1RPQaYSVLsT0uIABJbkF2NeTj52tjXj5dYzCCcTTulv6uCfl+W5fX+YlZPTsbVuKyMXlP7erwPA1q1bBQDkLij5Rbhn5GEuhMImOyJs59r5VcVYdMdKePMC8AS9Fz1luWlFBXQcaYjTQios4pC+5k4oLhVF88vGkjwCFM4txbk9DZNKEjPUZIf/63W4Ah4EZuXASFw7oOD19XbQz8Uk9Mej+PmZw9akKr30Ud/MeO9na1ajMpj9vv+GEIKfHXsLI4k4PrloBaqz85y8X8ACJO+sWoAVhaV49txJHO7pxOQouSd8ZiqZgpdo3n8DgIVb696VDJO+h9Hy2tpaOv/GJQfcWe5dHs1FBMSkC+aUMUT6Q/DlBuHN9gPE6iKzQD7TeTCUUbAMaUjawEjnIFrfasSh37yOl//5STzzd7/E4Sf3wp3ltWeMrDmD6GAER36355I1BCY8aIkhHU/hwM93IjEcsyjIuLhuTdeg8cuUYVRP4cenDiCcSkKehPEze8JvY9kcVAazoY+T9TIvYPcd/9qEEBzs6cDxvi50R0N4dP9O/OLkQQwn4hPkwE3Oke/xYnP53OkABE3F7SI+RXnjvgVLDkAIssNq78ekIgAA2N6wnezgO+AvyvlefGD0DpEUZDJtsxnjig2P4kDdbmx6+G4beKIY32GQiiYw0jmI4a5BDLf3I9wzjPjIKNLJtAPlyqqMWx7+GAKF2Y4CkZHWsffnLyE2MgrFrU7aaDNEotHBCPb/xyu44St3QFZlmLp5PRK4hoxfohSG4Hj81EF0RcPwSPKlg36EIG2amBXIwsfmLQVg0Ya9RyAJSggSuo5nmk9AogSaZKn7vNbWjON9XbhrzkJsKa92ftfgHPUNR2Bw0yLunKQjMDknbklCkcf3XUKIuVUIVo93H3p9TwdA6okpIAg+jmdePNu1V0uo63WuT4onQHAO1etC16l2tB9uRvnKaoR7RhDpHcFwRz+Gz/cj3BdCMhKDoZuglIBJDFRiUNyq9UASKaz99M3IKslx+t8JoTjy5F70N3dB87md/oBJYxVcQHLJGGkfwFv/8QrWfeFWUFkCN647gWvB+Jld7fjZ6UNoHBmYFOJvhcdWmW9udj7aQkPWtS+CpwgIMMpQGciGNT5PsL+7HZ2REPyK6rQC+1UNg7EoukfDY++VEOzrbEHTUB+8ijqVKIAzRSZewc58cfHaF74EkPp3yf3ftwMAgF21u9gWssXY9187H+eJ3hsS4SQYneRYpxCQFIYjT+5F485jiAyEkE6kIEzh8AVKimx1BGJMOBQESI7GsfTedShfUT1m/JTi7J4GNO0+DtXrmrLxO2/TFJA9Kvobu/HWz3di7RdvAZMsYtLrTuDqPvkJgMcbDuJ4fzc8kzV+QhA30iAADna3Y0/HubEGqguiBN0wMMufhb/acLsDTJ8Z7IU0ruya6RwsCQTxR/OX2bgCEE4l8YfmUxbt9xSyf85N4fcGaKE78BghJFG7c6e0Y8sW472d3PtYW7ZvMQVA1m3b/GviZs0KkylsCrHJpAKEWXn2cOcAuMmhuFSoXhdklwIqMQf1z5T6KKNIjSZRuWY+Ft+1xg7vLYBwoKUHB3/zGiSX+s4dwYRMqngpTA7Fq6L3TAf2/+wVmIZh4QvXMYGr1viFAB5vOIQj/d2TnqPPMPusKi7H4oISRFJJaEyGzBhkQid8KYSCEoKgyw2JUkf8I8/ttbj97Z9TWIrB982tcWr/BATPnj2FoUQMCmVTmezmRJKoyxADtxZW/hoCBLt2vS/7fH81LgJRX1dHCSFRd7b3UbfbTUzOp6JSAMIIJEUekwm3Df7Cu0AoQTqeQm55PlZv2zQ2UEEJkpE43vzFKxDcqhhc7A4SANxWF5pMOUyYAopbRe/pDrz501egJ3VbZoxft7qrDPAzBbcGfPq7Jh32M0IQ19OYl1uALyxZi4eWb8DGsipE0kmn6Jzp+R//ZXLTcR4QArfOnoe5uQUYTsaRMHQMJ2PYWFaFVUVlMO00pS00jD0d5+CeBD5xwaEqNLebZGmuRyvy83u21tc5pJ/vbdrv/0UIAPSf6vcceOLlI6lIosoQpsAkyULeLwjDDROyS8Ft3/o4fPlB5/QVAF7/4bPoPNEK1aOBX8Qghcmh+tyouXMVjjy5B9wwHWaaS34v9vRgdlke1nz+ZriyfDASqWu/T+CaN34OlcmI6mk83nAAjcMDk6L1yhhv0jSQ7/HhO2tvRkDVnHLek43H8WzzKbhk2anxZ/aoyU34VA1/veFOeBTFOuCI1f772vmzaA0NYXZWDm6umAsG4oTO/+/ALjQO9MElT6ElmRAuCCFBRRvYml06f8nixSF72Oh9XZBegjGK+vp6WlBTEPUWBL6ruTTC+QzGwnZ5TwiBdZ+9dYLxE0pw4g/70XGsBYr34sZPKLHYhfMCmHPDQqz7zM3OINGk0gEuILtVjHQMYM8Pnke4axCKR70eCVzBlWny6U9E8W/H9qBpZHDSYT8hBDo34ZFVPLx8AwKqZl3H3ocfnbcEn1m8GrrgMLjplPGEEJAow2A8hgM97ePq/IAmSbh99nw8vGIDbqucD0YsfQBKCHa3n8Xpgd6pGT8AbhrC7fGQ8qycnyxZsmSkrr6evl/jvyQHAABbt27lAoJseujuX0k+tUsilJJJYgHv/UAsSa9l99+A4oVlE4z//JFmnHrxIFSvZg/BXNyDcM5RaKsKly6twppPb7FoxCero2lySJqK6FAEb/zgeXSfbLfkz2eQt+D6ushzsI3MJys4MzKAfzm6Fz2x0UmH0mNDOQRfXrbeZuW1DDUznMaFwKbyOfjqio2QGUPSzu8z70dlEp5pOomu0bAz0msK4fQMGJw7FYrTg334XeNRaFMo+TnehzHqJXTkppKSfwNATtnNezPiAAghon5rPSWEhLJKcv7B6/cRg5vTvvMps1SG521eivlblk4w/lDPMN76z91gsvSeOIMky8ibU+KkErPXzEf1jYuRTqQm3ecvuCU1ZqR17H/8FTS+chSSJoMyeh0cvEz5PgXglmTs6mzBD07sRyydgjYVEg1iAXSfrlmFBbkFMDkHIwThVNLR48s4iSX5xfj22puR4/YgZqStcWIbgEwaafzrwd04NdgDSggYIWCEghEKiVpg4L7OVvzg8BsTxEOmcC+Ex+slhV7/P8zNLe2sq6uj79X4M2kMYAIWQIBeAfeR/1O3PzEcXWRYkr3TkgxnxDwL5s7Clq/dO6b+QwA9kcbL//w7hLqHLX3AdzI4QmDqBny5Adz5l9smCIq+9sNn0XmyDYprauF7Jg80kmmUrZqDJR+9AYpbQTqZBqXXcYGZCvk1JiFtGnjy3Cns6W6DwiTLkCZp/IwQRNIpfGz+Mtw9Z6Fl/JQilEzgH998FbOzcvD5xWsgUTphoGcoEcOPjuzF2eEB+BQVpp33G6YJbvf6LyuYhXyPDwDQOxrGgZ7zaBjshULZdBB/cDBGclzu5j+uXLy8uLg4gUvI/TNLmsTGF3Vb69g2si32+mMv/JVI6E9FRtMTuP0mb/wERjINb04AN3z+1gktvYQQHPzN6xjuGIDmcV007x9vnKZuIH9OsdPKSyhBdCiCgZYe+3tTbBay80PZraL94FmEe0aw7BMbkDu7EHoi7bzm9TUNIb99r72ygvbICP6r6RhawsPwysqU0i9CCMKpFLZUVlvGL7gFBBo6fnhkLwZio+iPRRBNp/ClpevgU1QnCslxefDNNZvxs+Nv4VB3u9PEI1EGAYEjPR041NMB1Z5hSRkmGCVwSfK0UN2Z3BTBrCCd4816tKSkJH4xws/35QAn8+K/aagXtbW19PPf+XLz+WPnbhUJs9zgBidTGTsjBIJzyJqCTQ/fDX9B1oTQv+GVw2h46bDFDDzOeB26K5IZ5qGOA1h46wpLodjkIJSi80QL2g42W01G48qJl6ovcGFCKikyEuEYOo+0gBAgd3ahpZyj8+tOYBpCfoUxyJRhd2cLftl4GEPJODySMiXwjIAgzQ2sKCrF5xavQWa2lBKKnx7bj5P93fAqKhTK0DkawpmhPlQEc+BXXQ5dmswYVhaWImEaODPYB0WSnJhaYRIUxkBh9f2rkjSpWYR32HJcUlWWI6knvrZ8wzcBmN/4xjfEjh07Lj3dniwIs6hhESGE8OKFZf9T9bkgOM+URKe8WIYJ2B7y6TlzHseeetPq8R83M02oZeipaBzpeAp6Io10NIFULAGX34PcykInrQCAntMdF4k49CnTgGVwAQjgxFP7sfdHL2K0LwTFq9o/v44NTMbwAcAjKxhMxPDYybdQ13wMhsmhMclpuJmCBwAA3Fg6BzK1aLspofjtmaPY39UGr6zao74CflVD01Af9nS0OGQp42m8PrlwBT6xYAWShgHO+QSlIDEOtJwu9h8hTOFWNV4WCP4VISTWsGgRudTQf0oRAADU21HAtq985uyX7//cbKT48rSui6lEAZQxpGJJjPaHUL5iLggjiA9H8dpjz8LUTSvNEGMnfzqegq8gC3M31mDupiWoWD0XebOLkIom4cnxY95Ni60xX0qQiiVx/Nm3rOtQAkopkpE45myoQW5lIXobO6G4lMl7aBunkFQFkd4RdB1tgeAC2WV5kDUFpm467/v6erfbKCAE4JIkCACvdbXgl2eOomN0BB5JmRpP/gXhP2ARc+R7fCjxBfByayN+33gCvnE9+YwQjKZTWFo4C59dvAbM5legGaIUG3+ozs5DgceH4/3dMLgJiU6ttfdd0iFT83lZnqQ+8bXlG//XJ96B62/GMIDxazuAHQJk1toFf9P88sF7aCqRRUC4gJikkhCH4tbQ3dCO1gNnMHvdAuz52YuWFJh7nBoQAfRkGgtuXY6aO1dDcU0kUqi+cTHiodhYFEEIBlt7ERsehazJAAgS0Tiqb1qMtZ/eYuVo0QRa9jdC87mmFKYJziG7FJiGiZPPvIWek+1YcMcK5M8vAbiAkTJsGrTrjuBC/ynscF+iFE2hQfyh5QyaQwNQqQT3FEN+J10c92+FMaRNHY8ffxMNgxU40NUOlyxNAPsSho4SXxAPLl0HLUMmIgRODvaixhb1ALFO+NXF5chyufHY4b0IpxJwS8rUI5ULtxcF8VJ59Ia8ih0cwMJLLPtNWwQAADt27xZ1dXXspjtuCn/zj78BRI3book4p1OEwQkIRvtDGGzrR9fJNrvhZixn1xNpLL1nHZbeu87uzeeO/iDstEF1qxMefPMbJzFwrhuypiAViWPhrcux5pObbcFSoGRRBeIjoxjpHgKT2NSOGTvqkBQJ8aFRdB5tQXQgAm+uH57cgM1/eD0iGH/iy5TBJcnojUXx+3MNeOpcA4YScUt0Y4qnPrFP7ZRhIGno0LnVzJMwDFBCIFGGc8MDVqku0/BrswD5VA1/snoTclwemJyDUopnzp7CT47ug85NLMwrdHoFhA0OLi4oQdPwAAYTUYuBaLrSIm5yfzCLzfYG//G+BYv/s07UsUdIDb9iDgAA6urqAIB+9k++dPj80eaP8LhebHDOCZkCd6BEkY4lMdI5aFF+X2D8xYvKsfZTWyykHWScTsDYlxBjP9OTaRx9ci9M3YQeT2LxXWuw/KMbHCBQCAEmMaTiSXSfbIN9RNvzBVNzBExmoJRipKMfnUdbkAzH4S0Iwh30Wg0mBv9QOoJMHp0x/JFUAi+0N+E3zcfREh6CQhnkd5DUuqS0khCkDQMG56gIZOPGimpsKpuDVSXlqArmImWaGIiPQpVkULvPn4CAg0NhEh5avgHlwWxH6vv18+dQ13AEflVDw2AveqOjqMkrtngC7H3nU1SsLC5D52gYfdEwZMam7ASEAGeqyoKSfPyBlTc+6Nm+3fgGFk0K+Ju2FMDeuELUCkIIiZ/4w4E/SUeSr6RGwjIYnTyBqM39J1/Qt5+ZApi7sWbCCUIIQcexFjTuPg5uclSumYfqDYtsB2HLkFGCVDSBFX+0ETV3rHKIRCAASimaXjuBQ0+8AUIAV8CDdDxpiZG61HfpNnw/MZv1rmW776B59wl0Hj2H0pVzULF2LvyF2eCmCSNtOJHDBx3cIzZKzihFfzyKN3vasb/3PEaSCWjSWLgvpsH4Y+k0yoLZuG/uYizOK3qbo721cj52nW/Gs80nkbIjAkKApG7gjjlzMTcnHzo3IVOGkwM9+M9Th+CWZcfQD/Wcx3Ayhq+vvNFR+BVCQCLUJvkk03XfREDTxOLcwj8vICRaV1fHyLZtU84vpkWrecfuHWJn7U5p7UMb2h/69IPZNCVuSKaSk1MTejdjMgVUrwuL71oDWVMcbvqWN0/jjZ++gEQohkQ4ivOHz8LUTaeFWFJl5FYWIqeiAAtuXgZwOKU/QgkaXj6Cw0+8YVGRyRJueeR+lC2rQm9jJxKhqM1NMA1JLggkVYapGxho7kHX8VZEB8PQfG64s72QFHlcOvPBiQoypz2lFC7b8LuiYbzQ1oQnz53CyaFeCGH1zk8XyEdtia6N5VX4yvIbUOILOmh8pnfAas0lqAzmoC08jM7ICCRmaVVIlOF8eASKJGNOVi7OR0bw/UOvgwvuEI5QQmFwE6X+bKwqKgOj1DmUHjuyF8d7O+FWpo5dCG6a7mCAFSqux7+4ZO13J1vzf5diyLQ8ZLJ9+3ayffv2wMv/9NsDkZ5Qlc5NTqapQxB2O6874MFd/+2TkG3gL51I4bm//y8kQjFIaqa3miA5msCye9di8UfWOECgAwraLMKEEpx47gCOP/MmFLcL3DSw5lNbULl6HgAgEY7h4G9fR/uhZiguFYSS6Snp2VoI3DRhpHTIqoy86mKUrqhCXnWxxWrEOcy04UQq15xQiW30hBCodufbqJ5C88ggDvZ3onG4H3Fdh8oke45/+jDzjPFvrqjGpxetAgCYgju9++NXQtfxi5MHcLi3AyodC9Uz+n1p08Qts+ejaagPneERuGRr3kAiBHFdR0VWDr61dotTmmSE4tcNh/BKSyP8ijZ1EFAIIWRGCjyB85+ZvXhtZX5+36VM+814CjAhFbD4x0cO/+b1r+rR9LPpUJgSQsW0OBrbiNPJNFLxpOMAjJQOPaGDSmwcG5CA5nfh6NP7AEKw+K7VdgVhTNiBUIKjT+3DyecPQPW6wQ0DroAHhfNmWSGXacIV8ODGB+9EXmUhjj39JkzdUjgSU2UdErAkughx+At7Tp1Hz6nz8BUEUbigFEU15cialQvZo1hU6saYFNrV6BAyYB5glc5k27BTpom2yAhODPXi5GAveuOjllAGk+CxO/mmUx0ng9zPyy3AJxesGFfOozjR3429na0QQuCWynkIqBp+dHQfWkND8MjyBDoJYX8OlyTh5ZbTUJgEzTZ+Zo8N53i8eGj5BmhMcjCCF1pO49WWRrs9eMoRujAB06+6WInm+nplQUFvRrZvuu6XNJ2bgBDCRV0dI5+48eVd33v6/8HAn4ejYYNSOi2vQyWGdDSB4fMD8Ob4wU0Od9CLovmz0HqgEZrPY/H2MQpTN6C4NXiyfReE0xY70MH613Bm51Gns5AwhvhIDC/902+x+oEtKJpf6hCUzN+yDLkVhdj/650Y6Rp0lI2mpavLwQgUQACxwQiaXj2OljcaEJyVg/x5JcirLoG/MAuKW7VKTrZDcKKRDOHRZXIKGbVhMc7oJMIg2+3gCUNHe2QETaFBnB7uQ8doCEnDgEwZVCpZKubTbPjjHREjFPdVLwaj1Ontf7HlDOobDoMRAlMINA71QWESwskEfLJqY0kTzhunju8Z13JM7bFhVZLx1eUbkO1yO8a/v6sNT5w5Omk+grej/tz0ZgWlEtn1oy8t3/CH2p21EiHEmFabnYHQj2D7doLtX3e/+uieveHukcVpU+fTgQeMVQEqsPmrd1t6gZQiEY7h1X/9PSJ9IageFXoyDSZL2PjgnShaUOoIX2bajff/aifO7j0F1et+W1uxqVv3d+HtK7H4rtXOJCGVrCalw7/bg5Z9DZA0xZLamu5NbINQgguYugFuWF2G3nw/sssLkFORj+CsXHiyfVb3IbFATm5wCz+wdu7bnjCZ4Cnew7idMOXtl8o0wUiEOjlvyjQwnIyjIxpGS2gIbZER9MWjSJo6GKjVEkvIBKOaiUXsqb7yQA7+cv0tzvttCQ3hH/e9DJkysHFyXQDsKMWAbpoTjDbTujv+exl8wuAcD6/ciCX5xXbTD0PTcD/+5cBuq50YZOqfUggOWaL5nkDT3yxYuZ5897shsX27mK7Qf0YigLGqQC0hpCB66tWDX9Fj+ivGUEjjBIJM0eEILiBrCrpPtaH9UBPKV84FN024gx5sevgjePVfn0KkPwR30IMb//gu5FcVW6e73bFl6ib2/fxltB5ohMvvdshBHFoyIaw2ZCFw/Jn9GGrtxeoHNsOb44fgAqpHw/rP3oLcigIc+f1eGGndAu6m0wmIsVBaUmRAtZzWaG8Ioc4htO49DcWtwpsbQHBWDgIlOfDlB+HO8kLxqJBVGYQRQBDn1Mp8NtsCnfd7YW5GbIkry3Co08c+JtbKkTZNRNMpDKcS6IuPoisaQcdoCP3xKGJ62hmIkSmFR1Ic5J9fBr4EAsAwOUp8AYduWyIEraFB6CaHW1JgCO6M96ZMAwlDIMftxexgDsoCWZApw0A8ilMDPeiLjsI9jrCD2HRh2xaswJL8YuimCZkx9MYi+NGRvRBcgLFp6fcXJoHI1tz6XF/gyyQYHN5aV8emM/SfsQggs+q21rFt9dvMPb94+Rvh5v5/DUemJxUghICbJpgs4eZH7kd2aZ5zQo90DWH/r17Bqm2bkFteYJ3uZKwXYO/PXkLHsXNQfW5rQIgQcJPDSOtQXKoDXgE2J0EsCU+2D8vvvwFlK+bYfeAZXoIh7H38JYT7RiDJ0owTgpBxxKbWiW/pKhICMEWG6lHhCnrgyvLBk+WBK+iF6ndB9WiQXSokTQZjDFRmVku1jc4SAXBiOR1TcLtJhiNlGEgYOqJGGpF0EiPJBIaTcYwk4xhJJRHV00ibhuU0qUWQ6aDgM3zSv1v+H02ncevsedi2cAVMOzQ/NzKIf9j3CohdMtZNE6okYW52PtaUVGBRXpEz6ZdZ0XQKvzlzFPs6Wx0twczfVgSz8fkla1Hg8SGUTOD/vbULvdGIQ/Y51WVybvizsqQ5Ls/ffnnZhr+bTtT/sjkAAETU1VH6wCfNV//1qSfj3eH7I7HRaXMChm7A5XXh5j/5KPwFQXCTTxhJzoTCmTmAN37yPHpOd4zl/Ha47wp6kT+nGG37z4DIDEwaGxVmkoR4aBQliyuw+av3TqjRp2NJvPTo7xAdjExaiWi6HEKG6kxwDs4FwK18ljAKyhiYxMAUCVRioBIFlSUooIhky2iu8QCmsI3fhME5DPukz/w7UzojdkSQIbdwaLGAy/L5yUW6y8a/NrVP6GWFpfjayo1O3wiBRcTxSlsTZEpRmZWLVUVlmB3MGTM6wSc0j2XIOn5w+A0c6emA287rM6+R4/bic0vW4JXWRhzr7XQ4AaYBEzIVr4cVKa7n/mztlvvrAb4V4NMd+mcWm9EntnAh2bRrE7n73z62a+Bc1z1mwsg3uTm1seHMG5cYUrEUuhvaUVJTYdGDZcL9ccafCMfx2g+fRX9zF+ypxTEnktKx5lObUXPHKnjzAug/241ULOmoCxtpA94cPzY9dI8FwDmpscDrP3oeA609kF3qGCpvx9TOiPFMa4yPm78kjIAxBiZbxs5kCZQxCyPgHKZuQE/q0OMppEYTSIZiOFQBdMs6RhMJjOopxHXdzoc5BAQorDZZhTJrJJdZ5Tz69pef0bA+Y4y6aSJl6kibpvXFLRl5ZjskIewoQE9jTUkFVElyNB9L/Vm4sWwObpg1GzV5RcjS3FZqAuE4M2pTeI93OHOy8nCg5zzSpuFgPgqTENfTONDdjsF4DJokT8vJL7gQQmIkz+XuvKOk9P6iYG5oIUC2bNkyY7d5Rh3A7t27xS6xi3izvKN/8Y0/ezMVTnxSTyYVQaYh+hDW2HAyEkPPmQ7MWlJpsfyMM/74yCh2//sfMHS+fwJ/IKGWwtCiO1di/ual4IaB7NJ8zFpciXD3EELdQ5AUGdwwsf4LtyKnLH/CdU+9cBBNr5+Ey2+lEnoiDdPgDiW0ntJhpk3rJJEYcDmjA/F2y8y0SlNKAIlB5UBXpRvdc71wG8RqgLKpq8ZOdvJul7xsIb0pBOJGGhJlKPYHUZNXjCX5xZibk48Cjx+MUETTKcQMHRK1AMdIKgkAWJRXNDa6a18PBDBtivjMZw2nkmgY7EHz8ADckgKPYqlQcSHgkmX0x6M4NzwAxe7rF7CcDgFxQMXpeHIc4Dk+H12ZU/SJTVWLjgkh6JYtW2aUdVaa6YdICOE7a2ulJR9de/DNn7/yHXD+45HQsEkpm3J/gDA5ZJeKSM8IXn/sWWz66r3QfC6AAKMDYez+wTNOZWCCYpCwIojR/hDiI1G4s7zgpgl/fhBbvnEfTj53AMf/8BYWf2Q1ShZVTJhF6G3qxInnDsDlc8NI6SCUYva6BSheWGb19wsgHo6h/2w3uk61IToYnt4moik4BgGAcoGYRtE+xwXJEDAvhPqvkpUJtX2qC5sqqrG6uAylvqwJJ3QGYOyIhLCvqxVvdrYioafhVVS82tqEXLcXW8qrL4goCCRKYHKOxuF+vNXVjtODvQgnE9C5iVyPF99euwWFHr+T95f6s962U8cDqdOxuDB5VnYuK1d9f37PvCUv14m6d5X1vhYwgImgoA1kvPGj5/4l3Dr4SCQenbb+gAyPYN7sItz8jfsRC41i1/eetoRCXWPGfyGfezqegjfXj9Wf3ITiheUTuu76z3YhuzTfQvlt8CgRieOlf/ot4mFr1NgV8OCGz9+KvNlFF31fydE4mt44hdOvHAE3DEiKckVpxAUB5LTA6RoPuqpcUNIC4ipsMCQA4oaOlUVl+Oi8JSiwefUyTLvjf4+NGzxtDw/j5ycOoDMyApekIGnoWDurAutLKlHg8VnPNTaKpqF+HO/vQkckBIObTjciIxQjyTg+Ul2DP5q/dGwAqOMcfn78rWmr77+98CMM1eeVSl2+x76z8saHfl1Xx7Zt3cZBZt41X7bHLyBI/dZt9IEnfmu+8ujvno31Ru4anQEnUDivFIlQFOH+EahubVz3HAHXDTDZJmoQ1t+Yug7BBWruWIWaO1eB2HneeJgioyr02o+fQ8fRc86Jfss3P4qsktwxCTNKJyD1GVBysK0P+/7jJUSHIla78hWIBAQBJENgJEvC0XUBsKuUpIiAIGHquLe6BvdU1zgAXQaAvPjpOQYCRvU0fnDoDTQP98MtK4imU5Apg0dWQGzJr5RpQKEMqiTZRGDCSRFGkgk8sGglbp8933EA/9VwGC+3nJmqeOc7Gb8puTRWrHn2/fnam28k27eLmaj3v2OkdRkfrDi1cKH4HyanCz6y9kuKXz2uyZokIKYlzLHIRFT0ne1CdPgiJ79pwpcXhJ5MW8NA1KqvM0mCJMs49sx+7Pr3PyDUPeRczzF+SnBm1zF0HDkLzedCKpbAvE1LkVWSazcjWXk05xxD7f2IDY86xs9NjtyKAmz5+r1wBTwwdeOKtPFa5T7g3Dw3QAmIuJJGfvGTJ9PDf1fVQtxTXeP0D2SwiTND/Xiq6QR+duwt1DccwZHeTgeZz9B2e2UFD63YgHyPDynDgFdRIVOKhKEjrqchUwq/okGTZCQNA2luIqqnkTQMDCcSWFxQgo2ls63ypk0QerK/28r/p//0N5mqsmxVa7ojr+JjhBBeu336+vyvfBXgIqDgN7ZupWsffnD0v9dufz01OPrxZDThc8awpyHPZRKb0KGXKQMWzCnBlkfuh6zK6GvqBDe4rfFn/Z7i1tB/rhua14Wi+WXO9Qi12IT2/fxlSKoMbgrIqozVW2+C7FadslFsZBS7v/8HnHrxEFrfOoNIXwg5FQVQXAq4acmi+/KDaDvQbBGOXO7QX+foLNfQU+mGbFz+0D9zghMb2HNAuXHGn9B1LMgvxBeXrHP6CCgh6I9F8ZNj+/BM00mcGexDR2QELSMDONB9HqeHelERyEFAczk5uSZJKPD4sL+rDYwS57WcMiIBIqkUVhSV4YGaFSCEQpNlbK6oxicXrnBQfUopnjt7God6OuCS5emNxwW4YIRme3xDqwtL7t84e97ZrXV17Hs1j1zWHJFdbu9f39AgdtbulNZ8YU3fn//pd97So6kvpqIJCDp+VGfaAEhww4Q3N4CND94Bd8CD/DnFyKsqxkBLN2LDo5BUxaoKxJIomFuCNZ+62Tm9CQHS8RR2//BZpKIJMFmCkdbhz8/CgtuWWyG/XWY68uRetB1stCTKDRN9TV0IdQ2ibMUcUMnqLvQXZGHgXA8ifSPvLWwyjUUBKgRSKsWZ5T6AUev0JzNt8GNGBwA650iaBtKmiYDmgirJzvz9+D/64pJ1yHa5wWEN4/TFRvHo/p1oDQ3BLStQGLO/JKhMQn9sFIf7OrEgtxBBzWVLeQH5Hh96ohGcDw876H1mxYw07qxaiM8sXo08txfLCkpww6xKVGfnWfMD9sjvsf5u1DUcdqi9pzMfNohAfiBIV+UWfPHuqsWv1O7cKX3vnnvMy22PV0TBYsuOLcbO2p3S0nvXvZ63sPgr3qCPgoNjBvBoQzeQX10MX17ACskNEwXVJbjtWx9HxcpqpONJmCkDskvFmge22JyB9jshBId+t8cqC6pjzER83Mx+xpAS4RhkTXXm/t1ZXvSf7cZAS4/1xO2UonDeLEvT4HKlAQRghkBbtRtJNwM1Z+70z5zymfJdwtARTadhCIE8txcbS6vw5eXr8f/deCfunrMISUN3nETSNFCVlYvZWbnO0A0XAvUNRzAYj8Jva/WN/zIFh0dWEUul8NOjbyJh6BM8241lVc7svoMXQODBZevxiQXLAFjXyFzPyDSAEYrDvZ34ydF9droyrWicMIUwfR4PZimeP76nekl97c6d0o4tW4wrYYsSrtDasmOLUbupVlr50Rt/8tpPn2ekHT8MhyIGZZRN1/kkhIDsUtDy5hmkRpNY/cmb4A5aJT/N58bGB+9EXtVxHHlyD1Z+fAOCxTkTSn5n957CuX2nJ2gRMFlCdDCCSO8Iskqs3yeMoGr9QnQeb7XzBiv3Z4oEzedxaspCCLiDHvtUnPk0TxBA0gWGcmX0lGqQ9ekxfmIPFWVaozPhus5NpE0L4wiqLlT781CdU4A5WbkoC2RBZWPbbU5WHryKBkNYwzQm55ibU+DM4RMAPdGwA+YZ71A9MQWHW1HQERnB7vNncefsBc6drQrmotDrR180Atkm+oAAQomkA/BdiEFE0ym82HIGL7eesXojpnHgiwDQTW7mF+RLczTf9s/WrPrxlTT+K5ICTMAE2nfz2tpa6Yvf/srBbz30JwpNik3RaNykbHq1tZjEMNI1iM5jLfAXZFmiI/ZmyK0sRPnKuSioLkGm0ZRQgpHOQez56YugEp0A2hFKoSfSAAVKairt4QCCQKF1za6T7dZAjh2LEgL484PQfG67vNiN7pNtYIo84w1CmX6r00u9SHkksPdgqBo/7SfexakagsPk3Jqgs8dvCQGy3R4sL5yFO6sW4r55i7G5vBrV2XnIcXmsXDzTckAIPLKCEwPdGErEoVCGNDdxU1kVirwBp9GmPTyMfV2tUN6LU89+BqFkAjfMmu0QjDBK0RIaQntoxLkGIQTH+rtxZqjPPtkF4noanaNh7O1sRV3DYRzr64LGpGmd9iQADG6awZwcqdLjf/TBmjV/9V9CsEcqK80raYMSrvDasWOHUbe1jq3+7M1/c/CXO12c828PjQybTJoGJsVxm1Zxa0iEY9j9789g0R0rsfiuNSDUGgbKpAcZCSojpWP/r3bCTBsWAcg4/kDBOWS3inP7GlA4rxRly6oczsGl96wDAJx47gBUtwYQgtOvHkXbwSZUrp6H6psWo7+lB6AzHwFkav7nKzSE8pR3rfln5vvNTHgNMeG0Hv97siQhKCvQmIyApmE0nULbyBAKvX78xfpb4ZGVCeW5DPBGxiE8GeS+OjsfzUMDgGSdvhmdPxCCI72deP5cgyW19R5GKGBRfPfHR3E+PII52bkOa0+u2/u2wSSfoqA9NIyWkUFokmQTh1qzD4pNVMIz05PTBfdz0wxkZ7Myj/+7Dy5a/R3U1tJtM6Ssfc1EAJlV11AHCEE/88SXnv/mg18PkAS/IRaPm3Q6VTaFAGUMRGLoPtWOwdZe5FUVQfO6rFLeOI7AQ0+8jo6jLVA8mmP8wrTGSKkDCBF0n2hFTkWB5UDs07VwXimYLKHrVCuYLNscgCb6m7pw/shZjA6EZ5z4UwBgXCDhoji93GsZ4TsAfxmwjlEKr6Iix+1BoTeAcDIxoTRDCUHc0HFPdQ2+sGQtbiidjfWzKqEwCYd6O2BwjqUFJQiomhMxEbuMdnZ4EC+3NkGAo8Djd/rvuRA41HMekh0BLC8sRSSdxOPH9uOl1jMYTSchX5DDvyOYZdN+L8grRIkv6DiZ9vAwGgZ6J0QRAoBkg4nOScgYVCaBEjrtk4wmN01/dhYr1LzffWTp+u/UCkF3bd4sdhByxbsxpKvBARAQIYTA9u2g5HM3f2ffT14iIOJbQyMj0x4JAIDmc6GvqQMvP/oEVn3iJpQuq7IGiShF28FGNO0+MTY7QABhcGh+N4y0gUQ4BsWtOhWB1x97Djf+8Z0onFdqE3IAi25fCcE5jj39JhSPBkIJFK8Lekp3NAxnOvYnpkBrtQspjUF5h9w/w5V//7wlWFtSDpVJUCUJjFA80XgMzzWfmjDlJoSwT0krZwcATZIhU4a4nkbjUD/KA9noGg2jLTSEM0N9aAsNYTgRRziZQExPYkn+WKpVEcxGltuNcDIBlUn4XeMxhJIJ6KZpMe/iEqcML/IZk4Zx0WjrQg7C6eQknGj8wgxkZ7N8xf3ony7b8J1aIeh2QJCrwPivGgdgb0ZhPwRKvnzbt/f/7BUA5FtDw0MmkyU2nU+HmxyyS0MqlsLrP34e8zYtwYo/2ohIfwgHf/O6LR46ZiTptIFVd61GbmUhTr1wEB3HWpCOJyG7VZhpA6/98Fls+NIdKKmx5gYEF6i5czXiI1E0v3HKjiRsodAZfuwZ4G84V0ZfqfaeNX9KCPZ2nsMNsyrhHkd9dc+cGjQN9aM9NARNku17AQwnYhM+gl9VwQiByiTs6WzByYFunA+PIK6nAcCZJMx2u3E+PIKUoUO16+weWUF5IBsHY+fhkRlCibjFLSBf+nRdRlwk1+11PhcADCWiILgi/c7C5Cb3Z2ezQsXz6DdXbPj21Wb8wBUqA76bE8D27UL8bS1d+4Vbvp1dlf9obm4eMw3TnO6k2eoCZJA1BQ0vH8au7z+D/b/eiXQsBSqN5Z1CCMiqhEBhFgIFWbjh87fhtj/9GEqXzoaZMiDZUlJv/PQF9J/rtsN7C+1aet96eHN9dvffZQH+QQRgUqBlvsciQxHvgY0whp7RCH524q0JYpYKY/h0zSrITAK3W3EZKCKppAMWAoBX0SDblF/D8SiahvrBOYdHVuCRFUjjhDeH4lG0hUccHAAA5ucUOvdaomzCz953HksokqaOsoDF6iPsFCNtmjgfHnmbvsRleAbC5IIHc3LYLO3qNf6rzgGMdwK1f1tLV3/u5m/nzC38P4FAkAmTjyPLmr6UQAgBze9Bz5kODLb0QtYuGNixZwaovYlMw0R2WT5Kl82BqRsWCaUsgesmDv32dWtCkBBwwaF6NJQsqoSR1gEy87c6c/p3lWsI58iQ3kfHHxcCXkXFsd5OvNhy2jk5uRAo82fhY/OXIqFnUhcgpqcdA7McgAKXrNigm6XyM77sSQicVt1oOo0jvR0TovV52fnw2GnGOwXhdBwRiPX/xHFCjFKkTB2MUHx03hJbkMO6TuNQH3qnSZnnUjaVAS4CQT+r9ub80yPLrl7jv6pSgIulA4saGtjKT97013t+/EIbOsQPIqGIIIzw6XZcgnOHBOTCk4IQAj2VRjIStzedLSUmM0uqPKMV71IQ7h1BpH8E2aX5ALeigEBx9mU5+QUAagrE3BTnq1yQDLzvmr+ww/Gnm09gdlYu5mbnO80xm8uqcXqwF8d6u6BKDLF0CinDhCZJdogvwS0rVmpAMGHa0uQcacNykpokoyKYiyyX2zJkG9zL93hR4gvYiPzE0D9TQUgYloHLzHp9hUn29U3opokslxufqVmNudl5tvKQNfX5cmujA2SKy2L74ByC+LxeWqBqD39x0Yofbq2rY9tnkNHnA+kAnEgAMGs31UobvnzHDw//7g0unen+Xqh/RBZUmASETbPjfqc3AmEKdJ5sRfGicmRGWUpqKlC1bgGa9zRA1mToSR15swvhywtivLqEnkxfnplLAlBDoK3GjbSbQb6EUd9Mr7zgwC9OHMRf3nALvLJql/GABxauRHtoBKOpBNLcRMJIQ5Mkp2MvMyU33tBSpoGA6sJ8fxbm5RagKpiLUn/QqdFnooRMObBpqP9t7ytl6DCFwOysXNxZtRBZmhuvtjWidWQIBufwKAoW5BZic3m11T5sRxGMULzYegYNg73wztAI70X2DxeU0BxfkFe6/A9/afn6x7ba0t1Xs6SLhKt87dht9Qms+NjGHx16Zk8TOUnrYsORgqSeMhhj0kzndkJYct9tbzVizvqFyC7Ld0Z913/+VuRVFeP8kbNgioyl966zJcvGNP76m7vtmYGZe59Ox1+BjL4ydVIdf1wIqExGz2gI9Q1H8KWl6xwjzXa58cCilfj+odcQS6cRTacsSi1YdeSAqjlVgUwn39YFy7GqqAx+Vbto9WH8qs7Ox4XFHgGgIpiLm8rnYE1xOZj9N19aug5J04BhmnBJssMHYHLu0Hod7D6P3585DrckX5bcX3BuME2VfKqrb7Yv51NfXLxqZ8b4r3b7uuodAABsq99m1tbWSivv2fDauX1nbj+/v/HXsf7wwkgiajLKZraXwR72MQwDex5/EZu/di98eQGnP2DOhkWYs2HRhN/n3HIQg6296G3qtJqJZnAjEgGYDGiZ64EzDTOJY4cLDr/qws62JpT4g7i9cr5jjMsLS/Bn624BYA3ajM/jfYo2wbhThg6vosJvO4bxjZ3RdAqhVAKzfEEHR6gIZiFbcyOcSkIiFqeCYZpYU1KB9SUVACwufovRi0BjEsAsXgfDNvzMa7zU2ojfNx4HI2TGQ397BNmUvW6pxOtvXzer7GMb8iuP1O6slXZs2WZcC7bFcI2s3bt3c1EnWPadeb1///ijvx1u7quUOF2USCVNQgkhMzxdwySGxGgCncda4MsLwl+Q5egJWB2CY6AXoRTJaAJ7Hn8RyUgcbAZ9lDXqK9BRqaGnwjWlfn9CgLiextKCUqwsKrVKarY/4bAGenLdHqeHPtNa2z0axsmBHih296DOTTBKsbKoFIQQDMRGcayvCy+1ncGTjcdxpLcDN8yqdLr8FCbh3MggOiJ2y66dGpzo68JIKokyfxbcsjJhutAywLER46bhfvzy5EHsamuyhEjeZwPRFA4GwYXJNb+X5avu528vmPOx1cXlTXVCsEcqt5jXil1JuIYW2UbMuro6VlhY2AdKPrH/Jy//K2uXvhEKhSCI4NOtRjwxzLN4AJKjCbz22LMoXVqFORsWIW92EZjMxmrNQqD/bDcO/+4NjHQOQnYpM8YAJAjATIG4m6K9yvW+UP93WhYZh4475yzEx+ctdXCRMdf6zhf2jev+E0JAoQytoSE81XwCZ4cG0DE6glgqBdj9AqbgaA+PYF5OvtOyOy+nAAe62ydcV2EMr7U142R/N1YUzsLcnALkur1wSdY1wskkOiMhHB/oQtNgP0y7/MinSbbtXYyfm+A0OzeXFam+H3xtyZqvEULE1ro6tu0y8Ph9aB0AAGzbts0UtbV0O4C1X7zlkQO/fvWIOCv+b2I0HkjpaYMyKs2U6xdcgEkMAgzth5vRebwV/sIggkXZ0AIemGkDoZ5hDLf3wTT4jBp/JvSHAM7Nd0PX2KRP/wwB54qiMnx83tIxOW97Ou7MUB9CyQTiehrd0TBq8oot1hwbY/fKKiS7hTYzyDOaSuLpxhNglEKhDB5beIOAIJHW0TTUj3k5+eNwgDyHe388DuBRLFqvl1sasbOtGZokQWIMXHCkDBNpwwCllmNRGJtxwE9wbhBFlrJcvsRcb85ff2Hh8ke/XltLa4UgO64x478mHQAAkB07uADIoq11bPWnbv7xyacPnBho7vxpfDi2MByLmMxi9JiRlCBzsihuFUIA4Z4RjHQOOpgAZQySIkFW2Yxz/xEBpGWCcLYMxid/+nM7DL+raqH1bxtJbx4ewE+OvomhRNTi3ydAVE9DYRI2ls52/t6jKhaIJyY6Fa9t9GM9AVY0IVOK4/1d+Ej1Qid3L/L6UeIPovWCciC3IwRZsYaMTCFg6DoIMOH7l0F+THAuuObzSrkud+vCrKLP31c1/42tdXWsbuvWq7bM957OH9foIoDYVr/N3Fm7U6q5d/VbNZ+7/bZgec5vg74AE6YgAjBndjdY02KSIkFxq1C9Lqge1zv2E8zE4hTQUgJl5xIw2OR4/jJyV8W+IEr9Qcd4uRB44swxDMZH4VNUeBWLL9+najbxhiWCCQBeWYNqy2KRizhLhyBE1xFJJa12X2bNDzjz/3Y5UL+I9LoYZ+AEFlMQGSfyeRnKfKYpODwBHyvRvM/cW1y+5b6q+W/U1tZK9du2mdeq8V+zEcD4tWXHFqOuro7l5Xm6AXzi4K92fZO29v/veGjUkzRSM14lGFPjvfx7gAjAkAmKzyfRO0tFNChfMg6QIdP0q5qtrmMZY0xPIZxKwCXJMDkfEwYRAtFUynEeAOCWZGhMRlxPg43pEMMQHCndgEQpApoLs/xZmJ+Tj+rsfJT6s5zXE0JAEIL5uYV4qeX0+xr/vUyHDDg3TaZpLOhyJWYFsv76oYVrHgWArXV1bMe2awPp/0A7AAcXEIJs376drPr05n9ufO3o/t6jHd+P9oeXh6OjglEqQK7daOe9gECJA+XNCZxcNfnHycXEk1eTLM69sBB2eG85BokyR54rM06rShLcsoyhuAAkYpNfcGRpHiy2VXwqg9kIqK63RQeEEEi2IwlqLvhUDfF0ejoVdyZ9SwzO4Q74Wa7qOVoTzH7k7jmL99QKQbEd2LHt2sv3P7AOwN5IAoCo21rH5t20bL8Q4sa9j73wt7wLf5mOJUnaNAzKiATxwXIAmSggry+NnL40hoourRHIYs4hGE7EoNta9xmJ7w2ls/HLkwdgcNP+XYuCazAeQzSdQrbL7ZTsPIoyIQXQTQOFXh+2LVw+AWug47gCTM7RE43g7MgATg30oCMygqSuvysj0WWxfG6aVFFYttuHHNX96J+uuPF/EEKiW+vq2LUI9H0oHIATDdRvM+ssLfUYgP/W8OzBV/qauv45Pjg6LxKNCErZBzIaIASoaE5gJE+5pBRAAJCZhN7oKM4OD2JBboFjfLdWzoNf1XByoAcEVrnPr2gIqC64beafTK+9V9GcYR4uBBRJQmtoGMPJOLI1t4MFhFNJtIWG0DTcj7PDA+iNRhDX0zYjEAMlV+7RCCE454J4gkGWrShn5wfz/+yj1TVPfQtAnahj28g284O2bz5wDmB8SlC/rZ4u/MiqF0NCrD/1oxf/nHfhr/RYiib1lEkZowQgHwjjF4AhEQRDBorOJ9F5ibJfGZHvp5tPojo7DxKlMIUAJcCa4nKsKS5/h7RhDIDzKdqE3J0RqxTYPDyACn82Tgx0o2moHx2REYSScatDkFnKw5lqwUyRcrwf2ze5yWVNYx7KMMvje/Qbsxf/L+L3D45D+c0Poq0QfMBXRpMQABpePLxp4EzHPyRGEqtHIxEYgpuUEvZBSQuIAFIKwaEbAjBVBnIJ6HimF2BNSQU+XbMKLunt1Yx3YzLa3X4WvzhxAF5FmVDCc8kKdNPEaDoBRiz1XkaZ06Z7Oef0L7b5hRAmp4T5gwFkMfnIrEDwO5+qXr4LH+BT/0PlAOxNTOq31dNt9dtMIYR26Fe7H+472/VtpHh5JBblRCJiuqcLrxQgKKcF2qo0nK3xXrL4p+UEdMzyB7GlohoLbbENS1TVyv+j6RSi6TRGU0mMplMYTScR01NoGRnC2ZEByOQCHn67PVoizGoUunKn/IXLNLhJPH4/VUH6y/zBv//K4nU/JIRE6+rq2NZruLZ/3QG8j2jg2M5js2LNvTvCfSMPpkbjSKRT3FYEuubxAQHg0A0BxP3SJZcFLSYdA7rJ4dc0ZGlumwNQIGGkEdd1pEwDumna5UHLoGVKobK3Y6yXaxb/UjA+k3Mobhf1ygpyNHfd0ryKv9lSVnb2wj3yYVgfKgeQiQZ2bd/FtuywxBjOvHT0zr4zHX8Z7Q9vSSYSSBm6yRgj16ojsEaDOfoKVZxa7Z9Ue3CGiMPkHIZt5Bin+jNBZ2+c07mS4fz7efBccE4VhWmKilyPd9f8YP4/3Ve14GkAqN25U9q+ebP5YTj1P9QOYLwj2L59O9mxYwcnjGLvD56/Lx6O/p0eTS8ZjURgcNOklF6TjkDY5CDHV/sxUqBAmtKE4LixWvs/4hp70ALgRJaY2+VGtupqyHN7/+7LC1f+JwcAUUsFtosPm+F/6B3ABWkBt7eK59jv9nx+8Fzvn6RHUwvi8Th0UzcpvbYiAmHrAYaDEo6uD4B+GLe2gOCCm1SWJc2lwcekljnBgn9/YP6S7xNCogBInaijH3SQ77oDmAQ+IITw7Hv8pc9FekLfFCljQTQag851kxFGrpUeAgsQ5Di9xIuuStclA4LXcGTHheCCSDLz+Xxwg7T7VPXvv1m64BckL28UsNp467d9uA3/ugN4H/iAEMJz4Bc7vzA6EHkkHYkvSMaTSKZTnLCrv2qQkQVPKhSHNwZhypMbFrqGlmmaJlU8bqIpCoJMbiv3ZT1+d2n1v/t8vr6Mk/+woPvvd0nXb8GEfFcAMDKOwO4m/J4Q4ucHfvHK/SPdw19WU9pmPZ5GPBkHIdQgVuva1UevDoBTAk+co6QljpZF3g9iFMAFF5xDSKrHzbySDAlkV3kw+6cPLlj1FCEkBEwA+K6f+tcjgEtKI8mu2u1sy44dBgBQRnGk/rX7IwOjD4X6h29naUjxRBy6aXBCiSAW+T+5yj4ETAIc3hBA0ieBGde8ExDW4oLJCtO8Hki6YRT4sl7Jdmnf//yClb/PNCJdP/GvO4BpSw1QD0q2EQ5AgALtB86u7DzUfF+oL/Qp6Ga1njKQSNlRASE0o11xVWABukBPsYJTK/3vqBN49ftiWMk9hKS4NbhUDUzn57I9nl+tySt5+qayqgP28U5qd+5kH8aS3nUHcBlWXV0d27ptG8+o/PX0CE/Xq7s/kozEHwwNhrZQHWoykUTaSAGEGASEXmngMFMVOLrGj1D+1MqClz3EF4ILQGKqApdLg6wLPcfr3RmUtV/e753zVFZlVsh2EaSuvo5uuw7uXXcAl8WoagXdhV00AxiCEXQcObuk80jrvdGByF2x0OhahTApmUwhpadBCDFASEblilxuByAZAsNZEo6vu6rLgnZ4Dw4IiakKNJcLRNeNgOY+nCNpz68trfj9yoJZhw07zK/duVPC5s18ByH8+q687gCuCE5QX1dPM70E9i6mp58/tKyvtet+I27cmYomVjJBWTKRhG7oMDnnhFJOrMjgsjiEjHhIw1Ivesq1qwUQtBsIBedCUMoYZYoMl6YBKd0MuLSTLqY8VR7Me+r+qvlHxoF4pE4IuvUqlty67gA+lFFBLd0F0AxoaDsD1vT6sVWh9qHbk+H4lshgaDnlJChMgWQqBd3QIYgwCaGg1rjdjDgEi0IcSLgIDm0MgrMrUhYUY/m8CYAwqshQXRqYAKhhhnN9/qM+WX21yOt74e7KhYcJIXrmj6+f9tcdwDXlDLYDdMc4Z0Blhra3Wks6jp6+MRVJbtIT6S3pVKpKFkzSUzpSegqGaYILLiilJggIEYRMF6CYmRY8N9eF1gWemY4CHGMXEIILQQmllMoSFFmGosggacPQKGvVNPVVL+jrywuKdq+dVd01/lTfKurYQmwV143+ugO4Zu+xqBXExgtMjBuOE0Jo5w+fW9Rzqm2dmTTWxSPRlclYspSY8FJhyZHphg7DNGByLkAIp4RYyoNkwvMj7//NAAYDDt8QQNIjgZlTcgJiXO4O2NO/QnBKGCVMliHJMiRJAuEczOAxr6p2BFzeQ6rg++bNmrV/Q27ZKUJIYvxFx530AsD1EP+6A/gARQZCkPr6eop6i77sgp8pfSfOzzp/srUm0jNSDWBlKpVcbupGhQSmEUEgDI60noZpchimAUDA5FxYYqREgFj2bAUPghBBhCCCEJvNQxBATgl0lak4vdw3IQq4gNJbOH/tSJCIzM8oFwKUMQJCQCUGxhhkRYZEGCjn4IaRVJnS5tKUE8QwTua6vcdXlVWeqAnkdxJCUuM/91arXo/rOf3lX9c7AS+3x7Vlz63jUxDUguzCLroLuzghJA2gxf4CALSKVs04bMzSe8LzIgOhakPXq4TA3MRorDid1st4SpcpYS7TMEGFw+4FXTfABQdlhHAuYNhc/iAEugQUdCTRU6wglKdANqwJPwfFhIAky4QSSrhFGkpkWR5zElxAphQweEKlTJcUucOnab2SwBlG0ZLry24qUdWmNfrs86SSJC+SH9HaXZspNm/mOwBRT4hZf31rXI8ArkcH1llcX19P807lkV07dvEd2PG23JfJEoy07orH49l9J1pyE7HU3KFz/YKDV5kpvTg6NGr4cgI14CI3EYqluSn8ULFAmCDcMMEFB0tzDOXIOLXKB8otkQ9GCBhlYARIE3KaMoSDqlumhA4PhiMn8j1uSWVyv8lYY1UwSP1Ebl6WX9LvdrtDAOIXPb1ra2nt5s100eYBsRVbuSUzeP2Uv1rW/w9E3vor6CTpFwAAAABJRU5ErkJggg==" alt="Logo Batista Koinonia — Amar, Cuidar, Crescer, Servir">
+      </div>
+      <div class="brand-txt">
+        <h1>PGs</h1>
+        <p>Batista Koinonia · Área do Cuidar</p>
+      </div>
+    </div>
+    <div class="side-search">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <input id="quickSearch" type="text" placeholder="Buscar PG…" autocomplete="off">
+      <div class="side-results" id="quickResults"></div>
+    </div>
+    <nav id="nav"></nav>
+    <div class="sidebar-foot">
+      <div class="sync-state"><span class="dot"></span><span>dados sincronizados</span></div>
+      Versão sem dados de líderes, co-líderes, anfitriões, contatos ou endereços.<br>
+      Última atualização: 15/10/2026
+    </div>
+  </aside>
+  <main><div id="sections"></div></main>
+</div>
+
+<div class="drawer-overlay" id="drawerOverlay"></div>
+<aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle" aria-hidden="true">
+  <div class="drawer-head">
+    <div class="dh-txt">
+      <h3 id="drawerTitle">—</h3>
+      <div class="dh-meta" id="drawerMeta"></div>
+    </div>
+    <button class="drawer-close" id="drawerClose" aria-label="Fechar detalhes do PG">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>
+    </button>
+  </div>
+  <div class="drawer-body" id="drawerBody"></div>
+</aside>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   DADOS PÚBLICOS — sem líderes, co-líderes, anfitriões, contatos ou endereços
+   ═══════════════════════════════════════════════════════════════ */
+const PGS = [{"n":"PG - Adolescentes","cp":"Peniel","m":8,"s":"ativo","d":"Terça","h":"20:00","f":"14 a 25","mi":"ID (Adolescentes)","o":""},{"n":"PG - Kids","cp":"Peniel","m":9,"s":"ativo","d":"Terça","h":"20:00","f":"10 a 13","mi":"Kids","o":""},{"n":"PG - Âncora 17 e 18","cp":"103 Norte","m":20,"s":"ativo","d":"Terça","h":"20:00","f":"30-59","mi":"30+ (Jovens Adultos)","o":""},{"n":"10 e 11","cp":"103 Norte","m":10,"s":"ativo","d":"Terça","h":"20:00","f":"10 e 11","mi":"Kids","o":""},{"n":"12 e 13","cp":"103 Norte","m":10,"s":"ativo","d":"Terça","h":"20:00","f":"12 e 13","mi":"ID (Adolescentes)","o":""},{"n":"PG AZULADOS (12 e 13)","cp":"103 Norte","m":10,"s":"ativo","d":"Terça","h":"20:00","f":"12 e 13","mi":"ID (Adolescentes)","o":""},{"n":"PG CRENTES DO FAROESTE (14 e 15)","cp":"103 Norte","m":10,"s":"ativo","d":"Terça","h":"20:00","f":"14 e 15","mi":"ID (Adolescentes)","o":""},{"n":"PG RAIZES (14 e 15)","cp":"103 Norte","m":10,"s":"ativo","d":"Terça","h":"20:00","f":"14 e 15","mi":"ID (Adolescentes)","o":""},{"n":"PG OS ÚLTIMOS SERÃO OS PRIMEIROS (14 e 15)","cp":"103 Norte","m":10,"s":"ativo","d":"Terça","h":"20:00","f":"14 e 15","mi":"ID (Adolescentes)","o":""},{"n":"PG EMUNAH (15 e 17)","cp":"103 Norte","m":10,"s":"ativo","d":"Terça","h":"20:00","f":"15 e 17","mi":"ID (Adolescentes)","o":""},{"n":"PG RAIZES (16 e 15)","cp":"103 Norte","m":15,"s":"ativo","d":"Terça","h":"20:00","f":"16 e 15","mi":"ID (Adolescentes)","o":""},{"n":"PG Acordes menores","cp":"103 Norte","m":18,"s":"ativo","d":"Quarta","h":"19:30","f":"30 a 40","mi":"30+ (Jovens Adultos)","o":""},{"n":"PG Adolas","cp":"Mangueiral","m":5,"s":"ativo","d":"Terça","h":"20:00","f":"14-17","mi":"ID (Adolescentes)","o":""},{"n":"Adolescentes","cp":"Areal","m":10,"s":"ativo","d":"Terça","h":"20:00","f":"14-17","mi":"ID (Adolescentes)","o":""},{"n":"Altas horas/universitários","cp":"103 Norte","m":7,"s":"ativo","d":"Quinta","h":"21:40","f":"22 A 25 ANOS","mi":"KJ (Jovens)","o":""},{"n":"Amigos de Deus","cp":"35 Sul","m":14,"s":"ativo","d":"Quarta","h":"20:00","f":"30-59","mi":"30+ (Jovens Adultos)","o":""},{"n":"Bella Vita","cp":"103 Norte","m":10,"s":"ativo","d":"Terça","h":"20:30","f":"40 a 60 (Casais (8 adultos. 2 crianças. bem frequentes)","mi":"Casais","o":""},{"n":"Bereia","cp":"Cidade Ocidental","m":20,"s":"não-ativo","d":"Segunda","h":"20:00","f":"20-35","mi":"KJ (Jovens)","o":"Não ativo"},{"n":"Betel","cp":"103 Norte","m":15,"s":"ativo","d":"Terça","h":"20:00","f":"30-59 (Misto)","mi":"30+ (Jovens Adultos)","o":""},{"n":"Boas Novas","cp":"103 Norte","m":12,"s":"ativo","d":"Terça","h":"20:30","f":"40 a 65 (Casais)","mi":"Casais","o":""},{"n":"Bola de Fogo","cp":"Guará","m":0,"s":"não-ativo","d":"Quarta","h":"20:00","f":"30-59","mi":"30+ (Jovens Adultos)","o":"Não ativo"},{"n":"Casais 12 Sul (até cinco anos de casados) - 30 anos +","cp":"103 Norte","m":10,"s":"ativo","d":"Quarta","h":"20:00","f":"30+ (recem casados)","mi":"Casais","o":""},{"n":"Casais Presença Viva (até cinco anos de casados) - até 30 anos de idade","cp":"103 Norte","m":10,"s":"ativo","d":"Quarta","h":"20:00","f":"25 a 30 (Recém casados até 30 anos)","mi":"Casais","o":""},{"n":"Caverna de Adulão","cp":"103 Norte","m":15,"s":"ativo","d":"Terça","h":"20:30","f":"30-59 (misto)","mi":"30+ (Jovens Adultos)","o":""},{"n":"PG Ceilândia","cp":"Ceilândia","m":15,"s":"ativo","d":"Quarta","h":"","f":"30-59 (Misto)","mi":"30+ (Jovens Adultos)","o":""},{"n":"Chama que vem","cp":"Guará","m":0,"s":"não-ativo","d":"Sexta","h":"20:00","f":"30-59","mi":"30+ (Jovens Adultos)","o":"Não ativo"},{"n":"Chama","cp":"103 Norte","m":22,"s":"ativo","d":"Terça","h":"20:00","f":"21 A 24 ANOS","mi":"KJ (Jovens)","o":""},{"n":"Conectados na Fé","cp":"103 Norte","m":3,"s":"ativo","d":"","h":"","f":"","mi":"A classificar","o":""},{"n":"PG Cuida de Mim","cp":"103 Norte","m":14,"s":"ativo","d":"Terça","h":"20:00","f":"50 (A maioria casais. 1 casal de namorados. 1 pessoa solteira.)","mi":"Casais","o":""},{"n":"PG DOS NERDS (14 e 15)","cp":"103 Norte","m":10,"s":"ativo","d":"Terça","h":"20:00","f":"14 e 15","mi":"ID (Adolescentes)","o":""},{"n":"Dikaios","cp":"103 Norte","m":12,"s":"ativo","d":"Terça","h":"20:00","f":"25 A 30 ANOS","mi":"KJ (Jovens)","o":""},{"n":"Eu Amo o Meu PG","cp":"103 Norte","m":0,"s":"não-ativo","d":"Terça","h":"20:00","f":"","mi":"A classificar","o":"Não ativo"},{"n":"Experts (60+)","cp":"35 Sul","m":20,"s":"ativo","d":"Quarta","h":"15:30","f":"60 +","mi":"Experts (60+)","o":""},{"n":"Fênix","cp":"35 Sul","m":10,"s":"ativo","d":"Terça","h":"20:00","f":"30-59","mi":"30+ (Jovens Adultos)","o":""},{"n":"Fire","cp":"103 Norte","m":0,"s":"não-ativo","d":"Quarta","h":"20:30","f":"30 A 40 (CASAIS. inativo no momento pois os casais tiveram filhos e estao no resguardo)","mi":"Casais","o":"Não ativos"},{"n":"PG Gilmara","cp":"Areal","m":8,"s":"ativo","d":"Terça","h":"20:00","f":"18+","mi":"KJ (Jovens)","o":""},{"n":"Grãos","cp":"103 Norte","m":15,"s":"ativo","d":"Terça","h":"20:00","f":"25 A 29 ANOS","mi":"KJ (Jovens)","o":""},{"n":"PG JOY","cp":"103 Norte","m":11,"s":"ativo","d":"Quarta","h":"20:00","f":"40 (A maioria casais porém tem uma pessoa divorciada e uma pessoa solteira)","mi":"Casais","o":""},{"n":"PG Jardim Botânico","cp":"Mangueiral","m":8,"s":"ativo","d":"Sexta","h":"20:00","f":"50+","mi":"A classificar","o":""},{"n":"Jardim Brasil","cp":"103 Norte","m":0,"s":"não-ativo","d":"Quarta","h":"19:30","f":"","mi":"A classificar","o":"Não ativo"},{"n":"Jovens","cp":"Areal","m":9,"s":"ativo","d":"Terça","h":"20:00","f":"18+","mi":"KJ (Jovens)","o":""},{"n":"PG Jovens","cp":"Mangueiral","m":15,"s":"ativo","d":"Sexta","h":"20:00","f":"18-29","mi":"KJ (Jovens)","o":""},{"n":"Jovens 35 sul","cp":"35 Sul","m":8,"s":"ativo","d":"Quarta","h":"20:00","f":"18 a 28","mi":"KJ (Jovens)","o":""},{"n":"Jovens Casados","cp":"103 Norte","m":16,"s":"ativo","d":"Terça","h":"20:00","f":"35 (Casais. média 35 anos)","mi":"Casais","o":""},{"n":"Kid+","cp":"103 Norte","m":16,"s":"ativo","d":"Sexta","h":"19:30","f":"30-59 (Obs.: principalmente para pais com crianças pequenas, menores de 3 anos. (16 adultos + crianças (tem mais crianças que adultos)","mi":"Casais","o":""},{"n":"Kitut","cp":"103 Norte","m":10,"s":"ativo","d":"Terça","h":"20:00","f":"30 A 45 ANOS","mi":"30+ (Jovens Adultos)","o":""},{"n":"PG Lucena Roriz","cp":"103 Norte","m":0,"s":"não-ativo","d":"Terça","h":"20:00","f":"","mi":"A classificar","o":"Não ativo"},{"n":"PG Luciano","cp":"Areal","m":9,"s":"ativo","d":"Terça","h":"20:00","f":"18+","mi":"KJ (Jovens)","o":""},{"n":"Manhattan","cp":"103 Norte","m":8,"s":"ativo","d":"Terça","h":"20:00","f":"30-59 (Casais com filhos)","mi":"Casais","o":""},{"n":"Mansões Águas Claras","cp":"103 Norte","m":20,"s":"ativo","d":"Terça","h":"20:00","f":"30 a 60 (Misto)","mi":"30+ (Jovens Adultos)","o":""},{"n":"Nosso PG","cp":"103 Norte","m":12,"s":"ativo","d":"Terça","h":"20:00","f":"30 A 45 ANOS","mi":"30+ (Jovens Adultos)","o":""},{"n":"Novos membros","cp":"Areal","m":12,"s":"ativo","d":"Terça","h":"20:00","f":"20+","mi":"KJ (Jovens)","o":""},{"n":"Orquídeas","cp":"103 Norte","m":8,"s":"ativo","d":"Segunda","h":"20:00","f":"50 a 82 anos. (solteiras, viúvas, divorciadas.)","mi":"Mulheres","o":""},{"n":"Pais de Adolas 14 e 15 anos","cp":"103 Norte","m":7,"s":"ativo","d":"Terça","h":"20:00","f":"30-59","mi":"Casais","o":""},{"n":"Pais de Adolas 15+","cp":"103 Norte","m":14,"s":"ativo","d":"Terça","h":"20:00","f":"30-59","mi":"Casais","o":""},{"n":"Pais de Adolas até 13 anos","cp":"103 Norte","m":10,"s":"ativo","d":"Terça","h":"20:00","f":"30-59","mi":"Casais","o":""},{"n":"Pais e Filhos (30+)","cp":"35 Sul","m":13,"s":"ativo","d":"Terça","h":"20:00","f":"30 a 50 (Misto - Pais e Filhos)","mi":"Casais","o":""},{"n":"PG Peniel - Adulto","cp":"Peniel","m":9,"s":"ativo","d":"Terça","h":"20:00","f":"30 a 59","mi":"30+ (Jovens Adultos)","o":""},{"n":"Península","cp":"103 Norte","m":13,"s":"ativo","d":"Quarta","h":"20:30","f":"30 a 55 (Misto)","mi":"30+ (Jovens Adultos)","o":""},{"n":"Pequenos Adultos","cp":"35 Sul","m":10,"s":"ativo","d":"Segunda","h":"20:00","f":"16-22","mi":"ID (Adolescentes)","o":""},{"n":"Peregrinos 1","cp":"103 Norte","m":17,"s":"ativo","d":"Terça","h":"20:00","f":"17 a 20 anos","mi":"KJ (Jovens)","o":""},{"n":"Piazza di Itália","cp":"103 Norte","m":10,"s":"ativo","d":"Sexta","h":"20:00","f":"40 + (A maioria casados. 3 participantes não são casados)","mi":"Casais","o":""},{"n":"PG Queribim","cp":"Areal","m":12,"s":"ativo","d":"Terça","h":"20:00","f":"18+","mi":"KJ (Jovens)","o":""},{"n":"Reconect (solteiros, viúvos, divorciados e casais em segundo casamento 45+)","cp":"103 Norte","m":0,"s":"não-ativo","d":"Terça","h":"20:00","f":"observação casais em segundo casamento solteiros e divorciados e viúvos","mi":"Casais","o":"Não ativo"},{"n":"PG Renovação (casais com filhos entre 5 e 12 anos)","cp":"103 Norte","m":35,"s":"ativo","d":"Sexta","h":"20:00","f":"30-59 (Casais com crianças entre 5 e 12 anos (18 adultos e 17 crianças)","mi":"Casais","o":""},{"n":"Renovo (casais com filhos pequenos)","cp":"103 Norte","m":22,"s":"ativo","d":"Sexta","h":"20:00","f":"30-59 (Casais com crianças pequenas (12 adultos. 10 crianças)","mi":"Casais","o":""},{"n":"PG Ronaldo","cp":"Areal","m":11,"s":"ativo","d":"Terça","h":"20:00","f":"18+","mi":"KJ (Jovens)","o":""},{"n":"Sagres","cp":"103 Norte","m":14,"s":"não-ativo","d":"Terça","h":"20:00","f":"40 a 50 (Casais.)","mi":"Casais","o":"Inativo"},{"n":"Sal e Luz","cp":"103 Norte","m":11,"s":"ativo","d":"Terça","h":"20:00","f":"50+","mi":"A classificar","o":""},{"n":"Samambaia","cp":"Samambaia","m":14,"s":"ativo","d":"Quarta","h":"20:00","f":"30 a 50 (Misto)","mi":"30+ (Jovens Adultos)","o":""},{"n":"San Marino Arniqueiras","cp":"103 Norte","m":12,"s":"ativo","d":"Terça","h":"20:00","f":"40 + (média de idade)","mi":"30+ (Jovens Adultos)","o":""},{"n":"Send","cp":"103 Norte","m":7,"s":"ativo","d":"Sábado","h":"18:00","f":"18 A 22 ANOS","mi":"KJ (Jovens)","o":""},{"n":"Silas e Cláudia","cp":"Mangueiral","m":15,"s":"ativo","d":"Terça","h":"20:00","f":"30+","mi":"30+ (Jovens Adultos)","o":""},{"n":"Somos 1","cp":"103 Norte","m":13,"s":"ativo","d":"Terça","h":"20:00","f":"52 (média de idade)","mi":"A classificar","o":""},{"n":"PG São Sebastião","cp":"Mangueiral","m":8,"s":"ativo","d":"Quarta","h":"20:00","f":"40+","mi":"30+ (Jovens Adultos)","o":""},{"n":"PG Thalles","cp":"Areal","m":15,"s":"ativo","d":"Terça","h":"20:00","f":"18+","mi":"KJ (Jovens)","o":""},{"n":"Transição Novo","cp":"103 Norte","m":10,"s":"ativo","d":"Terça","h":"20:00","f":"17 A 20 ANOS","mi":"KJ (Jovens)","o":""},{"n":"UltraMegaBlaster🔝dasGalaxias","cp":"103 Norte","m":0,"s":"não-ativo","d":"Quarta","h":"20:30","f":"Misto","mi":"A classificar","o":"Não ativo"},{"n":"VIPS","cp":"103 Norte","m":14,"s":"ativo","d":"Sábado","h":"18:00","f":"23 A 30 ANOS","mi":"KJ (Jovens)","o":""},{"n":"PG VISÃO (14 e 15)","cp":"103 Norte","m":10,"s":"ativo","d":"Terça","h":"20:00","f":"14 e 15","mi":"ID (Adolescentes)","o":""},{"n":"Vencedores (40+)","cp":"103 Norte","m":10,"s":"ativo","d":"Terça","h":"20:00","f":"45 (a maioria casados)","mi":"Casais","o":""},{"n":"PG da Koinonia","cp":"103 Norte","m":13,"s":"ativo","d":"Terça","h":"20:00","f":"30 a 38 (Misto)","mi":"30+ (Jovens Adultos)","o":""},{"n":"PG de Sábado","cp":"103 Norte","m":10,"s":"ativo","d":"Sábado","h":"17:00","f":"30 A 40 ANOS","mi":"30+ (Jovens Adultos)","o":""},{"n":"PG novo","cp":"Guará","m":10,"s":"ativo","d":"Terça","h":"20:00","f":"30-59","mi":"30+ (Jovens Adultos)","o":""},{"n":"PG sábado","cp":"103 Norte","m":14,"s":"ativo","d":"Sábado","h":"18:00","f":"","mi":"A classificar","o":""},{"n":"Íntimos","cp":"103 Norte","m":10,"s":"ativo","d":"Sábado","h":"18:00","f":"18 A 22 ANOS","mi":"KJ (Jovens)","o":""}];
+const HOJE = new Date("2026-10-15T12:00:00");
+const DIA_ORDER = ["Segunda","Terça","Quarta","Quinta","Sexta","Sábado","Domingo"];
+
+function esc(s){
+  return String(s==null?"":s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+const REDUCED_MOTION = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+function runCountUps(container){
+  container.querySelectorAll(".count[data-target]").forEach(el=>{
+    const target = Number(el.dataset.target)||0;
+    if(REDUCED_MOTION){ el.textContent = target; return; }
+    const duration = 700, start = performance.now();
+    function tick(now){
+      const t = Math.min((now-start)/duration, 1);
+      el.textContent = Math.round(target*(1-Math.pow(1-t,3)));
+      if(t<1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  });
+}
+function timeKey(h){
+  const m = /(\d{1,2})[:h](\d{2})?/.exec(h||"");
+  if(!m) return 99*60;
+  return parseInt(m[1],10)*60 + parseInt(m[2]||"0",10);
+}
+function isAtivo(p){ return p.s === "ativo"; }
+function pgRowAttrs(p){ return `data-search="${esc((p.n+' '+p.cp+' '+(p.f||'')+' '+(p.d||'')).toLowerCase())}" data-campus="${esc(p.cp)}" data-dia="${esc(p.d)}"`; }
+function diaHora(p){ return [p.d, p.h].filter(Boolean).join(" · ") || '<span class="muted">—</span>'; }
+
+
+const ICONS = {
+  grad:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 9 12 4 2 9l10 5 10-5Z"/><path d="M6 11.5V16c0 1.1 2.7 2.5 6 2.5s6-1.4 6-2.5v-4.5"/></svg>',
+  overview:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>',
+  week:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>',
+  check:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5-2.2 8-6 8-11V5l-8-3-8 3v6c0 5 3 8.8 8 11Z"/><path d="m9 12 2 2 4-4"/></svg>',
+  x:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5l5 5m0-5-5 5"/></svg>',
+  map:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 20-6-2V6l6 2 6-2 6 2v12l-6-2-6 2Zm0 0V8m6 10V10"/></svg>',
+  users:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.5" cy="8" r="3.3"/><path d="M2.5 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.6"/><path d="M14.5 14.2c2.9.4 5.1 2.8 5.5 5.8"/></svg>',
+  org:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="5" rx="1"/><rect x="2" y="16" width="6" height="5" rx="1"/><rect x="16" y="16" width="6" height="5" rx="1"/><path d="M12 7v5M5 16v-2h14v2"/></svg>',
+  min:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6M9 5h6"/><path d="M4 21V11l8-4 8 4v10"/><path d="M10 21v-5h4v5"/></svg>',
+  cal:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/><path d="m9 15 2 2 4-4"/></svg>',
+  book:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v18H6.5A2.5 2.5 0 0 0 4 22.5Z"/><path d="M4 18.5A2.5 2.5 0 0 1 6.5 16H20"/></svg>',
+  pulse:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h4l3-8 4 16 3-8h6"/></svg>',
+  alert:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.6 1.9 18a1.8 1.8 0 0 0 1.6 2.7h17a1.8 1.8 0 0 0 1.6-2.7L13.7 3.6a1.8 1.8 0 0 0-3.4 0Z"/><path d="M12 9v4M12 17h.01"/></svg>',
+  info:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>',
+  wa:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.5 2 2 6.5 2 12c0 1.9.5 3.6 1.4 5.1L2 22l5-1.3c1.4.8 3.1 1.2 4.9 1.2 5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18.1c-1.6 0-3.1-.4-4.4-1.2l-.3-.2-3 .8.8-2.9-.2-.3C4.1 15 3.7 13.5 3.7 12c0-4.6 3.7-8.3 8.3-8.3s8.3 3.7 8.3 8.3-3.7 8.3-8.3 8.3zm4.5-6.2c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1-.2.2-.6.8-.8 1-.1.2-.3.2-.5.1-.7-.3-1.5-.8-2.1-1.5-.5-.5-.9-1.1-1-1.3-.1-.2 0-.4.1-.5.1-.1.2-.3.4-.4.1-.1.2-.3.2-.4.1-.2 0-.3 0-.4-.1-.1-.6-1.4-.8-1.9-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.2-.9.9-.9 2.2s1 2.5 1.1 2.7c.1.2 2 3 4.8 4.3.7.3 1.2.5 1.6.6.7.2 1.3.2 1.8.1.5-.1 1.5-.6 1.8-1.2.2-.6.2-1.1.2-1.2-.1-.2-.3-.2-.5-.3z"/></svg>'
+};
+
+const EVENTOS = [
+  {iso:"2026-08-25", quando:"25 de agosto", nome:"Treinamento para supervisores", escopo:"Geral"},
+  {iso:"2026-09-01", quando:"1º de setembro", nome:"PGzão", escopo:"Geral"},
+  {iso:"2026-10-06", quando:"6 e 10 de outubro", nome:"Treinamento para líderes", escopo:"Geral"},
+  {iso:"2026-11-23", quando:"23 a 28 de novembro", nome:"Finalização dos estudos", escopo:"Todos os PGs"},
+  {iso:"2026-11-30", quando:"30 de novembro a 5 de dezembro", nome:"Confraternização de encerramento", escopo:"Todos os PGs"},
+  {iso:"2026-12-05", quando:"5 de dezembro", nome:"Confraternização de líderes de PGs", escopo:"Geral"}
+];
+
+const RECORRENTES = [
+  ["Visita de campus","Mensal","Todos os campus"],
+  ["Reunião de líderes","Conforme calendário da Área do Cuidar","Líderes e Co-líderes"],
+  ["Treinamento de líderes","Semestral","Líderes, Co-líderes e Líderes em Treinamento"],
+  ["Treinamento para supervisores","Anual","Supervisores de PG"],
+  ["PGzão","Anual","Todos os PGs"],
+  ["Finalização dos estudos","Anual (novembro)","Todos os PGs"],
+  ["Confraternização de encerramento","Anual (novembro/dezembro)","Todos os PGs"],
+  ["Confraternização de líderes de PGs","Anual (dezembro)","Líderes e Co-líderes"]
+];
+
+const PROX_EVENTO = EVENTOS.find(e=>new Date(e.iso+"T12:00:00") >= HOJE) || null;
+
+
+const MANUAL = [
+  {
+    n:1, t:"Embarque: boas-vindas e como usar", eyebrow:"Embarque",
+    html:"<p>Ficamos felizes toda vez que um membro da nossa comunidade decide dar um passo além na jornada cristã e servir outras pessoas. Acreditamos que todo mundo importa e que todo mundo tem algo a compartilhar. Por isso, os PGs são mais do que reuniões: são espaços em que ficamos à vontade para conhecer mais a Deus e apresentá-lo a outras pessoas.</p>\n      <p>Você, líder, colíder ou líder em treinamento, tem um papel fundamental. Nosso objetivo é que todas as pessoas do grupo, por meio de relacionamentos saudáveis, sintam a presença de Deus, sejam cuidadas e aprendam a cuidar.</p>\n      <p>Este é um guia resumido do nosso jeito de ser e fazer pequenos grupos. Seguir cada passo garante que a experiência seja a mesma em todos os grupos, e que cada PG seja um pedacinho da Koinonia. Bem-vindo a bordo!</p>\n      <h4>Como usar este manual</h4>\n      <ul><li>Se você está <strong>começando agora</strong> (Líder em Treinamento ou Co-líder), leia na ordem as seções 1 a 8.</li><li>Se você já <strong>lidera um PG</strong>, use as seções 4, 7 a 12 e 14 como consulta.</li><li>Se você é <strong>Supervisor de PG</strong>, preste atenção especial às seções 6, 7, 10, 11 e 12.</li></ul>\n      <p>Este documento é vivo. Ele deve ser atualizado sempre que a estrutura, os papéis ou os ritmos da Área do Cuidar mudarem.</p>\n      <h4>O que dizem pessoas que atuam ou atuaram como líderes de PG na Koinonia</h4>\n      <div class=\"quote\">\"Laços reforçados e estreitados na comunhão que temos no grupo.\"</div>\n      <div class=\"quote\">\"Aprendi mais do que ensinei.\"</div>\n      <div class=\"quote\">\"Foi um ano de amadurecimento e aprendizado.\"</div>\n      <div class=\"quote\">\"Desafiador, cansativo, mas com crescimento pessoal e muito recompensador.\"</div>"
+  },
+  {
+    n:2, t:"Nosso DNA", eyebrow:"Identidade",
+    html:"<div class=\"quote\">\"Uma igreja da cidade, para a cidade, com a cidade.\"</div>\n      <p>A Igreja Batista Koinonia (IBAK) existe para ser <strong>uma comunidade de fé onde ninguém caminha sozinho</strong>: uma igreja restauradora da esperança em Brasília, no Brasil e no mundo, que traz todas as pessoas e a pessoa toda para Cristo.</p>\n      <p>Isso não é slogan de parede. É uma decisão estrutural: se ninguém pode caminhar sozinho, a igreja precisa ser pequena o suficiente para que cada pessoa seja conhecida pelo nome. É exatamente essa a função do <strong>Pequeno Grupo (PG)</strong>.</p>\n      <h4>Cidade para cidade</h4>\n      <p>A identidade da Koinonia dialoga com o movimento global de igrejas urbanas iniciado por Tim Keller (<em>City to City</em>): igrejas que não existem para si mesmas, mas para transformar a cidade ao redor, multiplicando líderes e comunidades em vez de apenas reunir multidões. Um PG saudável carrega essa lógica em miniatura: <strong>ele não existe para se manter, existe para se multiplicar</strong>, alcançando a vizinhança, o campus, a faculdade, o condomínio onde seus membros vivem.</p>\n      <h4>A Área do Cuidar</h4>\n      <div class=\"quote\">\"Amamos a Deus e por isso cuidamos! O amor de Cristo em nós sempre se expressa em cuidado.\"</div>\n      <p>A Área do Cuidar existe para <strong>integrar, acompanhar e cuidar das pessoas</strong> por meio dos ministérios e dos PGs, fundamentada no segundo grande mandamento: \"Amar o próximo como a si mesmo\" (Marcos 12:31). Cuidar não é um departamento; é a expressão viva do evangelho.</p>\n      <p><strong>Missão da Área do Cuidar:</strong> integrar, acompanhar e cuidar das pessoas nos ministérios e PGs, cultivando uma cultura de acolhimento, suporte mútuo e discipulado intencional.</p>\n      <p><strong>Objetivo anual (2026):</strong> \"Construir uma comunidade unida no discipulado e no cuidado mútuo. Juntos somos as mãos que cuidam e o coração que ama, construindo uma comunidade que reflete o amor de Cristo.\"</p>"
+  },
+  {
+    n:3, t:"Fundamento bíblico", eyebrow:"Base",
+    html:"<p>A palavra que dá nome à nossa igreja, <em>koinonia</em> (κοινωνία), significa comunhão, participação em comum, vida compartilhada. É o mesmo espírito de Atos 2:41-47: uma comunidade que perseverava no ensino, na comunhão, na oração e na partilha, \"de casa em casa\".</p>\n      <p>O PG é essa lógica aplicada hoje: <strong>um pedacinho da Koinonia que cabe numa sala de estar.</strong></p>\n      <div class=\"table-wrap\"><table class=\"mtable\"><thead><tr><th>Referência</th><th>O que fundamenta</th></tr></thead><tbody><tr><td>Atos 2:41-47</td><td>O modelo de igreja em casas, com ensino, comunhão, oração e cuidado prático</td></tr><tr><td>Marcos 12:31</td><td>\"Amar o próximo como a si mesmo\": o motor do Cuidar</td></tr><tr><td>Gálatas 6:2</td><td>\"Carreguem os fardos uns dos outros\": o motor do acompanhamento mútuo</td></tr><tr><td>Mateus 4:19</td><td>\"Eu te farei pescador de homens\": o chamado que sustenta todo líder</td></tr></tbody></table></div>"
+  },
+  {
+    n:4, t:"Propósito do PG", eyebrow:"Propósito",
+    html:"<h4>O que o PG é</h4>\n      <p>Um pedacinho da Koinonia que cabe numa sala de estar. Num ambiente informal e acolhedor, colocamos em prática o que temos aprendido de Deus e fazemos diferença na vida das pessoas. Koinonia significa comunhão, parceria, uns aos outros.</p>\n      <h4>Propósito do PG</h4>\n      <p>O propósito do PG não é esse momento em si, na sala de estar — isso é só a forma que ele toma. <strong>O propósito é cuidar</strong>: não deixar ninguém de fora, de modo que cada pessoa possa ser cuidada, porque nenhuma delas é insignificante. Cada uma foi comprada pelo próprio sangue de Jesus.</p>\n      <p>É o olhar do Bom Pastor: aquele que, tendo cem ovelhas e perdendo uma, deixa as noventa e nove e vai atrás da que se perdeu, até encontrá-la (Lucas 15:4) — o mesmo cuidado que nos foi confiado para pastorear a igreja de Deus, que ele comprou com o seu próprio sangue (Atos 20:28).</p>\n      <div class=\"table-wrap\"><table class=\"mtable\"><thead><tr><th>Referência</th><th>O que fundamenta</th></tr></thead><tbody><tr><td>Lucas 15:4</td><td>O olhar do Bom Pastor — ninguém é deixado de fora</td></tr><tr><td>Atos 20:28</td><td>Cada pessoa foi comprada pelo sangue de Jesus — o motivo pastoral do cuidado</td></tr></tbody></table></div>\n      <p><strong>É esse propósito, não o formato do encontro, que sustenta a responsabilidade de quem lidera.</strong> Quem entende o PG só como \"um espaço pra fazer amizade\" não sente o peso de liderar — é só um encontro gostoso na sala de estar. Quem entende que o propósito é pastoral, que ninguém pode ficar de fora, entende que liderar um PG é um compromisso: alguém está sendo chamado a cuidar de pessoas que Jesus comprou com o seu próprio sangue. As responsabilidades da seção 7 nascem daqui.</p>\n      <h4>Um espaço para cinco coisas</h4>\n      <p>O PG é um espaço para cinco coisas:</p>\n      <div class=\"table-wrap\"><table class=\"mtable\"><thead><tr><th>Eixo</th><th>O que acontece no PG</th></tr></thead><tbody><tr><td><strong>Comunhão</strong></td><td>Promover relacionamentos saudáveis entre os membros</td></tr><tr><td><strong>Discipulado</strong></td><td>Prover cuidado pastoral aos membros da igreja e proporcionar crescimento espiritual pelo estudo da Palavra de Deus, usando os estudos direcionados pela igreja</td></tr><tr><td><strong>Serviço</strong></td><td>Inspirar pessoas ao envolvimento ativo junto à igreja local</td></tr><tr><td><strong>Evangelismo</strong></td><td>Conectar membros, pessoas não convertidas e pessoas sem igreja a Jesus e à Koinonia</td></tr><tr><td><strong>Adoração</strong></td><td>Promover uma atmosfera espiritual para que a presença de Jesus seja sentida</td></tr></tbody></table></div>\n      <h4>O que o PG não é</h4>\n      <ul><li>Grupo de oração</li><li>Grupo de estudo bíblico</li><li>Grupo de cura interior</li><li>Grupo de terapia</li><li>Ponto de pregação</li><li>Culto nos lares</li><li>Reunião social</li></ul>\n      <p>O PG também <strong>não é espaço para invasão de privacidade</strong>. O que é compartilhado no grupo fica no grupo.</p>\n      <h4>Amar, cuidar, servir e crescer</h4>\n      <p>Esta é a forma como enxergamos a jornada de todo cristão rumo à maturidade. Os quatro movimentos se sustentam uns aos outros:</p>\n      <div class=\"table-wrap\"><table class=\"mtable\"><thead><tr><th>Movimento</th><th>O que significa no PG</th></tr></thead><tbody><tr><td><strong>Amar</strong></td><td>Atmosfera espiritual e crescimento espiritual</td></tr><tr><td><strong>Cuidar</strong></td><td>Relacionamentos saudáveis e cuidado pastoral</td></tr><tr><td><strong>Servir</strong></td><td>Conectar pessoas e envolvimento ativo com a comunidade</td></tr><tr><td><strong>Crescer</strong></td><td>Conhecer e experimentar Deus</td></tr></tbody></table></div>\n      <p>Nossos PGs estão debaixo da liderança do <strong>Cuidar</strong>. Este é o nosso foco principal de atuação.</p>"
+  },
+  {
+    n:5, t:"A jornada da pessoa", eyebrow:"Propósito",
+    html:"<p>Toda pessoa que frequenta a Koinonia deveria ter duas coisas:</p>\n      <ol><li>Um <strong>ministério</strong> de pertencimento, por faixa etária ou afinidade.</li><li>Um <strong>PG</strong> de referência, onde é pessoalmente conhecida e cuidada.</li></ol>\n      <p>O caminho natural de qualquer pessoa na igreja é este:</p>\n      <ol><li><strong>Culto ou evento</strong>: o primeiro contato.</li><li><strong>Ministério</strong>: a porta de entrada, por faixa etária ou afinidade.</li><li><strong>PG</strong>: o lugar onde a pessoa é conhecida pelo nome.</li><li><strong>Cuidado real</strong>: acompanhamento, discipulado, suporte e, com o tempo, multiplicação.</li></ol>\n      <p>Quatro princípios orientam esse caminho:</p>\n      <ul><li><strong>Clareza:</strong> o caminho de qualquer pessoa passa por um PG. Não é uma opção entre várias; é o eixo central do cuidado.</li><li><strong>Movimento:</strong> o PG não é destino estático. Ele deve levar cada pessoa a crescer, servir e, eventualmente, liderar ou ajudar a abrir um novo grupo.</li><li><strong>Alinhamento:</strong> os 8 ministérios da Área do Cuidar existem para alimentar os PGs, não para competir com eles.</li><li><strong>Foco:</strong> dizemos não a estruturas paralelas e a eventos grandes que enfraquecem o cuidado individual. O cuidado acontece prioritariamente dentro dos Pequenos Grupos.</li></ul>\n      <h4>Os 8 ministérios</h4>\n      <div class=\"table-wrap\"><table class=\"mtable\"><thead><tr><th>Eixo</th><th>Ministério</th><th>Público-alvo</th></tr></thead><tbody><tr><td>Família</td><td>Experts (60+)</td><td>Melhor idade</td></tr><tr><td>Família</td><td>Mulheres</td><td>Mulheres</td></tr><tr><td>Família</td><td>Homens</td><td>Homens</td></tr><tr><td>Família</td><td>Casais</td><td>Casais</td></tr><tr><td>Novas Gerações</td><td>Kids</td><td>Crianças (0-11)</td></tr><tr><td>Novas Gerações</td><td>ID (Adolescentes)</td><td>Adolescentes (12-17)</td></tr><tr><td>Novas Gerações</td><td>KJ (Jovens)</td><td>Jovens (18-29)</td></tr><tr><td>Novas Gerações</td><td>30+ (Jovens Adultos)</td><td>Jovens adultos solteiros</td></tr></tbody></table></div>\n      <div class=\"quote\">\"O objetivo de cada ministério é o mesmo: cuidar das pessoas e levá-las ao processo de crescimento espiritual, desaguando nos Pequenos Grupos, onde o cuidado acontece.\"</div>"
+  },
+  {
+    n:6, t:"Estrutura de liderança", eyebrow:"Estrutura",
+    html:"<ul><li><strong>Coordenador do Cuidar</strong><ul><li><strong>Coordenador Geral dos PGs</strong></li><li><strong>Time Estratégico:</strong> planejamento, comunicação, dados e monitoramento, criativo e Central dos PGs</li><li><strong>Supervisores de PG</strong> (por ministério): Família (Homens, Mulheres, Casais); Novas Gerações (KJ, 30+, Adolescentes ID); Infantil (Kids); Melhor Idade (Experts 60+)</li><li><strong>Coordenadores de Campus:</strong> Areal, Peniel, Mangueiral, Guará, 35 Sul e 103 Norte</li><li><strong>Time de Suporte a Líderes:</strong> aconselhamento e treinamentos</li></ul></li></ul>\n      <h4>Os quatro pilares, em uma frase cada</h4>\n      <ol><li><strong>Time Estratégico:</strong> planeja, comunica, mede e produz para toda a operação dos PGs.</li><li><strong>Supervisores por Ministério:</strong> cuidam da saúde espiritual e relacional dos PGs do seu segmento etário.</li><li><strong>Coordenadores de Campus:</strong> articulam os PGs de um território geográfico específico.</li><li><strong>Time de Suporte a Líderes:</strong> forma, aconselha e treina quem lidera os grupos.</li></ol>\n      <h4>Como o conteúdo chega até você</h4>\n      <p>As lições usadas nos PGs nascem na <strong>Área do Crescer</strong>, na Equipe de Escritores, e chegam à Área do Cuidar por colaboração direta entre as duas áreas. Você não precisa criar conteúdo: seu papel é aplicar bem o que já foi preparado, com cuidado pastoral pela sua turma.</p>"
+  },
+  {
+    n:7, t:"Papéis e responsabilidades", eyebrow:"Estrutura",
+    html:"<p>Cada responsabilidade abaixo nasce do propósito do PG (seção 4): não deixar ninguém de fora. Não é burocracia nem protocolo — é o compromisso pastoral de quem aceita cuidar de pessoas que foram compradas pelo sangue de Jesus. Por isso o nível de responsabilidade cresce de papel para papel, do Líder em Treinamento ao Supervisor: quanto mais gente sob seu cuidado, maior o compromisso.</p>\n      <h4>Líder em Treinamento</h4>\n      <p><strong>Quem é:</strong> um membro do PG identificado com potencial de liderança, em processo intencional de formação.</p>\n      <ul><li>É discipulado diretamente pelo líder do PG.</li><li>Participa com responsabilidades crescentes: abrir a reunião, conduzir uma dinâmica, visitar um membro.</li><li>Pode estar sendo preparado para abrir um novo PG ou para substituir o líder atual no futuro.</li></ul>\n      <div class=\"quote\">No começo, não é sobre posição, é sobre disposição.</div>\n      <h4>Co-líder de PG</h4>\n      <p><strong>Quem é:</strong> parceiro do líder na condução do grupo, em posição de formação para a liderança plena.</p>\n      <ul><li>Apoia o líder na facilitação dos encontros.</li><li>Assume a condução do encontro na ausência do líder titular.</li><li>Cuida de membros específicos conforme direcionamento do líder (por exemplo, quem está afastado ou em crise).</li><li>Está em processo contínuo de formação. Não é um cargo permanente de coadjuvante; é um degrau.</li></ul>\n      <h4>Líder de PG</h4>\n      <p><strong>Quem é:</strong> o responsável por conduzir o Pequeno Grupo, promovendo comunhão, discipulado e cuidado entre os membros.</p>\n      <h4>Responsabilidades:</h4>\n      <ul><li>Facilitar os encontros com base no material produzido pela Equipe de Escritores.</li><li>Participar das reuniões de supervisão, treinamento e alinhamento dos PGs.</li><li>Selecionar e treinar um co-líder.</li><li>Cuidar pastoralmente dos membros do grupo: ligar, visitar, orar e acompanhar.</li><li>Formar e desenvolver seu co-líder e seus líderes em treinamento. Um líder saudável está sempre formando quem vem depois dele.</li><li>Conduzir o PG dentro do planejamento da Área do Cuidar.</li><li>Manter o cadastro do grupo atualizado: membros, frequência e última visita.</li><li>Ser dizimista.</li><li>Participar dos eventos do Cuidar e da EBD.</li><li>Reportar-se ao Supervisor do seu ministério.</li></ul>\n      <p><strong>Papel, em resumo:</strong> conectar pessoas, promover relacionamentos e oferecer apoio. Inspirar pelo exemplo a amar e servir na igreja local e ser relevante na sociedade.</p>\n      <h4>As quatro marcas de um bom líder de PG</h4>\n      <div class=\"table-wrap\"><table class=\"mtable\"><thead><tr><th>Marca</th><th>O que significa</th></tr></thead><tbody><tr><td><strong>Exemplo</strong></td><td>A palavra convence, o exemplo arrasta. O líder vive primeiro o que ensina.</td></tr><tr><td><strong>Serviço</strong></td><td>Quem não serve não lidera de verdade.</td></tr><tr><td><strong>Visão</strong></td><td>Enxerga potencial nas pessoas antes que elas mesmas enxerguem.</td></tr><tr><td><strong>Influência</strong></td><td>Inspira, não impõe.</td></tr></tbody></table></div>\n      <h4>Requisitos práticos</h4>\n      <ul><li>Ser comprometido com a visão da igreja e do Cuidar.</li><li>Ser proativo no servir: não espera ser convocado para resolver o que vê.</li><li>Ser intencional: cada encontro, conversa e ação tem um propósito ligado a levar pessoas a Jesus.</li><li>Estar preparado para responder às demandas do seu público (estudar e entender o universo da sua faixa etária).</li></ul>\n      <h4>Supervisor de PG</h4>\n      <p><strong>Quem é:</strong> o líder do ministério ou faixa etária da Koinonia, responsável por supervisionar todos os PGs daquele segmento.</p>\n      <h4>Responsabilidades:</h4>\n      <ul><li>Participar das reuniões de coordenação, treinamento e alinhamento dos PGs.</li><li>Acompanhar o desenvolvimento dos líderes sob sua supervisão.</li><li>Conectar os líderes de PG por meio de relacionamentos saudáveis e equipá-los com ferramentas de liderança e maturidade espiritual.</li><li>Monitorar o andamento dos grupos: não só números, mas pessoas.</li><li>Articular a identidade do ministério com a dinâmica dos PGs.</li><li>Identificar, desenvolver e apoiar novos líderes dentro do seu ministério.</li><li>Ser dizimista.</li><li>Participar dos eventos do Cuidar e da EBD.</li><li>Reportar-se ao Coordenador Geral dos PGs.</li></ul>\n      <h4>Acima do Supervisor</h4>\n      <ul><li><strong>Coordenador de Campus:</strong> responsável pelos PGs de um território (Areal, Peniel, Mangueiral, Guará, 35 Sul, 103 Norte). Articula os líderes da região e leva ao Supervisor as demandas que precisam dele.</li><li><strong>Coordenador Geral dos PGs</strong>: autoridade direta sobre os quatro pilares.</li><li><strong>Coordenador do Cuidar</strong>: responde pela Área do Cuidar como um todo.</li></ul>"
+  },
+  {
+    n:8, t:"A reunião", eyebrow:"Reunião",
+    html:"<h4>Formato e duração</h4>\n      <ul><li><strong>Frequência:</strong> semanal.</li><li><strong>Duração:</strong> em torno de 1h30. Essa previsibilidade ajuda os convidados, facilita a vida do anfitrião e ajuda no planejamento semanal (pontualidade).</li><li><strong>Formato:</strong> presencial, preferencialmente nas casas (Romanos 16:1-5, 23-24). Em acordo, pode haver casas reserva. Alguns grupos de adolescentes se reúnem em espaço próprio.</li><li><strong>Anfitrião:</strong> receber na casa não obriga o anfitrião a oferecer lanche. O lanche é um momento do grupo, não uma obrigação de quem recebe.</li><li><strong>Quem quiser ficar mais tempo</strong> é bem-vindo, com o ok do anfitrião. Mas o líder tem a obrigação de dizer que a reunião acabou.</li></ul>\n      <h4>Roteiro do encontro</h4>\n      <div class=\"table-wrap\"><table class=\"mtable\"><thead><tr><th>Tempo</th><th>Atividade</th><th>Propósito</th></tr></thead><tbody><tr><td>45 min</td><td>Louvor, quebra-gelo e estudo (guia disponibilizado pela igreja)</td><td>Proporcionar ferramentas para o crescimento espiritual</td></tr><tr><td>15 min</td><td>Oração e agenda da igreja</td><td>Encorajar o envolvimento com a igreja</td></tr><tr><td>30 min</td><td>Lanche e convite para a próxima reunião</td><td>Promover relacionamento</td></tr></tbody></table></div>\n      <p>A acolhida acontece na chegada, antes do louvor. O compartilhamento de vida e a oração pelos membros (Gálatas 6:2) acontecem no bloco de oração ou durante o lanche, conforme o perfil de cada grupo.</p>\n      <h4>O PG tem de ser legal</h4>\n      <p>Servimos a um Deus alegre, e a alegria é uma das evidências do controle do Espírito Santo (Gálatas 5:22; Atos 14:17). Por isso, a reunião tem quatro momentos que se misturam:</p>\n      <ul><li><strong>Informalidade:</strong> o grupo é simples como uma reunião de amigos. A cada semana, a gente aprende, ensina, conversa, é cuidado, cuida, conhece gente nova, faz um lanchinho e, na soma dos fatores, se desenvolve na fé.</li><li><strong>Fé:</strong> o momento de ouvir a Palavra e orar.</li><li><strong>Amor:</strong> o momento de cuidar uns dos outros.</li><li><strong>Alegria:</strong> o clima que mostra que o Espírito está agindo (Atos 2:28, 42-47).</li></ul>\n      <h4>Princípios para a condução</h4>\n      <ul><li>Cada grupo desenvolve sua própria personalidade dentro dessa estrutura. Não force uniformidade artificial: um PG de casais e um PG de KJ não precisam soar iguais.</li><li>O objetivo do encontro nunca é \"cumprir a lição\". É fazer discípulos. Se uma conversa de cuidado tomar mais tempo que o estudo, tudo bem.</li><li>Convide sempre à participação. Ninguém deveria sair de um PG tendo apenas ouvido.</li><li>Cuide do ambiente: convite, preparação, louvor e participação são parte da reunião.</li></ul>"
+  },
+  {
+    n:9, t:"Compartilhando a Palavra", eyebrow:"Reunião",
+    html:"<p>O líder é um facilitador do estudo. Ele garante a coerência e a conclusão, mas não é o palestrante do grupo.</p>\n      <ul><li><strong>Não pregue.</strong> Você é facilitador. Quem garante a coerência e a conclusão é você, mas o centro é a Palavra, não o seu sermão.</li><li><strong>Não palestre.</strong> Não dê todas as respostas. Faça as perguntas certas e conduza o grupo.</li><li><strong>Não improvise.</strong> Deixe o estudo falar com você: ore, aplique na sua vida e tome notas antes de conduzir.</li><li><strong>Não invente.</strong> Esteja preparado para dizer: \"Não sei, mas vou buscar a resposta pra você\". E volte com a resposta.</li><li><strong>Ouça.</strong> Não se preocupe apenas em concluir o estudo. Preste atenção às falas.</li><li><strong>Seja mediador.</strong> Evite que uma única pessoa domine a conversa e que o assunto se perca.</li></ul>"
+  },
+  {
+    n:10, t:"Cuidado pastoral e acompanhamento", eyebrow:"Cuidado",
+    html:"<p>O cuidado é o motivo do PG existir. Por isso, acompanhar pessoas é tão importante quanto conduzir o encontro semanal.</p>\n      <p><strong>O que todo líder deve manter atualizado</strong> (ver Template de PG, na seção 15):</p>\n      <ul><li>Cadastro do grupo: nome, líder, co-líder, campus, bairro, número de membros, dia e horário, status e data da última visita.</li><li>Histórico de acompanhamento de cada membro, especialmente de quem está afastado ou em situação de vulnerabilidade.</li><li>Comunicação com o Supervisor sempre que identificar uma situação que exija cuidado pastoral mais próximo: crise, luto, conflito ou afastamento.</li></ul>\n      <h4>Protocolo ao identificar um membro em vulnerabilidade</h4>\n      <ol><li>O líder (ou co-líder) registra a situação no histórico do PG.</li><li>Comunica ao Supervisor do ministério.</li><li>O Supervisor decide, junto ao Coordenador Geral, se o caso precisa de acompanhamento pastoral mais amplo.</li></ol>\n      <h4>Disciplina no grupo</h4>\n      <p>Quando for preciso tratar uma questão de disciplina no grupo, faça isso de forma direta e com testemunha (o Supervisor ou um coordenador).</p>\n      <h4>Não desista de ninguém</h4>\n      <p>Cada pessoa do grupo merece ser buscada de novo. Se alguém se afastou, a pergunta não é \"quem sobrou\", é \"quem ainda não foi procurado?\".</p>\n      <h4>Quando alguém quiser sair do PG</h4>\n      <ol><li>Entenda o porquê.</li><li>Nunca leve para o lado pessoal.</li><li>Tente identificar se, por trás da mudança, existe um problema maior.</li><li>Trate o que precisa ser tratado.</li><li>Libere a pessoa em amor.</li></ol>\n      <div class=\"quote\">\"Estou plenamente convencido de que aquele que começou boa obra em vocês há de completá-la até o dia de Cristo Jesus.\" (Filipenses 1:6)</div>\n      <h4>Ritmo de acompanhamento da liderança maior</h4>\n      <ul><li>Visita de campus: mensal, feita pela coordenação, para estar presente e ouvir os líderes locais.</li><li>Reunião de líderes: conforme o calendário da Área do Cuidar.</li></ul>\n      <div class=\"quote\">O princípio que guia tudo isso: garantir que 100% dos frequentadores da igreja estejam conectados a um PG ou ministério, e que ninguém em situação de vulnerabilidade passe despercebido.</div>"
+  },
+  {
+    n:11, t:"Formação e multiplicação", eyebrow:"Formação",
+    html:"<h4>A trilha de crescimento</h4>\n      <p>Um PG saudável nunca para de formar gente. A trilha natural de um líder é:</p>\n      <ol><li>Membro do PG</li><li>Líder em treinamento</li><li>Co-líder</li><li>Líder de PG</li><li>Líder multiplicador: abre um novo PG ou torna-se Supervisor</li></ol>\n      <p><strong>Pré-requisito de todo novo líder é ser discípulo.</strong> Na prática, essa pessoa reflete isso sendo assídua, participativa, ensinável, aberta ao discipulado e aprovada pela liderança.</p>\n      <p>Todo líder de PG deve ter, sempre que possível, um co-líder e um líder em treinamento ao seu lado. Isso não é burocracia: é o modelo de multiplicação. Ninguém lidera sozinho para sempre, e ninguém deveria continuar sozinho quando o grupo cresce.</p>\n      <h4>Treinar é ver, ajudar, fazer e dar feedback</h4>\n      <p>Formar líderes começa dentro do próprio PG, na convivência semanal. O modelo é simples: primeiro você vê o líder fazer, depois ajuda, depois o novo líder faz e, por fim, recebe feedback.</p>\n      <h4>Quando multiplicar</h4>\n      <ul><li>Um grupo com frequência consolidada de <strong>12 pessoas ou 8 casais</strong> está pronto para multiplicar.</li><li>Multiplicar (e não dividir) é um objetivo, não uma obsessão.</li><li>Grupos que crescem e não multiplicam, morrem. Cada PG deve ser uma incubadora de novos líderes.</li><li>O co-líder ou o líder em treinamento assume a nova liderança ao abrir o novo grupo, ao lado do mentor.</li></ul>\n      <h4>Por que isso importa</h4>\n      <p>Discípulos geram discípulos (Atos 1:8; 1 Timóteo 2:3-6). A expansão do Reino é uma missão da Igreja. Igrejas de qualidade crescem, e vidas transformadas por Jesus devem ser um sonho de todo PG.</p>\n      <div class=\"quote\">\"O verdadeiro líder não cria seguidores, cria novos líderes.\"</div>\n      <div class=\"quote\">\"Se cada líder cuidar bem de algumas pessoas, toda a igreja será alcançada.\"</div>"
+  },
+  {
+    n:12, t:"Ciclo de vida do PG", eyebrow:"Ciclo de vida",
+    html:"<h4>Abrindo um novo PG</h4>\n      <ol><li>Identificar um líder (e, se possível, um co-líder e um líder em treinamento) preparado, em alinhamento com o Supervisor do ministério.</li><li>Definir campus, bairro, dia da semana, horário e formato.</li><li>Cadastrar o grupo usando o Template de PG (seção 15).</li><li>Comunicar a abertura ao Coordenador de Campus e ao Time Estratégico (Central dos PGs), para que o grupo entre no mapeamento oficial.</li></ol>\n      <h4>Multiplicando um PG</h4>\n      <ul><li>Quando um grupo cresce além do ponto em que todos são conhecidos de verdade, é hora de multiplicar.</li><li>Multiplicar não é fracasso do grupo original. É sinal de que a formação de líderes está funcionando.</li></ul>\n      <h4>Quando um PG se torna inativo</h4>\n      <ul><li>Se um grupo para de se reunir, o status deve ser atualizado para \"não ativo\" no cadastro, com uma observação sobre o motivo.</li><li>O Supervisor e o Coordenador de Campus devem ser informados, para avaliar se o grupo será reativado, remodelado ou se seus membros serão redistribuídos.</li><li><strong>Ninguém deve ficar sem grupo por causa do encerramento de um PG.</strong></li></ul>"
+  },
+  {
+    n:13, t:"Ritmos e calendário", eyebrow:"Ritmos",
+    html:"<div class=\"table-wrap\"><table class=\"mtable\"><thead><tr><th>Evento</th><th>Frequência</th><th>Para quem</th></tr></thead><tbody><tr><td>Visita de campus</td><td>Mensal</td><td>Todos os campus</td></tr><tr><td>Reunião de líderes</td><td>Conforme calendário da Área do Cuidar</td><td>Líderes e co-líderes</td></tr><tr><td>Treinamento de líderes</td><td>Semestral</td><td>Líderes, co-líderes e líderes em treinamento</td></tr><tr><td>Treinamento para supervisores</td><td>Anual (ou conforme calendário)</td><td>Supervisores de PG</td></tr><tr><td>PGzão</td><td>Anual</td><td>Todos os PGs</td></tr><tr><td>Finalização dos estudos</td><td>Anual (novembro)</td><td>Todos os PGs</td></tr><tr><td>Confraternização de encerramento</td><td>Anual (novembro/dezembro)</td><td>Todos os PGs</td></tr><tr><td>Confraternização de líderes de PGs</td><td>Anual (dezembro)</td><td>Líderes e co-líderes</td></tr></tbody></table></div>\n      <div class=\"quote\">As datas específicas de cada ano estão no Calendário de Eventos da Área do Cuidar, compartilhado pelo Time Estratégico.</div>"
+  },
+  {
+    n:14, t:"Dicas de ouro e cultura de equipe", eyebrow:"Cultura",
+    html:"<h4>Dicas de ouro</h4>\n      <ul><li><strong>A oração é a chave do sucesso.</strong></li><li><strong>Não centralize.</strong> Divida tarefas e formação. Um grupo que depende de uma pessoa para tudo não sobrevive a ela.</li><li><strong>Cuide das reuniões:</strong> convite, preparação, louvor, ambiente e participação.</li><li><strong>Pastoreie seu PG:</strong> conheça, ore, visite, valorize e reporte dificuldades.</li><li><strong>Integre novos membros com uma conversa.</strong></li><li><strong>Não se intimide.</strong> Você não precisa ter todas as respostas.</li><li><strong>Preste contas</strong> ao seu Supervisor.</li><li><strong>Invista em relacionamentos.</strong></li><li><strong>Celebre novos membros.</strong></li><li><strong>Não desista de ninguém.</strong></li><li><strong>Disciplina no grupo deve ser direta, com testemunha.</strong></li></ul>\n      <h4>Cultura de uma equipe saudável</h4>\n      <p>Um PG é tão saudável quanto a equipe de liderança que o sustenta. Cinco dimensões ajudam a equipe a ficar equilibrada:</p>\n      <div class=\"table-wrap\"><table class=\"mtable\"><thead><tr><th>Dimensão</th><th>Na prática</th></tr></thead><tbody><tr><td><strong>Administrativa</strong></td><td>Organizar datas, cadastro e responsabilidades com excelência. Organização não sufoca o Espírito; cria espaço para Ele agir.</td></tr><tr><td><strong>Espiritual</strong></td><td>Nenhuma estratégia substitui a oração. A equipe ora junta, pelos membros, pelo grupo e uns pelos outros.</td></tr><tr><td><strong>Motivacional</strong></td><td>Relembrar com frequência o porquê de liderar. Celebrar pequenas vitórias e reacender o propósito.</td></tr><tr><td><strong>Relacional</strong></td><td>A equipe é feita de amigos em Cristo, não só colegas de função. Resolve conflitos com maturidade, sem fofoca.</td></tr><tr><td><strong>Aprendizagem</strong></td><td>Depois de cada encontro ou fase, perguntar: o que deu certo? o que pode melhorar? o que Deus ensinou?</td></tr></tbody></table></div>\n      <p><strong>Cultura de honra:</strong> honramos publicamente e corrigimos em particular. Falamos bem uns dos outros, celebramos os dons de quem está ao nosso lado e servimos sem competição.</p>"
+  },
+  {
+    n:15, t:"Ferramentas e recursos", eyebrow:"Recursos",
+    html:"<ul><li><strong>Cadastro de Líderes de PG:</strong> registro centralizado de todos os líderes e co-líderes, por campus.</li><li><strong>Template de PG:</strong> modelo para criar ou atualizar o registro do seu grupo.</li><li><strong>Material das lições:</strong> produzido pela Equipe de Escritores (Área do Crescer), repassado através da sua liderança direta.</li><li><strong>App da igreja:</strong> localizar PGs por proximidade e afinidade, e gerir os grupos.</li><li><strong>Central dos PGs:</strong> canal do Time Estratégico para dúvidas operacionais, cadastro e comunicação oficial.</li></ul>"
+  },
+  {
+    n:16, t:"Perguntas frequentes", eyebrow:"Dúvidas",
+    html:"<h4>Sou Líder em Treinamento. O que eu faço concretamente essa semana?</h4>\n      <p>Converse com seu líder sobre uma responsabilidade específica que você pode assumir no próximo encontro: abrir, conduzir uma dinâmica ou visitar um membro. Peça para ele começar a te incluir nas decisões sobre o grupo.</p>\n      <h4>Sou Co-líder e o líder titular vai faltar. O que eu faço?</h4>\n      <p>Você assume a condução do encontro, usando o mesmo material e a mesma estrutura (seção 8). Depois, avise o líder titular como foi.</p>\n      <h4>Um membro do meu PG está em crise. Até onde eu vou sozinho?</h4>\n      <p>Cuide, ouça, ore e esteja presente, mas não carregue sozinho. Comunique ao seu Supervisor assim que possível. Casos mais sérios precisam de acompanhamento pastoral além do PG.</p>\n      <h4>Meu PG não está crescendo. É um problema?</h4>\n      <p>Nem todo PG precisa crescer em número o tempo todo, mas todo PG precisa estar formando gente (seção 11). Se ninguém está em processo de liderança dentro do grupo, converse com seu Supervisor sobre como reativar essa formação.</p>\n      <h4>Sou Supervisor e um dos meus líderes está esgotado. O que eu faço?</h4>\n      <p>Priorize a pessoa antes do processo. Um líder cansado não deveria esperar a \"reestruturação ideal\" para ser cuidado. Leve o caso ao Coordenador Geral dos PGs como ponto pastoral, não apenas operacional.</p>\n      <h4>Quero abrir um novo PG. Por onde começo?</h4>\n      <p>Fale com seu Supervisor de ministério e veja o passo a passo na seção 12.</p>"
+  },
+  {
+    n:17, t:"Contatos e canais de suporte", eyebrow:"Contatos",
+    html:"<div class=\"table-wrap\"><table class=\"mtable\"><thead><tr><th>Preciso de...</th><th>Procuro...</th></tr></thead><tbody><tr><td>Orientação sobre o meu grupo e a minha formação como líder</td><td>Meu Supervisor de PG (líder do meu ministério)</td></tr><tr><td>Articulação com outros PGs do meu território</td><td>Coordenador do meu campus</td></tr><tr><td>Cadastro, planilha, material, dúvidas operacionais</td><td>Central dos PGs (Time Estratégico)</td></tr><tr><td>Treinamento e aconselhamento mais aprofundado</td><td>Time de Suporte a Líderes</td></tr><tr><td>Uma decisão que envolve toda a Área do Cuidar</td><td>Coordenador Geral dos PGs</td></tr></tbody></table></div>"
+  },
+  {
+    n:18, t:"Glossário e fontes", eyebrow:"Referência",
+    html:"<h4>Glossário</h4>\n      <ul><li><strong>IBAK:</strong> Igreja Batista Koinonia.</li><li><strong>PG:</strong> Pequeno Grupo.</li><li><strong>KJ:</strong> Koinonia Jovem (ministério de jovens, 18-29).</li><li><strong>ID:</strong> ministério de Adolescentes (12-17).</li><li><strong>EBD:</strong> Escola Bíblica Dominical.</li><li><strong>Cuidar / Crescer:</strong> duas áreas complementares. O Cuidar cuida das pessoas nos PGs e ministérios; o Crescer produz o conteúdo e as lições usados nos PGs.</li><li><strong>Supervisor:</strong> líder de um ministério que supervisiona os PGs daquele segmento.</li><li><strong>OKR / KR:</strong> Objetivo e Resultado-Chave, forma como a Área do Cuidar mede suas metas anuais.</li></ul>\n      <h4>Fontes</h4>\n      <ul><li><em>Guia para Líderes e Co-Líderes de Pequenos Grupos da Koinonia</em>, Eduardo Kormives, 1ª ed., Brasília: Batista Koinonia, 2025 (arquivo em 06 - Recursos e Materiais).</li><li>Manual dos PGs, versão da Área do Cuidar de 15/09/2026 (estrutura, papéis, cuidado e ciclo de vida).</li></ul>"
+  }
+];
+
+/* ───────────────────────── Agregados ───────────────────────── */
+const ATIVOS = PGS.filter(isAtivo);
+const NAO_ATIVOS = PGS.filter(p => !isAtivo(p));
+const TOTAL = PGS.length;
+const MEMBROS_ATIVOS = ATIVOS.reduce((s,p)=>s+p.m,0);
+const MEMBROS_NAO_ATIVOS = NAO_ATIVOS.reduce((s,p)=>s+p.m,0);
+const MEDIA_MEMBROS = ATIVOS.length ? MEMBROS_ATIVOS / ATIVOS.length : 0;
+
+const campusAgg = {};
+PGS.forEach(p=>{
+  const k = p.cp || "Sem campus";
+  if(!campusAgg[k]) campusAgg[k] = {total:0, ativo:0, nao:0, membros:0};
+  campusAgg[k].total++;
+  if(isAtivo(p)){ campusAgg[k].ativo++; campusAgg[k].membros += p.m; } else campusAgg[k].nao++;
+});
+const CAMPI = Object.keys(campusAgg);
+const CAMPI_COM_ATIVO = CAMPI.filter(c=>campusAgg[c].ativo>0).length;
+
+const dayAgg = {};
+ATIVOS.forEach(p=>{ const k = p.d || ""; dayAgg[k] = (dayAgg[k]||0)+1; });
+
+const PEQUENOS = ATIVOS.filter(p=>p.m>0 && p.m<6);
+const SEM_MEMBROS = ATIVOS.filter(p=>p.m===0);
+const SEM_DIA = ATIVOS.filter(p=>!p.d);
+const SEM_FAIXA = ATIVOS.filter(p=>!p.f);
+
+/* ───────────────────────── Navegação ───────────────────────── */
+const NAV = [
+  {grupo:"Panorama"},
+  {id:"geral", label:"Visão Geral", icon:"overview"},
+  {id:"semana", label:"Agenda da Semana", icon:"week", pill:ATIVOS.length-(dayAgg[""]||0)},
+  {grupo:"Grupos"},
+  {id:"ativos", label:"PGs Ativos", icon:"check", pill:ATIVOS.length},
+  {id:"nao-ativos", label:"PGs Não Ativos", icon:"x", pill:NAO_ATIVOS.length},
+  {id:"campus", label:"Por Campus", icon:"map", pill:CAMPI.length},
+  {grupo:"Estrutura"},
+  {id:"organograma", label:"Organograma", icon:"org"},
+  {id:"calendario", label:"Calendário 2026", icon:"cal", pill:EVENTOS.length},
+  {id:"treinamento", label:"Treinamentos", icon:"grad"},
+  {id:"manual", label:"Manual dos PGs", icon:"book"}
+];
+
+function renderNav(active){
+  const nav = document.getElementById("nav");
+  nav.innerHTML = NAV.map(n=> n.grupo
+      ? `<div class="nav-label">${esc(n.grupo)}</div>`
+      : `<button class="nav-btn ${n.id===active?'active':''}" data-nav="${n.id}">${ICONS[n.icon]}<span class="lbl">${esc(n.label)}</span>${n.pill!=null?`<span class="pill">${n.pill}</span>`:''}</button>`
+    ).join("");
+  nav.querySelectorAll("[data-nav]").forEach(btn=>btn.addEventListener("click", ()=>showSection(btn.dataset.nav)));
+}
+function showSection(id){
+  renderNav(id);
+  document.querySelectorAll(".section").forEach(s=>s.classList.toggle("active", s.id==="sec-"+id));
+  document.querySelector("main").scrollTo?.({top:0, behavior: REDUCED_MOTION?"auto":"smooth"});
+}
+
+/* ───────────────────────── Busca rápida ───────────────────────── */
+function renderQuickSearch(){
+  const input = document.getElementById("quickSearch");
+  const results = document.getElementById("quickResults");
+  input.addEventListener("input", ()=>{
+    const q = input.value.trim().toLowerCase();
+    if(q.length<2){ results.classList.remove("show"); results.innerHTML=""; return; }
+    const matches = PGS.filter(p => (p.n+' '+p.cp).toLowerCase().includes(q)).slice(0,9);
+    results.innerHTML = matches.length ? matches.map(p=>`<button data-campus="${esc(p.cp)}">${esc(p.n)}<span class="r-sub">${esc(p.cp)} · ${isAtivo(p)?'ativo':'não-ativo'}</span></button>`).join("")
+      : '<div class="no-res">Nenhum PG encontrado.</div>';
+    results.classList.add("show");
+    results.querySelectorAll("button[data-campus]").forEach(b=>b.addEventListener("click", ()=>{
+      showSection("campus"); renderCampusTable(b.dataset.campus); results.classList.remove("show"); input.value="";
+    }));
+  });
+  document.addEventListener("click", e=>{ if(!e.target.closest(".side-search")) results.classList.remove("show"); });
+}
+
+/* ───────────────────────── Visão Geral ───────────────────────── */
+function renderDonut(){
+  const r = 60, c = 2*Math.PI*r;
+  const frac = TOTAL ? ATIVOS.length/TOTAL : 0;
+  const ativoLen = c*frac;
+  const pct = Math.round(frac*100);
+  return `
+    <div class="donut-card">
+      <div class="donut-title">Status dos PGs</div>
+      <div class="donut-figure">
+        <svg width="150" height="150" viewBox="0 0 150 150" role="img" aria-label="${pct}% dos PGs estão ativos">
+          <circle cx="75" cy="75" r="${r}" fill="none" stroke="var(--bad)" stroke-width="16"/>
+          <circle cx="75" cy="75" r="${r}" fill="none" stroke="var(--good)" stroke-width="16"
+            stroke-dasharray="${ativoLen} ${c-ativoLen}" stroke-linecap="round" transform="rotate(-90 75 75)"/>
+        </svg>
+        <div class="donut-center"><div class="big"><span class="count" data-target="${pct}">0</span>%</div><div class="lbl">ativos</div></div>
+      </div>
+      <div class="donut-legend">
+        <div class="li"><span class="sw" style="background:var(--good)"></span>Ativos <b><span class="count" data-target="${ATIVOS.length}">0</span></b></div>
+        <div class="li"><span class="sw" style="background:var(--bad)"></span>Não-ativos <b><span class="count" data-target="${NAO_ATIVOS.length}">0</span></b></div>
+      </div>
+    </div>`;
+}
+
+function renderGeral(){
+  const maxCampus = Math.max(...CAMPI.map(c=>campusAgg[c].total));
+  const campusRows = [...CAMPI].sort((a,b)=>campusAgg[b].total-campusAgg[a].total).map(c=>{
+    const a = campusAgg[c];
+    return `<div class="bar-rank-row">
+      <div class="cat-name">${esc(c)}</div>
+      <div class="bar-track"><div class="bar-fill good" style="width:${Math.round(a.ativo/maxCampus*100)}%"></div><div class="bar-fill bad" style="width:${Math.round(a.nao/maxCampus*100)}%"></div></div>
+      <div class="bar-amt">${a.total}<span class="sub">${a.membros} membros</span></div>
+    </div>`;
+  }).join("");
+
+  const lista = arr => arr.map(p=>`<span class="item">${esc(p.n)} — ${esc(p.cp)}</span>`).join("") || "nenhum";
+  const naoPorCampus = {};
+  NAO_ATIVOS.forEach(p=>{ naoPorCampus[p.cp] = (naoPorCampus[p.cp]||0)+1; });
+  const naoResumo = Object.entries(naoPorCampus).sort((a,b)=>b[1]-a[1]).map(([c,n])=>`${n} no ${c}`).join(", ");
+  const terca = dayAgg["Terça"]||0;
+
+  document.getElementById("sec-geral").innerHTML = `
+    <div class="section-head">
+      <div class="eyebrow">Panorama · Pequenos Grupos</div>
+      <h2>Visão Geral</h2>
+      <p class="section-sub">Os ${TOTAL} Pequenos Grupos da Área do Cuidar: quantos existem, onde estão, quando se reúnem e o que pede atenção. Esta versão não traz dados de líderes, co-líderes ou contatos.</p>
+    </div>
+
+    <div class="hero-grid">
+      ${renderDonut()}
+      <div class="kpi-grid">
+        <div class="kpi"><div class="label">Participantes em PGs ativos</div><div class="value"><span class="count" data-target="${MEMBROS_ATIVOS}">0</span></div><div class="sub">+${MEMBROS_NAO_ATIVOS} em PGs não-ativos (histórico)</div></div>
+        <div class="kpi"><div class="label">Média de membros / PG ativo</div><div class="value">${MEDIA_MEMBROS.toFixed(1)}</div><div class="sub">considerando os ${ATIVOS.length} PGs ativos</div></div>
+        <div class="kpi"><div class="label">Campi com PG ativo</div><div class="value"><span class="count" data-target="${CAMPI_COM_ATIVO}">0</span> <span class="of">/ ${CAMPI.length}</span></div><div class="sub">campi com pelo menos um PG em funcionamento</div></div>
+        <div class="kpi"><div class="label">PGs que se reúnem às terças</div><div class="value"><span class="count" data-target="${terca}">0</span></div><div class="sub">${ATIVOS.length ? Math.round(terca/ATIVOS.length*100) : 0}% dos PGs ativos</div></div>
+      </div>
+    </div>
+
+    <h3 class="block-title">${ICONS.alert} Precisa de atenção</h3>
+    <p class="block-sub">Pontos de acompanhamento a partir do cadastro dos PGs. Não são erros — são conversas e ajustes a fazer.</p>
+    <div class="attn-grid">
+      <div class="attn-card crit">
+        <div class="attn-head">${ICONS.alert}<span class="t">PGs não-ativos</span><span class="n">${NAO_ATIVOS.length}</span></div>
+        <div class="attn-body">${esc(naoResumo) || "nenhum"} — candidatos a reativação ou arquivamento.</div>
+      </div>
+      <div class="attn-card warn">
+        <div class="attn-head">${ICONS.alert}<span class="t">PGs pequenos (1–5 membros)</span><span class="n">${PEQUENOS.length}</span></div>
+        <div class="attn-body">${lista(PEQUENOS)}</div>
+      </div>
+      <div class="attn-card warn">
+        <div class="attn-head">${ICONS.info}<span class="t">Sem nº de membros informado</span><span class="n">${SEM_MEMBROS.length}</span></div>
+        <div class="attn-body">${lista(SEM_MEMBROS)}</div>
+      </div>
+      <div class="attn-card warn">
+        <div class="attn-head">${ICONS.info}<span class="t">Sem dia de encontro</span><span class="n">${SEM_DIA.length}</span></div>
+        <div class="attn-body">${lista(SEM_DIA)}</div>
+      </div>
+      <div class="attn-card info">
+        <div class="attn-head">${ICONS.info}<span class="t">Sem faixa etária registrada</span><span class="n">${SEM_FAIXA.length}</span></div>
+        <div class="attn-body">${lista(SEM_FAIXA)}</div>
+      </div>
+    </div>
+
+    <h3 class="block-title">PGs por Campus</h3>
+    <p class="block-sub">Verde são os PGs ativos, vermelho os não-ativos. Veja o detalhe em <strong>Por Campus</strong>.</p>
+    <div class="bar-legend"><span class="li"><span class="sw" style="background:var(--good)"></span>Ativos</span><span class="li"><span class="sw" style="background:var(--bad)"></span>Não-ativos</span></div>
+    <div class="bar-rank">${campusRows}</div>
+
+    <div class="note">
+      <strong>Sobre os dados:</strong> este painel é gerado a partir das fichas de PG em <code>03 - PGs/Relação de PGs</code>, sincronizadas da planilha <em>lista_PGs_jan26.xlsx</em>. Por escolha desta versão, não aparecem líderes, co-líderes, anfitriões, telefones ou endereços.
+    </div>`;
+  runCountUps(document.getElementById("sec-geral"));
+}
+
+/* ───────────────────────── Agenda da Semana ───────────────────────── */
+function renderSemana(){
+  const knownDays = new Set(DIA_ORDER);
+  const cols = DIA_ORDER.filter(d => ATIVOS.some(p=>p.d===d));
+  [...new Set(ATIVOS.map(p=>p.d).filter(d => d && !knownDays.has(d)))].forEach(d=>cols.push(d));
+  if(ATIVOS.some(p=>!p.d)) cols.push("");
+
+  const colsHtml = cols.map(d=>{
+    const list = ATIVOS.filter(p=>p.d===d).sort((a,b)=>timeKey(a.h)-timeKey(b.h) || a.n.localeCompare(b.n,'pt'));
+    const chips = list.map(p=>`
+      <button type="button" class="week-chip" data-i="${PGS.indexOf(p)}" aria-label="Ver detalhes de ${esc(p.n)}">
+        <span class="time">${esc(p.h)||'—'}</span>
+        <span class="pgname">${esc(p.n)}</span>
+        <span class="meta"><span class="camp">${esc(p.cp)}</span><span>${p.m} membros</span></span>
+      </button>`).join("") || `<div class="week-empty">Nenhum PG neste dia</div>`;
+    return `<div class="week-col">
+      <div class="week-col-head"><span class="d">${d?esc(d):"Sem dia definido"}</span><span class="pill">${list.length}</span></div>
+      <div class="week-col-body">${chips}</div>
+    </div>`;
+  }).join("");
+
+  document.getElementById("sec-semana").innerHTML = `
+    <div class="section-head">
+      <div class="eyebrow">Panorama · Pequenos Grupos</div>
+      <h2>Agenda da Semana</h2>
+      <p class="section-sub">Os ${ATIVOS.length} PGs ativos por dia e horário de reunião — dá para ver de relance sobreposições e vazios na semana. Toque em um PG para ver os detalhes.</p>
+    </div>
+    <div class="week-board" id="weekBoard">${colsHtml}</div>`;
+  document.querySelectorAll("#weekBoard .week-chip").forEach(b=>{
+    b.addEventListener("click", ()=>openPG(Number(b.dataset.i)));
+  });
+}
+
+/* ───────────────────────── Detalhes do PG (só dados públicos) ───────────────────────── */
+let lastFocus = null;
+function openPG(i){
+  const p = PGS[i];
+  if(!p) return;
+  lastFocus = document.activeElement;
+  document.getElementById("drawerTitle").textContent = p.n;
+  document.getElementById("drawerMeta").innerHTML =
+    (isAtivo(p) ? `<span class="status-badge ativo">${ICONS.check||''}Ativo</span>` : `<span class="status-badge nao">${ICONS.x||''}Não-ativo</span>`) +
+    `<span>${esc(p.cp)}</span>` + (p.mi ? `<span class="mtag${p.mi==='A classificar'?' none':''}">${esc(p.mi)}</span>` : '');
+  const campo = (k,v) => `<div class="dfield"><div class="dk">${esc(k)}</div><div class="dv${v?'':' empty'}">${v||"não informado"}</div></div>`;
+  const encontro = [p.d, p.h].filter(Boolean).join(" · ");
+  document.getElementById("drawerBody").innerHTML = `
+    ${campo("Encontro", encontro ? esc(encontro) : "")}
+    ${campo("Campus", p.cp ? esc(p.cp) : "")}
+    ${campo("Faixa etária", p.f ? esc(p.f) : "")}
+    ${campo("Ministério", p.mi && p.mi!=='A classificar' ? esc(p.mi) : "")}
+    ${campo("Membros", p.m ? `<span class="mono">${p.m}</span>` : "")}
+    ${p.o ? campo("Observações", esc(p.o)) : ""}
+    <p style="font-size:12.5px;color:var(--ink-faint);margin:18px 0 0;">Esta versão não mostra líderes, contatos nem endereços. Para participar deste PG, fale com a Central dos PGs.</p>`;
+  const d = document.getElementById("drawer");
+  d.classList.add("open"); d.setAttribute("aria-hidden","false");
+  document.getElementById("drawerOverlay").classList.add("open");
+  document.getElementById("drawerClose").focus();
+}
+function closePG(){
+  const d = document.getElementById("drawer");
+  if(!d.classList.contains("open")) return;
+  d.classList.remove("open"); d.setAttribute("aria-hidden","true");
+  document.getElementById("drawerOverlay").classList.remove("open");
+  if(lastFocus && lastFocus.focus) lastFocus.focus();
+}
+document.getElementById("drawerClose").addEventListener("click", closePG);
+document.getElementById("drawerOverlay").addEventListener("click", closePG);
+document.addEventListener("keydown", e=>{ if(e.key==="Escape") closePG(); });
+
+/* ───────────────────────── Tabelas ───────────────────────── */
+let ativosSort = {key:null, dir:1};
+function sortAtivos(list){
+  if(!ativosSort.key) return list;
+  const k = ativosSort.key, dir = ativosSort.dir;
+  return [...list].sort((a,b)=>{
+    const va = a[k], vb = b[k];
+    if(typeof va === "number") return (va-vb)*dir;
+    return String(va||"").localeCompare(String(vb||""),'pt')*dir;
+  });
+}
+function filtrarLinhas(bodyId, q, campus, dia){
+  document.querySelectorAll(`#${bodyId} tr`).forEach(tr=>{
+    const ok = (!q || tr.dataset.search.includes(q)) && (!campus || tr.dataset.campus===campus) && (!dia || tr.dataset.dia===dia);
+    tr.style.display = ok ? "" : "none";
+  });
+}
+function renderAtivos(){
+  const campi = [...new Set(ATIVOS.map(p=>p.cp))].sort((a,b)=>a.localeCompare(b,'pt'));
+  const dias = DIA_ORDER.filter(d => ATIVOS.some(p=>p.d===d));
+  const rowHtml = p => `<tr ${pgRowAttrs(p)}>
+      <td class="name">${esc(p.n)}</td>
+      <td>${esc(p.cp)}</td>
+      <td class="num">${p.m}</td>
+      <td>${diaHora(p)}</td>
+      <td class="tags">${esc(p.f)||'<span class="muted">—</span>'}</td>
+    </tr>`;
+  document.getElementById("sec-ativos").innerHTML = `
+    <div class="section-head">
+      <div class="eyebrow">Grupos · Pequenos Grupos</div>
+      <h2>PGs Ativos</h2>
+      <p class="section-sub">Os ${ATIVOS.length} Pequenos Grupos em funcionamento, somando ${MEMBROS_ATIVOS} participantes. Clique nos cabeçalhos para ordenar.</p>
+    </div>
+    <div class="table-card">
+      <div class="table-toolbar">
+        <h3>Lista de PGs ativos</h3>
+        <div class="toolbar-controls">
+          <div class="search-wrap">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+            <input class="search" id="searchAtivos" type="text" placeholder="Buscar por PG, campus, faixa…">
+          </div>
+          <select class="fselect" id="filterCampusAtivos" aria-label="Filtrar por campus"><option value="">Todos os campi</option>${campi.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join("")}</select>
+          <select class="fselect" id="filterDiaAtivos" aria-label="Filtrar por dia"><option value="">Todos os dias</option>${dias.map(d=>`<option value="${esc(d)}">${esc(d)}</option>`).join("")}</select>
+        </div>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead><tr>
+            <th class="sortable" tabindex="0" role="button" data-key="n">PG <span class="arrow">↕</span></th>
+            <th class="sortable" tabindex="0" role="button" data-key="cp">Campus <span class="arrow">↕</span></th>
+            <th class="num sortable" tabindex="0" role="button" data-key="m">Membros <span class="arrow">↕</span></th>
+            <th>Dia · Horário</th>
+            <th>Faixa etária</th>
+          </tr></thead>
+          <tbody id="bodyAtivos">${sortAtivos(ATIVOS).map(rowHtml).join("")}</tbody>
+        </table>
+      </div>
+    </div>`;
+
+  const search = document.getElementById("searchAtivos");
+  const fc = document.getElementById("filterCampusAtivos");
+  const fd = document.getElementById("filterDiaAtivos");
+  const aplicar = () => filtrarLinhas("bodyAtivos", search.value.trim().toLowerCase(), fc.value, fd.value);
+  search.addEventListener("input", aplicar);
+  fc.addEventListener("change", aplicar);
+  fd.addEventListener("change", aplicar);
+
+  document.querySelectorAll('#sec-ativos thead th.sortable').forEach(th=>{
+    const onSort = () => {
+      const key = th.dataset.key;
+      ativosSort.dir = (ativosSort.key===key) ? -ativosSort.dir : 1;
+      ativosSort.key = key;
+      document.querySelectorAll('#sec-ativos thead th.sortable').forEach(t=>{t.classList.remove('active'); t.querySelector('.arrow').textContent='↕';});
+      th.classList.add('active');
+      th.querySelector('.arrow').textContent = ativosSort.dir===1 ? '↑' : '↓';
+      document.getElementById("bodyAtivos").innerHTML = sortAtivos(ATIVOS).map(rowHtml).join("");
+      aplicar();
+    };
+    th.addEventListener("click", onSort);
+    th.addEventListener("keydown", e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); onSort(); } });
+  });
+}
+
+function renderNaoAtivos(){
+  const rowHtml = p => `<tr ${pgRowAttrs(p)}>
+      <td class="name">${esc(p.n)}</td>
+      <td>${esc(p.cp)}</td>
+      <td class="num">${p.m}</td>
+      <td>${diaHora(p)}</td>
+      <td class="tags">${esc(p.o)||'<span class="muted">—</span>'}</td>
+    </tr>`;
+  document.getElementById("sec-nao-ativos").innerHTML = `
+    <div class="section-head">
+      <div class="eyebrow">Grupos · Pequenos Grupos</div>
+      <h2>PGs Não Ativos</h2>
+      <p class="section-sub">${NAO_ATIVOS.length} PGs marcados como não-ativos no cadastro. São candidatos a reativação (nova liderança, nova data) ou arquivamento definitivo.</p>
+    </div>
+    <div class="table-card">
+      <div class="table-toolbar">
+        <h3>Lista de PGs não-ativos</h3>
+        <div class="toolbar-controls">
+          <div class="search-wrap">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+            <input class="search" id="searchNao" type="text" placeholder="Buscar por PG ou campus…">
+          </div>
+        </div>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>PG</th><th>Campus</th><th class="num">Membros</th><th>Dia · Horário</th><th>Observação</th></tr></thead>
+          <tbody id="bodyNao">${NAO_ATIVOS.map(rowHtml).join("")}</tbody>
+        </table>
+      </div>
+    </div>`;
+  const search = document.getElementById("searchNao");
+  search.addEventListener("input", ()=>filtrarLinhas("bodyNao", search.value.trim().toLowerCase(), "", ""));
+}
+
+/* ───────────────────────── Por Campus ───────────────────────── */
+function renderCampusTable(campus){
+  const list = PGS.filter(p=>p.cp===campus).sort((a,b)=>{
+    if(a.s!==b.s) return a.s==='ativo'?-1:1;
+    return a.n.localeCompare(b.n,'pt');
+  });
+  const a = campusAgg[campus];
+  const rows = list.map(p=>{
+    const badge = isAtivo(p) ? `<span class="status-badge ativo">${ICONS.check}Ativo</span>` : `<span class="status-badge nao">${ICONS.x}Não-ativo</span>`;
+    return `<tr><td class="name">${esc(p.n)}</td><td class="num">${p.m}</td><td>${diaHora(p)}</td><td>${esc(p.f)||'<span class="muted">—</span>'}</td><td>${badge}</td></tr>`;
+  }).join("");
+  document.getElementById("campusTableWrap").innerHTML = `
+    <div class="table-toolbar"><h3>${esc(campus)} — ${a.total} PG${a.total===1?'':'s'} · ${a.membros} membros em PGs ativos</h3></div>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>PG</th><th class="num">Membros</th><th>Dia · Horário</th><th>Faixa etária</th><th>Status</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
+  document.querySelectorAll(".campus-card").forEach(b=>b.classList.toggle("active", b.dataset.campus===campus));
+}
+function renderCampus(){
+  const sorted = [...CAMPI].sort((a,b)=>campusAgg[b].total-campusAgg[a].total);
+  const cards = sorted.map(c=>{
+    const a = campusAgg[c];
+    return `<button class="campus-card" data-campus="${esc(c)}" aria-pressed="false">
+      <div class="cc-name">${esc(c)}</div>
+      <div class="cc-stats"><span>${a.total} PG${a.total===1?'':'s'}</span><span>${a.ativo} ativos · ${a.nao} não-ativos</span></div>
+      <div class="cc-bar"><div class="seg good" style="width:${a.total?(a.ativo/a.total*100):0}%"></div><div class="seg bad" style="width:${a.total?(a.nao/a.total*100):0}%"></div></div>
+      <div class="cc-members">${a.membros} membros em PGs ativos</div>
+    </button>`;
+  }).join("");
+  document.getElementById("sec-campus").innerHTML = `
+    <div class="section-head">
+      <div class="eyebrow">Grupos · Pequenos Grupos</div>
+      <h2>Por Campus</h2>
+      <p class="section-sub">Escolha um campus para ver todos os seus PGs, ativos e não-ativos.</p>
+    </div>
+    <div class="campus-grid">${cards}</div>
+    <div class="table-card" id="campusTableWrap"></div>`;
+  document.querySelectorAll(".campus-card").forEach(b=>b.addEventListener("click", ()=>renderCampusTable(b.dataset.campus)));
+  renderCampusTable(sorted[0]);
+}
+
+/* ───────────────────────── Organograma (só funções, sem nomes) ───────────────────────── */
+function renderOrganograma(){
+  const campos = CAMPI.filter(c=>c!=="Sem campus").sort((a,b)=>a.localeCompare(b,'pt'));
+  const item = (t, s) => `<div class="og-item">${esc(t)}${s?`<small>${esc(s)}</small>`:''}</div>`;
+  document.getElementById("sec-organograma").innerHTML = `
+    <div class="section-head">
+      <div class="eyebrow">Estrutura · Organograma do PG Cuidar</div>
+      <h2>Organograma</h2>
+      <p class="section-sub">Como a estrutura dos PGs se organiza: a coordenação, as quatro frentes e os campi. Os cargos aparecem sem nomes nesta versão.</p>
+    </div>
+
+    <div class="og">
+      <div class="og-top"><div class="t">Coordenação da Área do Cuidar</div><div class="s">Coordenação geral</div></div>
+      <div class="og-stem"></div>
+      <div class="og-top"><div class="t">Coordenação Geral dos PGs</div><div class="s">Supervisão dos PGs e das frentes</div></div>
+      <div class="og-stem"></div>
+      <div class="og-branch">
+        <div class="og-col">
+          <div class="og-head amber">Time Estratégico</div>
+          ${item("Planejamento")}${item("Comunicação")}${item("Dados e monitoramento")}${item("Criativo")}${item("Central dos PGs")}
+        </div>
+        <div class="og-col">
+          <div class="og-head aqua">Supervisores de PG · 103 Norte</div>
+          <div class="og-sub">Família</div>
+          ${item("Homens")}${item("Mulheres")}${item("Casais")}
+          <div class="og-sub">Novas Gerações</div>
+          ${item("KJ")}${item("Jovens 30+")}${item("Adolescentes ID")}
+          <div class="og-sub">Infantil e Melhor Idade</div>
+          ${item("Kids")}${item("60+")}
+        </div>
+        <div class="og-col">
+          <div class="og-head coral">Coordenadores de Campus</div>
+          ${campos.map(c=>item(c, "Coordenação de campus")).join("")}
+        </div>
+        <div class="og-col">
+          <div class="og-head mauve">Time de Suporte a Líderes</div>
+          ${item("Aconselhamento e treinamentos")}
+        </div>
+      </div>
+      <div class="og-foot" style="margin-top:22px;">
+        <span class="chip"><strong>Lateral:</strong> a Área do Crescer, com a Equipe de Escritores, produz o conteúdo dos PGs e o repassa à Coordenação Geral.</span>
+      </div>
+    </div>
+
+    <div class="note og-note">
+      <strong>Como ler:</strong> cada frente responde ao Coordenador Geral dos PGs. Os supervisores acompanham os grupos do seu segmento; os coordenadores de campus cuidam dos grupos do seu campus; o Time de Suporte a Líderes forma e aconselha quem lidera.
+    </div>`;
+}
+
+/* ───────────────────────── Calendário ───────────────────────── */
+function renderCalendario(){
+  const MESES = ["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
+  let mesAtual = "";
+  const itens = EVENTOS.map(e=>{
+    const dt = new Date(e.iso+"T12:00:00");
+    const passado = dt < HOJE;
+    const isNext = PROX_EVENTO && e.iso===PROX_EVENTO.iso && e.nome===PROX_EVENTO.nome;
+    const mes = MESES[dt.getMonth()];
+    const header = mes!==mesAtual ? (mesAtual=mes, `<div class="mes-label">${mes} de 2026</div>`) : "";
+    return header + `
+      <div class="tl-item ${isNext?'next':(passado?'done':'')}">
+        <div class="tl-date">${esc(e.quando)}</div>
+        <div class="tl-name">${esc(e.nome)}</div>
+        <div class="tl-meta"><span>${esc(e.escopo)}</span>${isNext?'<span class="tl-badge next">Próximo</span>':(passado?'<span class="tl-badge done">Realizado</span>':'')}</div>
+      </div>`;
+  }).join("");
+  document.getElementById("sec-calendario").innerHTML = `
+    <div class="section-head">
+      <div class="eyebrow">Estrutura · Calendário de Eventos</div>
+      <h2>Calendário 2026</h2>
+      <p class="section-sub">Marcos da Área do Cuidar em 2026 — treinamentos, PGzão, finalização dos estudos e confraternizações. ${PROX_EVENTO?`O próximo é <strong>${esc(PROX_EVENTO.nome)}</strong>, em ${esc(PROX_EVENTO.quando)}.`:'Todos os eventos de 2026 já aconteceram.'}</p>
+    </div>
+    <div class="tl">${itens}</div>
+    <h3 class="block-title">Ritmos recorrentes</h3>
+    <p class="block-sub">Os ciclos fixos que sustentam o acompanhamento, independentemente das datas do ano.</p>
+    <div class="table-card">
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>Evento</th><th>Frequência</th><th>Para quem</th></tr></thead>
+          <tbody>${RECORRENTES.map(r=>`<tr><td class="name">${esc(r[0])}</td><td>${esc(r[1])}</td><td class="tags">${esc(r[2])}</td></tr>`).join("")}</tbody>
+        </table>
+      </div>
+    </div>`;
+}
+
+/* ───────────────────────── Treinamentos ───────────────────────── */
+function renderTreinamento(){
+  const TREINOS = EVENTOS.filter(e => /treinamento/i.test(e.nome));
+  const futuros = TREINOS.filter(e => new Date(e.iso+"T12:00:00") >= HOJE);
+  const linhaTreino = TREINOS.map(e=>{
+    const passado = new Date(e.iso+"T12:00:00") < HOJE;
+    return `<div class="tl-item ${passado?'done':'next'}">
+      <div class="tl-date">${esc(e.quando)}</div>
+      <div class="tl-name">${esc(e.nome)}</div>
+      <div class="tl-meta"><span>${esc(e.escopo)}</span>${passado?'<span class="tl-badge done">Realizado</span>':'<span class="tl-badge next">A realizar</span>'}</div>
+    </div>`;
+  }).join("");
+  const slot = (t,d) => `<div class="slot"><div class="slot-top">${ICONS.grad}<span class="slot-t">${esc(t)}</span><span class="slot-tag">a preencher</span></div><div class="slot-d">${d}</div></div>`;
+
+  document.getElementById("sec-treinamento").innerHTML = `
+    <div class="section-head">
+      <div class="eyebrow">Estrutura · Treinamentos</div>
+      <h2>Treinamentos</h2>
+      <p class="section-sub">Ninguém assume um PG sozinho e no escuro. Esta aba reúne o que um líder precisa saber antes de conduzir um grupo, o que se espera dele depois, e quando acontecem os encontros de formação da área.</p>
+    </div>
+
+    <h3 class="block-title">Por que existe um treinamento</h3>
+    <p class="block-sub" style="max-width:74ch;">
+      Um PG não se sustenta por carisma. Ele se sustenta por preparo — alguém que sabe conduzir uma conversa, perceber quem está se afastando, lidar com conflito sem quebrar o vínculo e apontar para Cristo sem soar ensaiado. O treinamento existe para que a liderança seja uma <strong>competência formada</strong>, não um dom presumido, e para que todo PG da Koinonia ofereça o mesmo cuidado, independentemente de quem o lidera ou de qual campus ele é.
+    </p>
+    <p class="block-sub" style="max-width:74ch;">Hoje a área tem <strong>${ATIVOS.length} PGs ativos</strong>. Formar a liderança de cada um é o que permite que os grupos se multipliquem sem perder o padrão de cuidado.</p>
+
+    <h3 class="block-title">Encontros de formação em 2026</h3>
+    <p class="block-sub">Puxados do Calendário de Eventos — ${futuros.length ? `${futuros.length} ainda por acontecer.` : 'todos já aconteceram.'}</p>
+    <div class="tl">${linhaTreino || '<p class="block-sub">Nenhum treinamento no calendário.</p>'}</div>
+
+    <h3 class="block-title">Trilha de formação</h3>
+    <p class="block-sub">O caminho que uma pessoa percorre dentro do PG até formar quem vem depois.</p>
+    <div class="trilha">
+      <div class="step"><div class="sn">Ponto de partida</div><div class="st">Membro do PG</div><div class="sd">Participa, é conhecido pelo nome e cuidado.</div></div>
+      <div class="step"><div class="sn">Formação</div><div class="st">Líder em Treinamento</div><div class="sd">Assume responsabilidades crescentes sob discipulado.</div></div>
+      <div class="step"><div class="sn">Corresponsável</div><div class="st">Co-líder</div><div class="sd">Conduz na ausência do titular e cuida de membros específicos.</div></div>
+      <div class="step"><div class="sn">Titular</div><div class="st">Líder de PG</div><div class="sd">Conduz o grupo e forma quem vem depois.</div></div>
+      <div class="step"><div class="sn">Fruto</div><div class="st">Líder multiplicador</div><div class="sd">Abre um novo PG ou torna-se Supervisor.</div></div>
+    </div>
+
+    <h3 class="block-title">O que ainda entra aqui</h3>
+    <p class="block-sub">Espaços reservados para o conteúdo do treinamento. Enquanto não chegam, ficam marcados para não passarem por esquecimento.</p>
+    <div class="attn-grid">
+      ${slot("Módulos do treinamento", "Os blocos de conteúdo, na ordem em que são dados — cada um com objetivo, duração e a quem se destina.")}
+      ${slot("Materiais de apoio", "Apostila, slides, roteiros de estudo e o que mais o líder leva para casa.")}
+      ${slot("Quem deve participar", "Critérios de quem é convocado a cada turma: líderes novos, co-líderes, líderes em treinamento, supervisores.")}
+      ${slot("Avaliação e acompanhamento", "Como se verifica que a formação pegou — e o que acontece depois do encontro.")}
+    </div>`;
+}
+
+/* ───────────────────────── Manual ───────────────────────── */
+let manualAtivo = 1;
+function renderManualBody(rolar=false){
+  const s = MANUAL.find(x=>x.n===manualAtivo);
+  document.getElementById("manualBody").innerHTML = `
+    <div class="m-eyebrow">Seção ${s.n} · ${esc(s.eyebrow)}</div>
+    <h3>${esc(s.t)}</h3>
+    ${s.html}`;
+  document.querySelectorAll("#manualToc button").forEach(b=>b.classList.toggle("active", Number(b.dataset.s)===manualAtivo));
+  if(rolar) document.getElementById("manualBody").scrollIntoView?.({behavior: REDUCED_MOTION?"auto":"smooth", block:"nearest"});
+}
+function renderManual(){
+  document.getElementById("sec-manual").innerHTML = `
+    <div class="section-head">
+      <div class="eyebrow">Estrutura · Manual dos PGs</div>
+      <h2>Manual dos PGs</h2>
+      <p class="section-sub">Referência para Líderes, Co-líderes, Líderes em Treinamento e Supervisores. Se você está <strong>começando agora</strong>, leia as seções 1 a 8 na ordem. Se já <strong>lidera um PG</strong>, use as seções 4, 7 a 12 e 14 como consulta. Se é <strong>Supervisor</strong>, as seções 6, 7, 10, 11 e 12 sustentam a saúde dos grupos do seu ministério.</p>
+    </div>
+    <div class="manual-layout">
+      <nav class="manual-toc" id="manualToc" aria-label="Seções do manual">
+        <div class="toc-label">Seções</div>
+        ${MANUAL.map(s=>`<button data-s="${s.n}" class="${s.n===manualAtivo?'active':''}"><span class="tn">${s.n}</span><span>${esc(s.t)}</span></button>`).join("")}
+      </nav>
+      <article class="manual-body" id="manualBody"></article>
+    </div>`;
+  document.querySelectorAll("#manualToc button").forEach(b=>{
+    b.addEventListener("click", ()=>{ manualAtivo = Number(b.dataset.s); renderManualBody(true); });
+  });
+  renderManualBody();
+}
+
+
+
+/* ───────────────────────── Boot ───────────────────────── */
+document.getElementById("sections").innerHTML = `
+  <div class="section" id="sec-geral"></div>
+  <div class="section" id="sec-semana"></div>
+  <div class="section" id="sec-ativos"></div>
+  <div class="section" id="sec-nao-ativos"></div>
+  <div class="section" id="sec-campus"></div>
+  <div class="section" id="sec-organograma"></div>
+  <div class="section" id="sec-calendario"></div>
+  <div class="section" id="sec-treinamento"></div>
+  <div class="section" id="sec-manual"></div>`;
+renderGeral();
+renderSemana();
+renderAtivos();
+renderNaoAtivos();
+renderCampus();
+renderOrganograma();
+renderCalendario();
+renderTreinamento();
+renderManual();
+renderQuickSearch();
+showSection("geral");
+
+</script>
+
