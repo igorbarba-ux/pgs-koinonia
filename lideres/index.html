@@ -1361,20 +1361,6 @@ function renderCalendario(){
       </div>`;
   }).join("");
 
-  let mesAtual27 = 0;
-  const itens27 = CAL2027.map(e=>{
-    const header = e.m!==mesAtual27 ? (mesAtual27=e.m, `<div class="mes-label">${MESES27[e.m-1]} de 2027</div>`) : "";
-    const dia = e.d
-      ? (e.ate ? `${e.d} a ${e.ate} de ${MESES27[e.m-1]}` : `${e.d} de ${MESES27[e.m-1]}`)
-      : `${MESES27[e.m-1]}, sem dia definido`;
-    return header + `
-      <div class="tl-item ${e.risc?'done':''}">
-        <div class="tl-date">${esc(dia)}</div>
-        <div class="tl-name">${esc(e.ev)}</div>
-        <div class="tl-meta"><span>${esc((TIPO_CAL[e.t]||{}).lbl||"")}</span>${e.risc?'<span class="tl-badge done">Riscado/remarcado</span>':''}${e.obs?`<span>${esc(e.obs)}</span>`:''}</div>
-      </div>`;
-  }).join("");
-
   const legenda = `<div class="legenda-cal">` + Object.values(TIPO_CAL).map(v=>
     `<span class="k"><span class="box" style="--c:${v.cor}"></span> ${esc(v.lbl)}</span>`
   ).join("") + `</div>`;
@@ -1395,17 +1381,13 @@ function renderCalendario(){
     </div>
 
     <h3 class="block-title" style="margin-top:0">2027 mês a mês</h3>
-    <p class="block-sub">Toque num dia com marcação para ver o que acontece nele. Passe o mouse num evento para ver a observação, quando houver.</p>
+    <p class="block-sub">Os mesmos eventos que estão na agenda oficial. Toque num dia com marcação para ver o que acontece nele.</p>
     ${legenda}
     <div class="grade" id="grade"></div>
+    <p class="note">O ano foi deduzido das datas móveis anotadas no quadro da coordenação: Carnaval 5–10/02, Páscoa 26–28/03, Dia das Mães 09/05 e Dia dos Pais 08/08 só coincidem em 2027.</p>
 
     <h3 class="block-title">2026 · Marcos da área</h3>
     <div class="tl">${itens}</div>
-
-    <h3 class="block-title">2027 · Calendário de atividades</h3>
-    <p class="block-sub">${CAL2027.length} marcos do ano que vem, transcritos do quadro da coordenação — a mesma lista acima, em formato de linha do tempo. Itens riscados no quadro aparecem esmaecidos — dois deles foram remarcados para abril, e isso está anotado.</p>
-    <div class="tl">${itens27}</div>
-    <p class="note">O ano foi deduzido das datas móveis anotadas no quadro: Carnaval 5–10/02, Páscoa 26–28/03, Dia das Mães 09/05 e Dia dos Pais 08/08 só coincidem em 2027.</p>
 
     <h3 class="block-title">Ritmos recorrentes</h3>
     <p class="block-sub">Os ciclos fixos que sustentam o acompanhamento, independentemente das datas do ano.</p>
